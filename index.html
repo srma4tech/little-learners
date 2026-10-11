@@ -32,6 +32,22 @@ p{text-align:center;font-size:18px}body.ob header{display:none}.ib{display:flex;
 <header><button class="pill" onclick="home()">🏠</button><span class="pill" id="stars"></span><span><button class="pill" id="inst" style="display:none" onclick="doInstall()">📲 Install</button> <button class="pill" id="kid" onclick="gate()"></button> <button class="pill" onclick="stickers()">🎁</button> <button class="pill" onclick="gate()">⚙️</button></span></header>
 <div id="app"></div>
 <script>
+window.authDebug = new URLSearchParams(location.search).get('authdebug') === '1';
+window.authStep = (stage, detail = '') => {
+  if (!window.authDebug) return;
+  const text = typeof detail === 'string' ? detail : JSON.stringify(detail, null, 2);
+  alert('[Little Learners Auth Debug] ' + stage + (text ? '\n\n' + text : ''));
+};
+window.authErrorDetails = error => {
+  if (!error) return 'No error object was provided.';
+  return [
+    'name: ' + (error.name || '(none)'),
+    'code: ' + (error.code || '(none)'),
+    'message: ' + (error.message || String(error)),
+    'customData: ' + (error.customData ? JSON.stringify(error.customData) : '(none)'),
+    'stack: ' + (error.stack || '(no stack exposed by browser)')
+  ].join('\n');
+};
 const $=s=>document.querySelector(s),app=$('#app');
 let dp=null;const isStd=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone,isIOS=()=>/iPhone|iPad|iPod/i.test(navigator.userAgent)||(navigator.platform=='MacIntel'&&navigator.maxTouchPoints>1);
 addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp=e;$('#inst').style.display='';if($('#app .tile'))home()});
@@ -97,21 +113,36 @@ hdr();st.ob?home():onb();
 </script>
 <script type="module">
 try {
-  const [{ firebaseConfig: config }, appSdk, authSdk, dbSdk] = await Promise.all([
-    import('./firebase-config.js'),
-    import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js'),
-    import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js'),
-    import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js')
-  ]);
+  window.authStep('S1 — Firebase module loading started', 'Loading the local Firebase config and Firebase SDK modules one at a time. Press OK to continue to each checkpoint.');
+  window.authStep('S2 — Loading local Firebase config', 'Importing ./firebase-config.js. The config values will not be displayed.');
+  const { firebaseConfig: config } = await import('./firebase-config.js');
+  window.authStep('S2 PASSED — Local config module loaded', config?.apiKey && !config.apiKey.startsWith('YOUR') ? 'Config object and apiKey are present (value hidden).' : 'Config object/apiKey is missing or still a placeholder.');
+  window.authStep('S3 — Loading Firebase App SDK', 'Importing firebase-app.js version 10.12.2.');
+  const appSdk = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js');
+  window.authStep('S3 PASSED — Firebase App SDK loaded', 'initializeApp is available: ' + (typeof appSdk.initializeApp));
+  window.authStep('S4 — Loading Firebase Auth SDK', 'Importing firebase-auth.js version 10.12.2. If the getContext error occurs here, we have isolated the failing stage.');
+  const authSdk = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js');
+  window.authStep('S4 PASSED — Firebase Auth SDK loaded', 'getAuth: ' + typeof authSdk.getAuth + '; signInWithRedirect: ' + typeof authSdk.signInWithRedirect + '; getRedirectResult: ' + typeof authSdk.getRedirectResult);
+  window.authStep('S4b — Loading Firestore SDK', 'Importing firebase-firestore.js version 10.12.2.');
+  const dbSdk = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js');
+  window.authStep('S4b PASSED — Firestore SDK loaded', 'getFirestore is available: ' + (typeof dbSdk.getFirestore));
   if (!config?.apiKey || config.apiKey.startsWith('YOUR')) {
     window.fbStatus = 'Firebase: config not filled in (guest mode)';
     kl.refresh();
   } else {
+    window.authStep('S5a — Initializing Firebase app', 'Calling initializeApp(config). Config values remain hidden.');
     const appInstance = appSdk.initializeApp(config);
+    window.authStep('S5a PASSED — Firebase app initialized', 'App name: ' + appInstance.name);
+    window.authStep('S5b — Initializing Firebase Auth', 'Calling getAuth(app). This checkpoint is important for the getContext failure.');
     const auth = authSdk.getAuth(appInstance);
+    window.authStep('S5b PASSED — Firebase Auth initialized', 'Auth object created successfully.');
+    window.authStep('S5c — Initializing Firestore', 'Calling getFirestore(app).');
     const db = dbSdk.getFirestore(appInstance);
+    window.authStep('S5c PASSED — Firestore initialized', 'Firestore object created successfully.');
+    window.authStep('S5d — Creating Google provider', 'Creating GoogleAuthProvider and setting prompt=select_account.');
     const provider = new authSdk.GoogleAuthProvider();
     provider.setCustomParameters({ prompt: 'select_account' });
+    window.authStep('S5d PASSED — Google provider configured', 'GoogleAuthProvider is ready.');
     // Use full-page redirect on every device. This avoids popup blockers and
     // inconsistent popup behavior in installed PWAs and mobile browsers.
     let cloudWrite = Promise.resolve();
@@ -128,7 +159,15 @@ try {
       ok: true,
       signIn: async () => {
         kl.st().err = '';
-        return authSdk.signInWithRedirect(auth, provider);
+        window.authStep('S7 — Calling Firebase signInWithRedirect', 'Provider: GoogleAuthProvider. Next expected behavior: browser navigates to Google. If an error occurs, its code/message/stack will be shown.');
+        try {
+          const result = await authSdk.signInWithRedirect(auth, provider);
+          window.authStep('S8 — signInWithRedirect resolved', 'Firebase resolved the redirect call. If the page did not navigate, note this result and the browser URL.');
+          return result;
+        } catch (error) {
+          window.authStep('S7 FAILED — signInWithRedirect rejected', window.authErrorDetails(error));
+          throw error;
+        }
       },
       signOut: () => authSdk.signOut(auth),
       push: async () => {
@@ -145,14 +184,25 @@ try {
         }
       }
     };
-    authSdk.getRedirectResult(auth).catch(error => { window.lastErr = error?.code || error?.message || String(error); kl.err(error); });
+    window.authStep('S5 — Checking for a previous Google redirect result', 'Firebase Auth initialized. Checking whether Google returned to this page.');
+    authSdk.getRedirectResult(auth).then(result => {
+      window.authStep('S6 — Redirect result check completed', result?.user ? 'Firebase returned a signed-in user.' : 'No redirect sign-in result was returned. This can be normal before the first sign-in.');
+    }).catch(error => {
+      window.authStep('S6 FAILED — Reading redirect result', window.authErrorDetails(error));
+      window.lastErr = error?.code || error?.message || String(error); kl.err(error);
+    });
+    window.authStep('S5 — Registering auth state listener', 'Waiting for Firebase to report whether a user is signed in.');
     authSdk.onAuthStateChanged(auth, async user => {
       const state = kl.st();
       state.user = user ? (user.displayName || user.email || 'Google user') : null;
+      window.authStep('S9 — Auth state changed', user ? 'Firebase reports a signed-in user. Checking Firestore profile access next.' : 'Firebase reports no signed-in user.');
       if (!user) { window.cloudStatus = 'signed out'; window.fbStatus = 'Firebase: ready · redirect sign-in'; kl.refresh(); return; }
       window.cloudStatus = 'loading profile'; window.fbStatus = 'Firebase: ready'; kl.refresh();
       try {
+        window.authStep('S10 — Reading Firestore profile', 'Calling getDoc(users/{current-user-uid}). The UID and profile data are intentionally not displayed.');
         const ref = profileRef(user.uid), snapshot = await dbSdk.getDoc(ref);
+        window.authStep('S11 — Firestore profile read completed', snapshot.exists() ? 'Profile document exists.' : 'Profile document does not exist; app will create it.');
+
         const cloud = snapshot.exists() ? snapshot.data() : {};
         const cloudKids = cloud.kids && typeof cloud.kids === 'object' ? cloud.kids : {};
         if (snapshot.exists()) {
@@ -173,8 +223,10 @@ try {
           });
           window.cloudStatus = 'profile created';
         }
+        window.authStep('S12 — Firestore profile processing completed', 'Profile loaded/created. Returning control to the app onboarding flow.');
         kl.save(); kl.authed(Object.keys(cloudKids).length);
       } catch (error) {
+        window.authStep('S11 FAILED — Firestore profile access', window.authErrorDetails(error));
         window.lastErr = error?.code || error?.message || String(error);
         window.cloudStatus = 'profile failed';
         state.err = 'Google sign-in succeeded, but cloud profile access failed. ' + window.lastErr;
@@ -184,6 +236,7 @@ try {
     window.fbStatus = 'Firebase: ready'; kl.refresh();
   }
 } catch (error) {
+  window.authStep('FATAL — Firebase module import/initialization failed', window.authErrorDetails(error));
   window.fbStatus = 'Firebase: failed to load';
   window.lastErr = error?.code || error?.message || String(error);
   console.error('Firebase initialization failed:', error);
