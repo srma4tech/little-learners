@@ -50,6 +50,8 @@ jobs:
             [ -f "$f" ] || continue
             node --check "$f"
           done
+      - name: Scan tracked files for private credentials
+        run: python3 .github/scripts/secret-scan.py
       - name: Check required app files and cache version
         run: |
           test -s index.html
