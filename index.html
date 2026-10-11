@@ -1,0 +1,87 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#7c4dff"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Little Learners"><title>Little Learners</title>
+<style>
+:root{--bg:#fff8e7;--card:#fff;--ink:#2d2a4a;--sh:rgba(0,0,0,.14);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1c1b2e;--card:#2b2a45;--ink:#f4f1ff;--sh:rgba(0,0,0,.45)}}
+:root[data-theme="dark"]{--bg:#1c1b2e;--card:#2b2a45;--ink:#f4f1ff;--sh:rgba(0,0,0,.45)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Comic Sans MS','Segoe UI','Noto Sans Devanagari',system-ui,sans-serif}
+button{font:inherit;color:inherit;cursor:pointer;border:0}
+header{flex-wrap:wrap;gap:6px;display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:0 auto;padding:10px 12px}
+.pill{background:var(--card);border-radius:99px;padding:6px 16px;box-shadow:0 3px 0 var(--sh);font-size:22px}
+#app{--a:#7c4dff;max-width:1000px;margin:0 auto;padding:8px 12px 40px}
+h1{font-size:clamp(26px,5vw,44px);text-align:center;margin:8px 0 18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
+.tile{background:var(--a);color:#fff;border-radius:22px;padding:16px 6px;font-size:22px;font-weight:700;box-shadow:0 6px 0 var(--sh);display:flex;flex-direction:column;align-items:center;gap:2px}
+.tile span{font-size:52px}.tile small{font-size:16px;opacity:.92}
+.card{background:var(--card);border:3px solid var(--a);border-radius:20px;padding:10px 6px;box-shadow:0 5px 0 var(--sh);display:flex;flex-direction:column;align-items:center;gap:2px}
+.tile:hover,.card:hover{transform:translateY(-3px)}
+.card .e{font-size:54px;line-height:1.15;word-break:break-all}.card .b{font-size:42px;font-weight:800;color:var(--a)}.card .l{font-size:18px;font-weight:600}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.bar h2{margin:0;font-size:26px}
+.btn{background:var(--a);color:#fff;border-radius:99px;padding:10px 22px;font-size:20px;font-weight:700;box-shadow:0 4px 0 var(--sh)}
+.btn.o{background:var(--card);color:var(--ink)}
+.q{text-align:center}.big{font-size:clamp(48px,12vw,96px);font-weight:800;color:var(--a)}
+.opts{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin:16px 0}
+.opt{background:var(--card);border-radius:24px;width:min(200px,28vw);min-width:96px;aspect-ratio:1;font-size:clamp(40px,9vw,80px);box-shadow:0 6px 0 var(--sh);border:4px solid transparent;word-break:break-all;line-height:1.1}
+.opt.bad{animation:sh .4s;border-color:#e53935}.opt.good{border-color:#43a047}
+@keyframes sh{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+#fb{min-height:40px;font-size:26px;font-weight:700}
+.st{font-size:48px;background:var(--card);border-radius:18px;padding:10px;text-align:center}
+p{text-align:center;font-size:18px}button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}body{-webkit-user-select:none;user-select:none}@media(max-width:600px){.grid{grid-template-columns:repeat(2,1fr)}.card .e{font-size:44px}.bar h2{font-size:22px}}@media(pointer:coarse){.kb{display:none}}
+</style></head><body>
+<header><button class="pill" onclick="home()">🏠</button><span class="pill" id="stars"></span><span><button class="pill" id="kid" onclick="parent()"></button> <button class="pill" onclick="stickers()">🎁</button> <button class="pill" onclick="parent()">⚙️</button></span></header>
+<div id="app"></div>
+<script>
+const $=s=>document.querySelector(s),app=$('#app');
+let st={kids:{me:{name:'Me',stars:0}},kid:'me',lang:'both',sound:1},cur=0,q={};
+try{Object.assign(st,JSON.parse(localStorage.getItem('kl')||'{}'))}catch(e){}
+const save=()=>{try{localStorage.setItem('kl',JSON.stringify({...st,user:undefined}))}catch(e){}try{window.fb&&fb.push()}catch(e){}};
+const K=()=>st.kids[st.kid]||(st.kid='me',st.kids.me=st.kids.me||{name:'Me',stars:0});
+const P=s=>s.split(';').map(x=>{const[e,en,hi]=x.split('|');return{e,en,hi:hi||''}});
+const AL=P("🍎|Apple;⚽|Ball;🐱|Cat;🐶|Dog;🐘|Elephant;🐟|Fish;🍇|Grapes;🐴|Horse;🍦|Ice cream;🧃|Juice;🪁|Kite;🦁|Lion;🌙|Moon;🪺|Nest;🍊|Orange;🦜|Parrot;👑|Queen;🐰|Rabbit;☀️|Sun;🐯|Tiger;☂️|Umbrella;🚐|Van;⌚|Watch;🎹|Xylophone;🪀|Yo-yo;🦓|Zebra").map((x,i)=>{const L=String.fromCharCode(65+i);return{e:x.e,big:L,en:L+' for '+x.en,hi:''}});
+const VN=("अ|अनार|🍎;आ|आम|🥭;इ|इमली|🌰;ई|ईख|🎋;उ|उल्लू|🦉;ऊ|ऊँट|🐪;ए|एक|1️⃣;ऐ|ऐनक|👓;ओ|ओस|💧;औ|औरत|👩;अं|अंगूर|🍇;क|कमल|🪷;ख|खरगोश|🐰;ग|गमला|🪴;घ|घर|🏠;च|चम्मच|🥄;छ|छतरी|☂️;ज|जहाज|🚢;झ|झंडा|🚩;ट|टमाटर|🍅;ड|डमरू|🥁;त|तरबूज|🍉;थ|थाली|🍽️;द|दरवाज़ा|🚪;न|नल|🚰;प|पतंग|🪁;फ|फल|🍏;ब|बतख|🦆;भ|भालू|🐻;म|मछली|🐟;र|रथ|🛺;ल|लट्टू|🪀;श|शेर|🦁;स|सेब|🍎;ह|हाथी|🐘").split(';').map(x=>{const[l,w,e]=x.split('|');return{e,big:l,en:'',hi:l+' से '+w}});
+const EW="One,Two,Three,Four,Five,Six,Seven,Eight,Nine,Ten,Eleven,Twelve,Thirteen,Fourteen,Fifteen,Sixteen,Seventeen,Eighteen,Nineteen,Twenty".split(','),HW="एक,दो,तीन,चार,पाँच,छह,सात,आठ,नौ,दस,ग्यारह,बारह,तेरह,चौदह,पंद्रह,सोलह,सत्रह,अठारह,उन्नीस,बीस".split(',');
+const NU=EW.map((w,i)=>({e:'⭐'.repeat(i+1),big:(i+1)+' '+String(i+1).replace(/\d/g,d=>'०१२३४५६७८९'[d]),en:w,hi:HW[i]}));
+const S=[
+{n:'Alphabets',h:'ABC',i:'🔤',c:'#f4511e',it:AL},
+{n:'Varnamala',h:'वर्णमाला',i:'अ',c:'#8e24aa',it:VN},
+{n:'Numbers',h:'गिनती',i:'🔢',c:'#1e88e5',it:NU},
+{n:'Fruits',h:'फल',i:'🍎',c:'#e53935',it:P("🍎|Apple|सेब;🍌|Banana|केला;🥭|Mango|आम;🍊|Orange|संतरा;🍇|Grapes|अंगूर;🍉|Watermelon|तरबूज;🍓|Strawberry|स्ट्रॉबेरी;🍍|Pineapple|अनानास;🍐|Pear|नाशपाती;🥥|Coconut|नारियल;🍋|Lemon|नींबू;🍒|Cherry|चेरी")},
+{n:'Vegetables',h:'सब्ज़ियाँ',i:'🥕',c:'#43a047',it:P("🥕|Carrot|गाजर;🥔|Potato|आलू;🍅|Tomato|टमाटर;🧅|Onion|प्याज़;🌽|Corn|मक्का;🍆|Brinjal|बैंगन;🥒|Cucumber|खीरा;🥦|Broccoli|ब्रोकली;🧄|Garlic|लहसुन;🌶️|Chilli|मिर्च;🫛|Peas|मटर;🍄|Mushroom|मशरूम")},
+{n:'Animals',h:'जानवर',i:'🐘',c:'#ef6c00',it:P("🐶|Dog|कुत्ता;🐱|Cat|बिल्ली;🐄|Cow|गाय;🐴|Horse|घोड़ा;🐘|Elephant|हाथी;🦁|Lion|शेर;🐯|Tiger|बाघ;🐒|Monkey|बंदर;🐰|Rabbit|खरगोश;🐐|Goat|बकरी;🐪|Camel|ऊँट;🦒|Giraffe|जिराफ़")},
+{n:'Birds',h:'पक्षी',i:'🦜',c:'#00838f',it:P("🦜|Parrot|तोता;🦚|Peacock|मोर;🐦‍⬛|Crow|कौआ;🐦|Sparrow|चिड़िया;🦉|Owl|उल्लू;🦆|Duck|बतख;🐔|Hen|मुर्गी;🦅|Eagle|गरुड़;🦢|Swan|हंस;🕊️|Pigeon|कबूतर")},
+{n:'Body Parts',h:'शरीर के अंग',i:'🖐️',c:'#d81b60',it:P("👀|Eyes|आँखें;👃|Nose|नाक;👂|Ears|कान;👄|Mouth|मुँह;👅|Tongue|जीभ;🦷|Teeth|दाँत;✋|Hand|हाथ;🦶|Foot|पैर;💪|Arm|बाँह;🦵|Leg|टाँग;🧠|Brain|दिमाग;❤️|Heart|दिल")},
+{n:'Manners',h:'अच्छी आदतें',i:'🙏',c:'#5e35b1',it:P("🙏|Please|कृपया;😊|Thank you|धन्यवाद;🙇|Sorry|माफ़ कीजिए;🌅|Good morning|सुप्रभात;👴|Respect elders|बड़ों का आदर करें;🤝|Share with friends|दोस्तों के साथ बाँटें;🧼|Wash your hands|हाथ धोएँ;⏳|Wait for your turn|अपनी बारी का इंतज़ार करें;🧸|Put toys back|खिलौने वापस रखें;🤫|Speak softly|धीरे बोलें")}];
+const SK='🦄🐯🚀🌈🦋🐬🎈🏆🍭🐼🦖🌟🎨🐳🦜🚒🧸🎠🍦👑'.match(/./gu);
+function sp(t,l){try{if(!st.sound||!t)return;const u=new SpeechSynthesisUtterance(t);u.lang=l;u.rate=.8;u.pitch=1.2;speechSynthesis.speak(u)}catch(e){}}
+function say(it){try{speechSynthesis.cancel()}catch(e){}const L=st.lang;let n=0;if(L!='hi'&&it.en){sp(it.en,'en-IN');n++}if(L!='en'&&it.hi){sp(it.hi,'hi-IN');n++}if(!n)sp(it.en||it.hi,it.en?'en-IN':'hi-IN')}
+function lbl(it){const a=[];if(st.lang!='hi'&&it.en)a.push(it.en);if(st.lang!='en'&&it.hi)a.push(it.hi);return a.length?a.join(' · '):(it.en||it.hi)}
+const es=e=>e.length>8?'font-size:20px':'';
+const hdr=()=>{$('#stars').textContent='⭐ '+K().stars;$('#kid').textContent='👤 '+K().name};
+function home(){app.innerHTML=`<h1>Let's learn &amp; play! 🎈</h1><div class="grid">${S.map((s,i)=>`<button class="tile" style="--a:${s.c}" onclick="openS(${i})"><span>${s.i}</span>${s.n}<small>${s.h}</small></button>`).join('')}</div>`;app.style.setProperty('--a','#7c4dff')}
+function openS(i){cur=i;const s=S[i];app.style.setProperty('--a',s.c);app.innerHTML=`<div class="bar"><button class="btn o" onclick="home()">⬅ Home</button><h2>${s.i} ${s.n} ${s.h}</h2><button class="btn" onclick="play()">⭐ Play</button></div><div class="grid">${s.it.map((x,j)=>`<button class="card" onclick="say(S[cur].it[${j}])"><span class="e" style="${es(x.e)}">${x.e}</span>${x.big?`<span class="b">${x.big}</span>`:''}<span class="l">${lbl(x)}</span></button>`).join('')}</div>${cur==0?'<p class="kb">Tip: press any letter key on the keyboard! ⌨️</p>':''}`}
+function play(){q={n:0,ok:0};next()}
+function next(){const s=S[cur],sh=a=>a.sort(()=>Math.random()-.5),t=s.it[Math.random()*s.it.length|0],o=sh([t,...sh(s.it.filter(x=>x.e!=t.e)).slice(0,2)]);q.t=t;q.o=o;q.lock=0;app.innerHTML=`<div class="bar"><button class="btn o" onclick="openS(cur)">⬅ Back</button><h2>Round ${q.n+1}/5</h2></div><div class="q"><div class="big">${t.big||lbl(t)}</div><button class="btn" onclick="say(q.t)">🔊 Hear</button><div class="opts">${o.map((x,j)=>`<button class="opt" style="${es(x.e)}" onclick="ans(${j},this)">${x.e}</button>`).join('')}</div><div id="fb"></div></div>`;say(t)}
+function ans(j,b){if(q.lock)return;if(q.o[j]===q.t){q.lock=1;b.classList.add('good');K().stars++;q.ok++;save();hdr();const ns=K().stars%5==0;$('#fb').textContent=ns?'🎉 New sticker!':'🌟 Great job!';sp(ns?'Wow! New sticker!':'Great job!','en-IN');q.n++;setTimeout(q.n>=5?done:next,1200)}else{b.classList.add('bad');sp('Try again','en-IN');setTimeout(()=>b.classList.remove('bad'),500)}}
+function done(){app.innerHTML=`<div class="q"><div class="big">🏆</div><h1>You earned 5 stars!</h1><button class="btn" onclick="play()">Play again</button> <button class="btn o" onclick="openS(cur)">Back</button></div>`}
+function stickers(){const n=K().stars/5|0;app.innerHTML=`<div class="bar"><button class="btn o" onclick="home()">⬅ Home</button><h2>🎁 My Stickers (${Math.min(n,20)}/20)</h2></div><div class="grid">${SK.map((s,i)=>`<div class="st">${i<n?s:'❓'}</div>`).join('')}</div><p>Earn 1 sticker for every 5 stars!</p>`}
+function parent(){const b=(k,v,t)=>`<button class="btn ${st[k]===v?'':'o'}" onclick="st.${k}=${typeof v=='string'?"'"+v+"'":v};save();parent()">${t}</button>`;app.innerHTML=`<div class="bar"><button class="btn o" onclick="home()">⬅ Home</button><h2>⚙️ Parent corner</h2></div>${kidsUI()}<p>Language</p><div class="opts" style="margin:6px">${b('lang','en','English')}${b('lang','hi','हिन्दी')}${b('lang','both','Both')}</div><p>Voice</p><div class="opts" style="margin:6px">${b('sound',1,'🔊 On')}${b('sound',0,'🔇 Off')}</div><p>Hindi speech needs a Hindi voice installed in your browser or computer.</p><p><button class="btn o" onclick="rst(this)">Reset progress</button></p>`}
+function rst(b){if(b.dataset.c){K().stars=0;save();hdr();home()}else{b.dataset.c=1;b.textContent='Tap again to confirm'}}
+addEventListener('keydown',e=>{if(e.key=='Escape')home();else if(cur==0&&/^[a-z]$/i.test(e.key)&&app.querySelector('.card'))say(AL[e.key.toUpperCase().charCodeAt(0)-65])});
+function kidsUI(){const a=window.fb&&fb.ok?(st.user?`<p>Signed in: ${st.user}</p><p><button class="btn o" onclick="fb.out()">Sign out</button></p>`:`<p><button class="btn o" onclick="fb.in()">Sign in with Google to save progress online</button></p>`):`<p>Guest mode: progress is saved on this device.</p>`;return `<p>Who is playing?</p><div class="opts" style="margin:6px">${Object.keys(st.kids).map(k=>`<button class="btn ${k==st.kid?'':'o'}" onclick="st.kid='${k}';save();hdr();parent()">${st.kids[k].name}</button>`).join('')}<button class="btn o" onclick="addKid()">➕ Add kid</button></div>${a}`}
+function addKid(){const n=(prompt("Kid's name?")||'').replace(/[<>&\"']/g,'').trim().slice(0,12);if(!n)return;const id='k'+Date.now();st.kids[id]={name:n,stars:0};st.kid=id;save();hdr();parent()}
+window.kl={st:()=>st,save,refresh:()=>{hdr();if(app.textContent.includes('Parent corner'))parent()}};
+if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+hdr();home();
+</script>
+<script type="module">
+try{const{firebaseConfig:c}=await import('./firebase-config.js');
+if(c.apiKey&&!c.apiKey.startsWith('YOUR')){
+const B='https://www.gstatic.com/firebasejs/10.12.2/',[{initializeApp},A,F]=await Promise.all([import(B+'firebase-app.js'),import(B+'firebase-auth.js'),import(B+'firebase-firestore.js')]);
+const ap=initializeApp(c),au=A.getAuth(ap),db=F.getFirestore(ap),pr=new A.GoogleAuthProvider(),mob=/iPhone|iPad|Android/i.test(navigator.userAgent)||matchMedia('(display-mode: standalone)').matches;
+window.fb={ok:1,in:()=>mob?A.signInWithRedirect(au,pr):A.signInWithPopup(au,pr),out:()=>A.signOut(au),
+push:()=>{const u=au.currentUser;if(u)F.setDoc(F.doc(db,'users',u.uid),{kids:kl.st().kids,updated:Date.now()},{merge:true}).catch(()=>{})}};
+A.onAuthStateChanged(au,async u=>{const st=kl.st();st.user=u?(u.displayName||u.email):null;
+if(u){try{const d=await F.getDoc(F.doc(db,'users',u.uid)),r=d.exists()?d.data().kids||{}:{};for(const k in r)if(!st.kids[k]||(r[k].stars||0)>st.kids[k].stars)st.kids[k]=r[k];kl.save()}catch(e){}}
+kl.refresh()})}}catch(e){console.warn('Guest mode',e)}
+</script></body></html>
