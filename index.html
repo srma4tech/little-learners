@@ -47,7 +47,7 @@ p{text-align:center;font-size:18px}body.ob header{display:none}.ib{display:flex;
 
 
 </style></head><body>
-<header><button class="pill" onclick="home()">🏠</button><span class="build-tag" aria-label="Application build 17">BUILD 17</span><span class="pill" id="stars"></span><span><button class="pill" id="inst" style="display:none" onclick="doInstall()">📲 Install</button> <button class="pill" id="kid" onclick="gate()"></button> <button class="pill" onclick="stickers()">🎁</button> <button class="pill" onclick="gate()">⚙️</button></span></header>
+<header><button class="pill" onclick="home()">🏠</button><span class="build-tag" aria-label="Application build 18">BUILD 18</span><span class="pill" id="stars"></span><span><button class="pill" id="inst" style="display:none" onclick="doInstall()">📲 Install</button> <button class="pill" id="kid" onclick="gate()"></button> <button class="pill" onclick="stickers()">🎁</button> <button class="pill" onclick="gate()">⚙️</button></span></header>
 <div id="app"></div>
 <script>
 // In-app diagnostics: retained for this tab (including same-tab Google redirects).
@@ -270,42 +270,29 @@ try {
       ok: true,
       signIn: async () => {
         kl.st().err = '';
-        // Mobile browsers use a full-page redirect to avoid long-lived popup
-        // promises in the current page. Desktop keeps the existing popup-first
-        // behavior, with redirect fallback for popup-blocked/unsupported cases.
-        const mobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
-          (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-        if (mobile) {
-          window.authRuntimeSnapshot('before-signInWithRedirect-mobile');
-          window.authStep('S7 — Mobile redirect sign-in selected', 'Using signInWithRedirect on a mobile browser; the page will navigate to Google and return here.');
-          try {
-            await authSdk.signInWithRedirect(auth, provider);
-            window.authStep('S8 — Mobile redirect request resolved', 'Redirect request resolved; browser navigation should follow.');
-          } catch (error) {
-            window.authStep('S7 FAILED — Mobile redirect sign-in rejected', window.authErrorDetails(error));
-            throw error;
-          }
-          return;
-        }
-        window.authRuntimeSnapshot('before-signInWithPopup-desktop');
-        window.authStep('S7 — Desktop popup sign-in selected', 'Calling signInWithPopup directly from the sign-in button click.');
+        // Match the diagnostic flow observed to succeed: start popup sign-in
+        // directly from the user's click on every device. The mobile redirect
+        // remained pending without navigating in the supplied Android report,
+        // so redirect is only a fallback when popup is explicitly unavailable.
+        window.authRuntimeSnapshot('before-signInWithPopup');
+        window.authStep('S7 — Popup sign-in selected', 'Calling signInWithPopup directly from the sign-in button click on this device.');
         try {
           const result = await authSdk.signInWithPopup(auth, provider);
-          window.authStep('S8 — Desktop signInWithPopup succeeded', 'Firebase returned a Google sign-in result.');
+          window.authStep('S8 — signInWithPopup succeeded', 'Firebase returned a Google sign-in result.');
           return result;
         } catch (error) {
           if (['auth/popup-blocked', 'auth/operation-not-supported-in-this-environment'].includes(error?.code)) {
-            window.authStep('S7b — Desktop popup unavailable; falling back to redirect', 'Popup failure code: ' + error.code);
+            window.authStep('S7b — Popup unavailable; falling back to redirect', 'Popup failure code: ' + error.code);
             try {
               const result = await authSdk.signInWithRedirect(auth, provider);
-              window.authStep('S8b — Desktop signInWithRedirect resolved', 'Redirect request resolved; browser navigation should follow.');
+              window.authStep('S8b — signInWithRedirect resolved', 'Redirect request resolved; browser navigation should follow.');
               return result;
             } catch (redirectError) {
-              window.authStep('S7 FAILED — Desktop popup and redirect failed', window.authErrorDetails(redirectError));
+              window.authStep('S7 FAILED — Popup and redirect failed', window.authErrorDetails(redirectError));
               throw redirectError;
             }
           }
-          window.authStep('S7 FAILED — Desktop signInWithPopup rejected', window.authErrorDetails(error));
+          window.authStep('S7 FAILED — Popup sign-in rejected', window.authErrorDetails(error));
           throw error;
         }
       },
