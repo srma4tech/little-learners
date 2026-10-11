@@ -96,18 +96,103 @@ if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWor
 hdr();st.ob?home():onb();
 </script>
 <script type="module">
-try{const{firebaseConfig:c}=await import('./firebase-config.js');
-if(c.apiKey&&!c.apiKey.startsWith('YOUR')){
-const B='https://www.gstatic.com/firebasejs/10.12.2/',[{initializeApp},A,F]=await Promise.all([import(B+'firebase-app.js'),import(B+'firebase-auth.js'),import(B+'firebase-firestore.js')]);
-const ap=initializeApp(c),au=A.initializeAuth(ap,{persistence:[A.indexedDBLocalPersistence,A.browserLocalPersistence],popupRedirectResolver:A.browserPopupRedirectResolver}),db=F.getFirestore(ap),pr=new A.GoogleAuthProvider(),mob=/iPhone|iPad|Android/i.test(navigator.userAgent)||matchMedia('(display-mode: standalone)').matches;
-window.fb={ok:1,signIn:()=>{kl.st().err='';if(mob)return A.signInWithRedirect(au,pr);return A.signInWithPopup(au,pr).catch(e=>{const c=e&&e.code;if(c=='auth/popup-blocked'||c=='auth/operation-not-supported-in-this-environment')return A.signInWithRedirect(au,pr);throw e})},signOut:()=>A.signOut(au),
-push:()=>{const u=au.currentUser,st=kl.st();if(!u||!st.ob)return;return F.setDoc(F.doc(db,'users',u.uid),{kids:st.kids,settings:{lang:st.lang,sound:st.sound},updated:Date.now()},{merge:true}).catch(e=>{window.lastErr=(e&&e.code)||((e&&e.message)||String(e));st.err='Could not save progress to the cloud. '+window.lastErr;kl.refresh()})}};
-fb.gis=false; // Use Firebase Auth popup/redirect; bypass GIS button callback on affected mobile browsers.
-fb.renderGoogle=el=>{const go=()=>{google.accounts.id.initialize({client_id:c.googleClientId,callback:async r=>{try{const result=await A.signInWithCredential(au,A.GoogleAuthProvider.credential(r.credential));const st=kl.st();st.user=result.user.displayName||result.user.email;st.err='';window.msg='';if(!st.ob){st.step=2;kl.save();kl.refresh()}else kl.refresh()}catch(e){kl.err(e)}}});google.accounts.id.renderButton(el,{theme:'outline',size:'large',shape:'pill',text:'signin_with',width:260})};if(window.google&&google.accounts)go();else{const t=document.createElement('script');t.src='https://accounts.google.com/gsi/client';t.onload=go;t.onerror=()=>kl.err({message:'Could not load Google sign-in (blocked by browser or network)'});document.head.appendChild(t)}};
-const pb=u=>fetch(u,{mode:'no-cors',cache:'no-store'}).then(()=>1,()=>0);
-Promise.all([pb('https://apis.google.com/js/api.js'),pb('https://'+c.authDomain+'/__/auth/iframe'),pb('https://accounts.google.com/gsi/client')]).then(r=>{window.net='Net: google-api '+(r[0]?'✓':'✗')+' auth-domain '+(r[1]?'✓':'✗')+' gsi '+(r[2]?'✓':'✗');kl.refresh()});
-A.getRedirectResult(au).catch(kl.err);
-A.onAuthStateChanged(au,async u=>{const st=kl.st();st.user=u?(u.displayName||u.email):null;let has=0;window.cloudStatus=u?'signed in; checking profile':'signed out';
-if(u){try{const ref=F.doc(db,'users',u.uid),d=await F.getDoc(ref),D=d.exists()?d.data():{},r=D.kids||{};if(!d.exists()){window.cloudStatus='creating profile';await F.setDoc(ref,{kids:st.ob?st.kids:{},settings:{lang:st.lang,sound:st.sound},email:u.email||null,displayName:u.displayName||null,createdAt:Date.now(),updated:Date.now()},{merge:true});has=st.ob?Object.keys(st.kids).length:0;window.cloudStatus='profile created'}else{has=Object.keys(r).length;for(const k in r)if(!st.kids[k]||(r[k].stars||0)>st.kids[k].stars)st.kids[k]=r[k];if(has&&D.settings&&!st.ob){st.lang=D.settings.lang||st.lang;if(D.settings.sound!=null)st.sound=D.settings.sound}window.cloudStatus='profile loaded ('+has+' child profiles)'}kl.save()}catch(e){window.lastErr=(e&&e.code)||((e&&e.message)||String(e));window.cloudStatus='profile failed';st.err='Could not load or initialize your cloud profile. '+window.lastErr}kl.authed(has)}
-kl.refresh()});window.fbStatus='Firebase: ready';kl.refresh()}else{window.fbStatus='Firebase: config not filled in (guest mode)';kl.refresh()}}catch(e){window.fbStatus='Firebase: failed to load - '+(e&&e.message||e);console.warn('Guest mode',e);window.kl&&kl.refresh()}
+try {
+  const [{ firebaseConfig: config }, appSdk, authSdk, dbSdk] = await Promise.all([
+    import('./firebase-config.js'),
+    import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js'),
+    import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js'),
+    import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js')
+  ]);
+  if (!config?.apiKey || config.apiKey.startsWith('YOUR')) {
+    window.fbStatus = 'Firebase: config not filled in (guest mode)';
+    kl.refresh();
+  } else {
+    const appInstance = appSdk.initializeApp(config);
+    const auth = authSdk.getAuth(appInstance);
+    const db = dbSdk.getFirestore(appInstance);
+    const provider = new authSdk.GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: 'select_account' });
+    const mobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+      matchMedia('(display-mode: standalone)').matches;
+    let cloudWrite = Promise.resolve();
+    const profileRef = uid => dbSdk.doc(db, 'users', uid);
+    const localSnapshot = () => {
+      const state = kl.st();
+      return { kids: state.kids, settings: { lang: state.lang, sound: state.sound }, updatedAt: Date.now() };
+    };
+    const writeProfile = (user, data) => {
+      cloudWrite = cloudWrite.then(() => dbSdk.setDoc(profileRef(user.uid), data, { merge: true }));
+      return cloudWrite;
+    };
+    window.fb = {
+      ok: true,
+      signIn: async () => {
+        kl.st().err = '';
+        if (mobile) return authSdk.signInWithRedirect(auth, provider);
+        try { return await authSdk.signInWithPopup(auth, provider); }
+        catch (error) {
+          if (['auth/popup-blocked', 'auth/operation-not-supported-in-this-environment'].includes(error?.code))
+            return authSdk.signInWithRedirect(auth, provider);
+          throw error;
+        }
+      },
+      signOut: () => authSdk.signOut(auth),
+      push: async () => {
+        const user = auth.currentUser, state = kl.st();
+        if (!user || !state.ob) return;
+        try {
+          await writeProfile(user, { ...localSnapshot(), email: user.email || null, displayName: user.displayName || null });
+          window.cloudStatus = 'saved'; state.err = '';
+        } catch (error) {
+          window.lastErr = error?.code || error?.message || String(error);
+          window.cloudStatus = 'save failed';
+          state.err = 'Could not save progress online. ' + window.lastErr;
+          kl.refresh(); throw error;
+        }
+      }
+    };
+    authSdk.getRedirectResult(auth).catch(error => { window.lastErr = error?.code || error?.message || String(error); kl.err(error); });
+    authSdk.onAuthStateChanged(auth, async user => {
+      const state = kl.st();
+      state.user = user ? (user.displayName || user.email || 'Google user') : null;
+      if (!user) { window.cloudStatus = 'signed out'; window.fbStatus = 'Firebase: ready'; kl.refresh(); return; }
+      window.cloudStatus = 'loading profile'; window.fbStatus = 'Firebase: ready'; kl.refresh();
+      try {
+        const ref = profileRef(user.uid), snapshot = await dbSdk.getDoc(ref);
+        const cloud = snapshot.exists() ? snapshot.data() : {};
+        const cloudKids = cloud.kids && typeof cloud.kids === 'object' ? cloud.kids : {};
+        if (snapshot.exists()) {
+          for (const [id, child] of Object.entries(cloudKids)) {
+            const local = state.kids[id];
+            if (!local || (Number(child?.stars) || 0) > (Number(local.stars) || 0)) state.kids[id] = child;
+          }
+          if (cloud.settings && !state.ob) {
+            if (['en', 'hi', 'both'].includes(cloud.settings.lang)) state.lang = cloud.settings.lang;
+            if (typeof cloud.settings.sound === 'number') state.sound = cloud.settings.sound;
+          }
+          window.cloudStatus = 'profile loaded';
+        } else {
+          await dbSdk.setDoc(ref, {
+            kids: state.ob ? state.kids : {}, settings: { lang: state.lang, sound: state.sound },
+            email: user.email || null, displayName: user.displayName || null,
+            createdAt: Date.now(), updatedAt: Date.now()
+          });
+          window.cloudStatus = 'profile created';
+        }
+        kl.save(); kl.authed(Object.keys(cloudKids).length);
+      } catch (error) {
+        window.lastErr = error?.code || error?.message || String(error);
+        window.cloudStatus = 'profile failed';
+        state.err = 'Google sign-in succeeded, but cloud profile access failed. ' + window.lastErr;
+        kl.refresh();
+      }
+    });
+    window.fbStatus = 'Firebase: ready'; kl.refresh();
+  }
+} catch (error) {
+  window.fbStatus = 'Firebase: failed to load';
+  window.lastErr = error?.code || error?.message || String(error);
+  console.error('Firebase initialization failed:', error);
+  window.kl?.refresh();
+}
 </script></body></html>
