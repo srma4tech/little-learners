@@ -190,7 +190,18 @@ function gbtn(){const e=document.getElementById('gbtn');if(e&&window.fb&&fb.rend
 addEventListener('error',e=>{const m=e.message||'Unknown JavaScript error',where=e.filename?(' @ '+e.filename+':'+(e.lineno||0)+':'+(e.colno||0)):'';const stack=e.error&&e.error.stack?String(e.error.stack):'';if(m!=='Script error.'&&m!=='Script error')window.lastErr=(m+where+(stack?'\\n'+stack:'' )).slice(0,3000);else if(e.filename)window.lastErr=('Cross-origin script error @ '+e.filename+':'+(e.lineno||0)+':'+(e.colno||0)+(stack?'\\n'+stack:'' )).slice(0,3000);if(window.kl)kl.refresh()});addEventListener('unhandledrejection',e=>{const r=e.reason;const detail=r&&typeof r==='object'?[r.code,r.message,r.stack].filter(Boolean).join('\\n'):String(r);window.lastErr=(detail||String(r)||'Unhandled promise rejection').slice(0,3000);if(window.kl)kl.refresh()});
 function signInClick(){if(authInFlight){window.authStep('S6 IGNORED — sign-in already pending','Ignored a repeated tap to avoid starting a competing popup request.');return}authInFlight=true;authSessionInProgress=true;st.err='';window.msg='⏳ Starting Google sign-in…';window.authStep('S6 — Sign-in button handler entered','The user click reached signInClick(). Sign-in is guarded by a 15-second timeout and a global getContext error signal.');kl.refresh();clearTimeout(wait);
 const done=()=>{clearTimeout(wait);authInFlight=false;authSessionInProgress=false;window.msg='';kl.refresh()};
-try{if(!window.fb||!fb.signIn)throw{code:'auth/not-ready',message:'Firebase is not ready yet'};window.authStep('S6a — Calling fb.signIn()','Firebase is ready; invoking popup sign-in with bounded failure handling.');signInWithTimeout(fb.signIn(),15000).then(result=>{window.authStep('S6b — fb.signIn() resolved','Sign-in call resolved.');done()},e=>{window.authStep('SIGN-IN FAILED — guarded auth operation ended',window.authErrorDetails(e));done();kl.err(e)})}catch(e){window.authStep('SIGN-IN FAILED — synchronous handler error',window.authErrorDetails(e));done();kl.err(e)}}
+try{
+if(!window.fb||!fb.signIn)throw{code:'auth/not-ready',message:'Firebase is not ready yet'};
+window.authStep('S6a — Calling fb.signIn()','Firebase is ready; invoking popup sign-in with bounded failure handling.');
+const authAttempt=fb.signIn();
+let timedOut=false,lateSettlementLogged=false;
+authAttempt.then(result=>{
+  if(timedOut&&!lateSettlementLogged){lateSettlementLogged=true;window.authStep('AUTH LATE — sign-in promise resolved after timeout','Firebase eventually resolved the original sign-in request. Auth-state listener remains responsible for updating signed-in state and loading the profile.');}
+},error=>{
+  if(timedOut&&!lateSettlementLogged){lateSettlementLogged=true;window.authStep('AUTH LATE — sign-in promise rejected after timeout',window.authErrorDetails(error));}
+});
+signInWithTimeout(authAttempt,15000).then(result=>{window.authStep('S6b — fb.signIn() resolved','Sign-in call resolved. Auth-state listener handles user state and profile hydration.');done()},e=>{timedOut=e?.code==='auth/timeout';window.authStep('SIGN-IN FAILED — guarded auth operation ended',window.authErrorDetails(e));done();kl.err(e)})
+}catch(e){window.authStep('SIGN-IN FAILED — synchronous handler error',window.authErrorDetails(e));done();kl.err(e)}}
 window.kl={authed(has){const ks=Object.keys(st.kids);if(!st.ob){if(has){if(st.kids.me&&!st.kids.me.stars&&st.kids.me.name=='Me'&&ks.length>1)delete st.kids.me;if(!st.kids[st.kid])st.kid=Object.keys(st.kids)[0];st.ob=1;st.step=3}else if(st.step<2)st.step=2}save();hdr();if(st.ob&&onbActive)home();else if(!st.ob&&onbActive)onb()},err(e){const c=e&&e.code||'';window.lastErr=c||(e&&e.message)||String(e);const m={'auth/operation-not-allowed':'Google sign-in is not enabled yet: Firebase > Authentication > Sign-in method > Google > Enable.','auth/unauthorized-domain':'Add srma4tech.github.io in Firebase > Authentication > Settings > Authorized domains.','auth/popup-blocked':'The browser blocked the sign-in popup. Allow popups for this site and try again.','auth/invalid-api-key':'The apiKey in firebase-config.js looks wrong.','auth/network-request-failed':'No internet connection.','auth/timeout':'Google sign-in did not complete within 15 seconds. The request may still be pending inside Firebase. Reload this page before retrying; if it repeats, open the site in a regular Chrome tab instead of the installed app.','auth/gapi-context-failure':'Google sign-in could not initialize its browser iframe (getContext error). Reload this page and try again; if it repeats, open the site in a regular Chrome tab instead of the installed app.','auth/iframe-failure':'Google sign-in hit a browser iframe initialization error. Reload this page before retrying.'};if(c=='auth/popup-closed-by-user'||c=='auth/cancelled-popup-request')return;st.err=m[c]||('Sign-in failed: '+(c||e&&e.message||e));kl.refresh()},st:()=>st,save,refresh:()=>{hdr();if(!st.ob&&onbActive)onb();else if(app.textContent.includes('Parent corner'))parent()}};
 if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').then(()=>navigator.serviceWorker.ready).then(()=>window.swS='active').catch(e=>window.swS='failed: '+e.message));
 hdr();st.ob?home():onb();
@@ -257,21 +268,21 @@ window.authRuntimeSnapshot = function (stage) {
 </script>
 <script type="module">
 try {
-  window.authStep('S1 — Firebase module loading started', 'Loading the local Firebase config and Firebase SDK modules one at a time. Press OK to continue to each checkpoint.');
-  window.authStep('S2 — Loading local Firebase config', 'Importing ./firebase-config.js. The config values will not be displayed.');
-  const { firebaseConfig: config } = await import('./firebase-config.js');
+  window.authStep('S1 — Firebase module loading started', 'Loading the local config and Firebase SDK modules concurrently, matching diagnostics.html.');
+  window.authStep('S2 — Starting parallel Firebase module imports', 'Importing local config plus Firebase App, Auth, and Firestore SDK modules with Promise.all.');
+  window.authRuntimeSnapshot('before-parallel-sdk-imports');
+  const [configModule, appSdk, authSdk, dbSdk] = await Promise.all([
+    import('./firebase-config.js'),
+    import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js'),
+    import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js'),
+    import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js')
+  ]);
+  const { firebaseConfig: config } = configModule;
   window.authStep('S2 PASSED — Local config module loaded', config?.apiKey && !config.apiKey.startsWith('YOUR') ? 'Config object and apiKey are present (value hidden).' : 'Config object/apiKey is missing or still a placeholder.');
-  window.authStep('S3 — Loading Firebase App SDK', 'Importing firebase-app.js version 10.12.2.');
-  const appSdk = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js');
   window.authStep('S3 PASSED — Firebase App SDK loaded', 'initializeApp is available: ' + (typeof appSdk.initializeApp));
-  window.authStep('S4 — Loading Firebase Auth SDK', 'Importing firebase-auth.js version 10.12.2. If the getContext error occurs here, we have isolated the failing stage.');
-  window.authRuntimeSnapshot('before-auth-sdk-import');
-  const authSdk = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js');
   window.authStep('S4 PASSED — Firebase Auth SDK loaded', 'getAuth: ' + typeof authSdk.getAuth + '; signInWithRedirect: ' + typeof authSdk.signInWithRedirect + '; getRedirectResult: ' + typeof authSdk.getRedirectResult);
-  window.authRuntimeSnapshot('after-auth-sdk-import');
-  window.authStep('S4b — Loading Firestore SDK', 'Importing firebase-firestore.js version 10.12.2.');
-  const dbSdk = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js');
   window.authStep('S4b PASSED — Firestore SDK loaded', 'getFirestore is available: ' + (typeof dbSdk.getFirestore));
+  window.authRuntimeSnapshot('after-parallel-sdk-imports');
   if (!config?.apiKey || config.apiKey.startsWith('YOUR')) {
     window.fbStatus = 'Firebase: config not filled in (guest mode)';
     kl.refresh();
