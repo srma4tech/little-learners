@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#7c4dff">
+<title>Little Learners — Diagnostics</title>
+<style>
+:root{color-scheme:light dark;--bg:#f7f5ff;--panel:#fff;--ink:#24213b;--muted:#625e78;--line:#ded9f2;--pass:#147a3d;--passbg:#e7f7ed;--fail:#b42318;--failbg:#fff0ef;--warn:#8a5700;--warnbg:#fff4d6;--accent:#7048e8;font-family:system-ui,-apple-system,Segoe UI,sans-serif}
+@media(prefers-color-scheme:dark){:root{--bg:#171526;--panel:#242139;--ink:#f5f2ff;--muted:#c2bdd8;--line:#45405e;--pass:#6ee7a0;--passbg:#183a29;--fail:#ffaaa4;--failbg:#472321;--warn:#ffd479;--warnbg:#453718;--accent:#b4a0ff}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);line-height:1.5}main{width:min(100% - 24px,1040px);margin:0 auto;padding:calc(18px + env(safe-area-inset-top)) 0 calc(28px + env(safe-area-inset-bottom))}.hero{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px;margin-bottom:14px}.eyebrow{font-size:.76rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}h1{font-size:clamp(1.45rem,4vw,2.15rem);line-height:1.15;margin:.35rem 0 .65rem}h2{font-size:1.05rem;margin:0 0 12px}.muted{color:var(--muted);font-size:.92rem}.summary{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.pill{padding:5px 10px;border-radius:999px;font-size:.8rem;font-weight:800;border:1px solid var(--line)}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.panel{min-width:0;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px}.check{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:start;padding:11px 0;border-top:1px solid var(--line)}.check:first-of-type{border-top:0}.name{font-weight:700;overflow-wrap:anywhere}.detail{color:var(--muted);font-size:.84rem;overflow-wrap:anywhere;white-space:pre-wrap;margin-top:3px}.status{align-self:start;border-radius:7px;padding:3px 7px;font-size:.73rem;font-weight:900;white-space:nowrap}.pass{background:var(--passbg);color:var(--pass)}.fail{background:var(--failbg);color:var(--fail)}.warn{background:var(--warnbg);color:var(--warn)}button{font:inherit;font-weight:750;border:0;border-radius:11px;padding:11px 14px;background:var(--accent);color:white;cursor:pointer;min-height:44px}button.secondary{background:transparent;color:var(--ink);border:1px solid var(--line)}button:disabled{opacity:.55;cursor:wait}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}.notice{border-left:4px solid var(--accent);padding:10px 12px;background:color-mix(in srgb,var(--accent) 8%,var(--panel));border-radius:7px;font-size:.9rem;margin-top:12px}.log{max-height:260px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;font:12px/1.5 ui-monospace,SFMono-Regular,monospace;background:var(--bg);padding:12px;border-radius:10px}.wide{margin-top:12px}.build{font-size:.75rem;border:1px solid var(--line);padding:3px 8px;border-radius:999px;display:inline-block}@media(max-width:620px){main{width:min(100% - 16px,1040px)}.grid{grid-template-columns:minmax(0,1fr)}.hero,.panel{padding:14px}.actions button{flex:1 1 100%}.check{grid-template-columns:minmax(0,1fr) auto}}@media(min-width:621px) and (max-width:900px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(min-width:901px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+</head>
+<body><main>
+<header class="hero">
+<div class="eyebrow">Little Learners · Troubleshooting</div>
+<h1>System diagnostics <span class="build">DIAGNOSTICS 1.0</span></h1>
+<p class="muted">Independent checks for this browser, Firebase setup, and Google sign-in. This page never displays Firebase configuration secrets. Run it on the same device/browser where sign-in gets stuck.</p>
+<div class="summary" id="summary"><span class="pill">Tests have not run</span></div>
+<div class="actions"><button id="run">Run safe checks</button><button id="google" disabled>Test Google sign-in</button><button class="secondary" id="copy">Copy report</button><button class="secondary" id="download">Export JSON</button></div>
+<div class="notice"><strong>Important:</strong> Google sign-in opens a real authentication popup only after you press its button. Do not tap it repeatedly. If it stays pending, this page records the timeout and runtime errors; it does not label a timeout as a confirmed Firebase failure.</div>
+</header>
+<div class="grid">
+<section class="panel"><h2>1 · Browser & responsive layout</h2><div id="browser"></div></section>
+<section class="panel"><h2>2 · Network & SDK loading</h2><div id="network"></div></section>
+<section class="panel"><h2>3 · Firebase initialization</h2><div id="firebase"></div></section>
+<section class="panel"><h2>4 · Auth state & Google sign-in</h2><div id="auth"></div></section>
+</div>
+<section class="panel wide"><h2>Live error timeline</h2><p class="muted">Errors and rejected promises are captured while this page is open. Details are kept locally in this tab until you copy or export them.</p><div id="timeline" class="log">Waiting for checks…</div><div class="actions"><button class="secondary" id="clear">Clear timeline</button></div></section>
+<section class="panel wide"><h2>How to use the result</h2><p class="muted">1. Open this page in the affected Chrome browser. 2. Press <strong>Run safe checks</strong>. 3. Press <strong>Test Google sign-in</strong> once. 4. If it hangs or turns red, export JSON and share that report. Do not share passwords, OAuth tokens, or browser screenshots containing private account details.</p><p class="muted">The page reports the current viewport and responsive breakpoint signals. A single phone cannot prove the UI on every physical device; open the same URL on other breakpoints/devices to compare.</p></section>
+</main>
+<script type="module">
+const $=id=>document.getElementById(id);
+const report={page:'Little Learners standalone diagnostics',version:'1.0',startedAt:new Date().toISOString(),userAgent:navigator.userAgent,checks:[],events:[]};
+let fb=null,auth=null,provider=null,authBusy=false;
+const safeError=e=>({name:e?.name||'Error',code:e?.code||null,message:String(e?.message||e||'Unknown error').replace(/(AIza[\w-]{20,}|[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}|eyJ[a-zA-Z0-9_.-]+)/g,'[REDACTED]')});
+function log(type,message,details){const item={time:new Date().toISOString(),type,message,...(details?{details}: {})};report.events.push(item);if(report.events.length>300)report.events.shift();renderLog();return item}
+function check(group,name,state,detail=''){const item={group,name,state,detail,time:new Date().toISOString()};const old=report.checks.findIndex(x=>x.group===group&&x.name===name);if(old>=0)report.checks[old]=item;else report.checks.push(item);renderCheck(group);renderSummary();log('CHECK',group+' / '+name+': '+state,detail);return item}
+function renderCheck(group){const ids={browser:'browser',network:'network',firebase:'firebase',auth:'auth'};const target=$(ids[group]);if(!target)return;target.innerHTML='';report.checks.filter(x=>x.group===group).forEach(x=>{const row=document.createElement('div');row.className='check';const left=document.createElement('div');const n=document.createElement('div');n.className='name';n.textContent=x.name;const d=document.createElement('div');d.className='detail';d.textContent=x.detail||'';left.append(n,d);const s=document.createElement('span');s.className='status '+(x.state==='PASS'?'pass':x.state==='FAIL'?'fail':'warn');s.textContent=x.state;row.append(left,s);target.append(row)})}
+function renderSummary(){const counts={PASS:0,FAIL:0,'NOT TESTED':0};report.checks.forEach(x=>counts[x.state]=(counts[x.state]||0)+1);$('summary').innerHTML='';Object.entries(counts).forEach(([k,v])=>{const s=document.createElement('span');s.className='pill '+(k==='PASS'?'pass':k==='FAIL'?'fail':'warn');s.textContent=k+': '+v;$('summary').append(s)})}
+function renderLog(){$('timeline').textContent=report.events.slice(-100).map(x=>'['+x.time+'] '+x.type+' — '+x.message+(x.details?'\n'+(typeof x.details==='string'?x.details:JSON.stringify(x.details)): '')).join('\n')}
+window.addEventListener('error',e=>log('WINDOW_ERROR',e.message||'Script error',{file:e.filename,line:e.lineno,column:e.colno,error:safeError(e.error)}));
+window.addEventListener('unhandledrejection',e=>log('UNHANDLED_REJECTION','Unhandled promise rejection',safeError(e.reason)));
+window.addEventListener('online',()=>log('NETWORK','Browser reports online'));window.addEventListener('offline',()=>log('NETWORK','Browser reports offline'));
+function browserChecks(){
+const width=innerWidth,height=innerHeight,bp=width<621?'mobile (≤620px)':width<901?'tablet (621–900px)':'desktop (≥901px)';
+check('browser','JavaScript runtime','PASS','JavaScript is executing.');
+check('browser','Secure context',isSecureContext?'PASS':'FAIL',location.protocol+'; secure contexts are required by several browser APIs.');
+check('browser','Online status',navigator.onLine?'PASS':'FAIL',navigator.onLine?'navigator.onLine=true':'Browser reports offline.');
+check('browser','Viewport',width>=320?'PASS':'WARN',width+' × '+height+' CSS px; current breakpoint: '+bp+'.');
+check('browser','Responsive CSS breakpoints','PASS','CSS media queries configured for ≤620px, 621–900px, and ≥901px. Current viewport is reported above.');
+check('browser','Popup capability','NOT TESTED','A real popup test runs only when you press Test Google sign-in.');
+check('browser','Service worker controller',!('serviceWorker'in navigator)?'WARN':navigator.serviceWorker.controller?'PASS':'WARN',!('serviceWorker'in navigator)?'Service workers unsupported.':navigator.serviceWorker.controller?'This page is controlled by a service worker.':'No service worker currently controls this page (expected on first load or a direct diagnostic page).');
+}
+async function testFetch(label,url){try{const res=await fetch(url,{cache:'no-store',mode:'cors'});check('network',label,res.ok?'PASS':'FAIL','HTTP '+res.status+' '+res.statusText);return res.ok}catch(e){check('network',label,'FAIL',safeError(e).message);return false}}
+async function runSafe(){
+$('run').disabled=true;$('google').disabled=true;report.checks=[];renderSummary();
+try{
+browserChecks();
+const configOk=await testFetch('Firebase config file','./firebase-config.js');
+const authSdkOk=await testFetch('Firebase Auth SDK CDN','https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js');
+const appSdkOk=await testFetch('Firebase App SDK CDN','https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js');
+const storeSdkOk=await testFetch('Firebase Firestore SDK CDN','https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js');
+check('network','Required network checks',configOk&&authSdkOk&&appSdkOk&&storeSdkOk?'PASS':'FAIL','Config and SDK endpoints must be reachable. Individual results are listed above.');
+try{
+const [{firebaseConfig},{initializeApp,getApps},{getAuth,onAuthStateChanged,getRedirectResult,GoogleAuthProvider,signInWithPopup},{getFirestore,doc,getDoc}] = await Promise.all([
+import('./firebase-config.js'),import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js'),import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js'),import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js')]);
+check('firebase','Firebase modules imported','PASS','App, Auth and Firestore module imports resolved.');
+if(!firebaseConfig||!firebaseConfig.apiKey||!firebaseConfig.projectId||!firebaseConfig.appId){check('firebase','Firebase web config','FAIL','Required config fields are missing; values are intentionally not displayed.');return}
+check('firebase','Firebase web config','PASS','Required fields exist; configuration values hidden.');
+fb=getApps().length?getApps()[0]:initializeApp(firebaseConfig);check('firebase','Firebase app initialization','PASS','Firebase app initialized; project identifiers hidden.');
+auth=getAuth(fb);provider=new GoogleAuthProvider();check('firebase','Firebase Auth initialization','PASS','getAuth() and GoogleAuthProvider constructed.');
+const db=getFirestore(fb);check('firebase','Firestore initialization','PASS','getFirestore() returned a database instance; no user data read yet.');
+window.__llDiag={auth,provider,db,signInWithPopup,getRedirectResult,onAuthStateChanged,doc,getDoc};
+check('auth','Google API globals','NOT TESTED','This checks globals only as evidence. Firebase popup flow does not require gapi.iframes.getContext to exist at initial module load.');
+const g=window.gapi;check('auth','gapi.iframes.getContext presence',typeof g?.iframes?.getContext==='function'?'PASS':'NOT TESTED',typeof g?.iframes?.getContext==='function'?'Google iframe API exposes getContext.':'Not present. This alone does not prove a fault because Firebase Auth can use its own popup/iframe flow.');
+check('auth','Auth-state listener','NOT TESTED','Waiting for Firebase auth-state callback.');
+let firstState=true;onAuthStateChanged(auth,user=>{const detail=user?'Signed in; UID intentionally hidden.':'No signed-in user in this browser session.';check('auth','Auth-state listener','PASS',detail);if(user){check('auth','Authenticated user session','PASS','Firebase supplied a user object; personal identifiers hidden.');check('auth','User-scoped Firestore read','NOT TESTED','Will test only after you start the explicit sign-in test.') }else{check('auth','Authenticated user session','NOT TESTED','No current user is normal before sign-in; this is not a failure.')}firstState=false},e=>check('auth','Auth-state listener','FAIL',safeError(e).code+' — '+safeError(e).message));
+try{const result=await Promise.race([getRedirectResult(auth),new Promise((_,rej)=>setTimeout(()=>rej(new Error('Redirect-result check exceeded 8 seconds')),8000))]);check('auth','Redirect result processing','PASS',result?.user?'A redirect sign-in returned a user.':'Completed; no redirect sign-in result was pending.')}catch(e){check('auth','Redirect result processing',String(e.message).includes('exceeded')?'NOT TESTED':'FAIL',safeError(e).code+' — '+safeError(e).message)}
+$('google').disabled=false;
+}catch(e){check('firebase','Firebase initialization','FAIL',safeError(e).code+' — '+safeError(e).message);log('FATAL','Safe checks could not finish',safeError(e))}
+}finally{$('run').disabled=false}
+}
+async function googleTest(){
+if(authBusy||!window.__llDiag){log('AUTH','Sign-in test ignored: another test is pending or initialization has not completed.');return}
+authBusy=true;$('google').disabled=true;const t0=Date.now();check('auth','Google popup sign-in','NOT TESTED','Attempt started by user gesture; waiting up to 12 seconds for Firebase to resolve.');log('AUTH','User initiated signInWithPopup',{viewport:innerWidth+'x'+innerHeight,standalone:matchMedia('(display-mode: standalone)').matches,hasGapi:!!window.gapi,hasGapiGetContext:typeof window.gapi?.iframes?.getContext==='function'});
+const {auth,provider,signInWithPopup,db,doc,getDoc}=window.__llDiag;
+try{
+const user=await Promise.race([signInWithPopup(auth,provider),new Promise((_,rej)=>setTimeout(()=>rej(Object.assign(new Error('Popup promise has not resolved after 12 seconds; the underlying Firebase request may still be pending.'),{code:'diagnostics/popup-timeout'})),12000))]);
+check('auth','Google popup sign-in','PASS','Firebase popup resolved in '+(Date.now()-t0)+' ms. UID and account details hidden.');
+try{const snap=await getDoc(doc(db,'users',user.user.uid));check('firebase','User-scoped Firestore read','PASS',snap.exists()?'Read of users/{uid} succeeded. Document contents not collected.':'Read succeeded; user document does not exist yet.')}catch(e){check('firebase','User-scoped Firestore read','FAIL',safeError(e).code+' — '+safeError(e).message)}
+}catch(e){const er=safeError(e);check('auth','Google popup sign-in',er.code==='diagnostics/popup-timeout'?'NOT TESTED':'FAIL',er.code+' — '+er.message);log('AUTH_ERROR','Google popup sign-in did not complete',er);if(er.code==='auth/cancelled-popup-request')log('HINT','Firebase reports a cancelled popup operation. Do not repeatedly start overlapping sign-in attempts.');}
+finally{authBusy=false;$('google').disabled=false}
+}
+function exportObject(){return {...report,finishedAt:new Date().toISOString(),runtime:{viewport:{width:innerWidth,height:innerHeight,devicePixelRatio},online:navigator.onLine,secureContext:isSecureContext,standalone:matchMedia('(display-mode: standalone)').matches,hasGapi:!!window.gapi,hasGapiIframes:!!window.gapi?.iframes,hasGapiGetContext:typeof window.gapi?.iframes?.getContext==='function'},secrets:'Firebase config values, tokens, user IDs, and document contents are not included.'}}
+$('run').addEventListener('click',runSafe);$('google').addEventListener('click',googleTest);
+$('copy').addEventListener('click',async()=>{const value=JSON.stringify(exportObject(),null,2);try{await navigator.clipboard.writeText(value);log('EXPORT','Diagnostic report copied to clipboard.')}catch(e){const w=window.open('','_blank');if(w){w.document.write('<pre></pre>');w.document.querySelector('pre').textContent=value}else log('EXPORT_ERROR','Clipboard unavailable; allow clipboard access or use Export JSON.',safeError(e))}});
+$('download').addEventListener('click',()=>{const blob=new Blob([JSON.stringify(exportObject(),null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='little-learners-diagnostics-'+new Date().toISOString().replace(/[:.]/g,'-')+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);log('EXPORT','Diagnostic JSON export created.')});
+$('clear').addEventListener('click',()=>{report.events=[];renderLog();log('INFO','Timeline cleared by user.')});
+log('READY','Standalone diagnostics page loaded.',{href:location.pathname,viewport:innerWidth+'x'+innerHeight});runSafe();
+</script>
+</body></html>
