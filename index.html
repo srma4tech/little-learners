@@ -28,16 +28,62 @@ h1{font-size:clamp(26px,5vw,44px);text-align:center;margin:8px 0 18px}
 #fb{min-height:40px;font-size:26px;font-weight:700}
 .st{font-size:48px;background:var(--card);border-radius:18px;padding:10px;text-align:center}
 p{text-align:center;font-size:18px}body.ob header{display:none}.ib{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;background:var(--card);border:3px dashed var(--a);border-radius:18px;padding:10px 14px;margin:0 0 14px;font-size:18px}button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}body{-webkit-user-select:none;user-select:none}@media(max-width:600px){.grid{grid-template-columns:repeat(2,1fr)}.card .e{font-size:44px}.bar h2{font-size:22px}}@media(pointer:coarse){.kb{display:none}}
+/* Development diagnostics console */
+#diagFab{position:fixed;right:12px;bottom:12px;z-index:9998;background:#25233b;color:#fff;border:2px solid #a78bfa;border-radius:999px;padding:10px 14px;font-size:14px;font-weight:700;box-shadow:0 4px 16px #0004;display:none}
+#diagPanel{position:fixed;inset:0;z-index:9999;background:rgba(10,10,20,.72);display:none;align-items:center;justify-content:center;padding:12px;box-sizing:border-box;user-select:text;-webkit-user-select:text}
+#diagPanel .dp-card{width:min(900px,100%);height:min(88dvh,760px);background:var(--card);color:var(--ink);border:2px solid #8b5cf6;border-radius:18px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 70px #0006}
+#diagPanel .dp-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:12px;border-bottom:1px solid #8885}
+#diagPanel .dp-title{font-weight:800;font-size:18px;flex:1}
+#diagPanel .dp-actions{display:flex;gap:6px;flex-wrap:wrap}
+#diagPanel .dp-actions button{border-radius:999px;padding:8px 12px;background:#6d4aff;color:#fff;font-size:13px}
+#diagPanel .dp-actions .dp-muted{background:var(--bg);color:var(--ink);border:1px solid #8888}
+#diagPanel .dp-summary{padding:8px 12px;font-size:12px;opacity:.8;border-bottom:1px solid #8885}
+#diagPanel #diagEvents{overflow:auto;flex:1;padding:8px;font:12px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere}
+#diagPanel .dp-event{padding:8px;border-bottom:1px solid #8883}
+#diagPanel .dp-error{color:#e53935}#diagPanel .dp-warn{color:#c88700}#diagPanel .dp-info{color:#4285f4}
+#diagPanel .dp-empty{padding:24px;text-align:center;opacity:.7}
+@media(max-width:600px){#diagFab{right:8px;bottom:8px;padding:9px 12px}#diagPanel{padding:5px}#diagPanel .dp-card{height:94dvh;border-radius:12px}#diagPanel .dp-head{padding:8px}#diagPanel .dp-title{font-size:16px}}
+
+
 </style></head><body>
 <header><button class="pill" onclick="home()">🏠</button><span class="pill" id="stars"></span><span><button class="pill" id="inst" style="display:none" onclick="doInstall()">📲 Install</button> <button class="pill" id="kid" onclick="gate()"></button> <button class="pill" onclick="stickers()">🎁</button> <button class="pill" onclick="gate()">⚙️</button></span></header>
 <div id="app"></div>
 <script>
+// In-app diagnostics: retained for this tab (including same-tab Google redirects).
+window.appTraceLog = (() => {
+  const KEY = 'll-diagnostic-events-v1', LIMIT = 500;
+  let events = [];
+  try { events = JSON.parse(sessionStorage.getItem(KEY) || '[]'); if (!Array.isArray(events)) events = []; } catch (_) {}
+  const safeText = value => {
+    let text;
+    try { text = typeof value === 'string' ? value : value instanceof Error ? (value.stack || value.message) : JSON.stringify(value); }
+    catch (_) { text = String(value); }
+    return String(text || '')
+      .replace(/(authorization|access_token|id_token|refresh_token|client_secret|password|apiKey|token|secret)\s*[:=]\s*[^\s,;&]+/gi, '$1=[REDACTED]')
+      .replace(/Bearer\s+[A-Za-z0-9._~+\/-]+=*/gi, 'Bearer [REDACTED]')
+      .replace(/eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]*/g, '[JWT REDACTED]')
+      .replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi, '[EMAIL REDACTED]')
+      .slice(0, 5000);
+  };
+  const safeUrl = raw => {
+    try { const u = new URL(raw, location.href); return u.origin + u.pathname; }
+    catch (_) { return String(raw || '').split(/[?#]/)[0].slice(0, 300); }
+  };
+  const save = () => { try { sessionStorage.setItem(KEY, JSON.stringify(events.slice(-LIMIT))); } catch (_) {} };
+  const add = (level, source, message, details) => {
+    const item = { time: new Date().toISOString(), level, source, message: safeText(message), ...(details ? {details:safeText(details)} : {}) };
+    events.push(item); if (events.length > LIMIT) events = events.slice(-LIMIT); save();
+    try { if (typeof updateDiagnosticCount === 'function') updateDiagnosticCount(); if (typeof renderDiagnosticEvents === 'function' && document.getElementById('diagPanel')?.style.display === 'flex') renderDiagnosticEvents(); } catch (_) {}
+    return item;
+  };
+  return { add, all: () => events.slice(), clear: () => { events = []; save(); }, count: () => events.length, safeUrl };
+})();
 window.authDebug = new URLSearchParams(location.search).get('authdebug') === '1';
 window.authStep = (stage, detail = '') => {
-  if (!window.authDebug) return;
-  const text = typeof detail === 'string' ? detail : JSON.stringify(detail, null, 2);
-  alert('[Little Learners Auth Debug] ' + stage + (text ? '\n\n' + text : ''));
+  // Never use blocking alert() for diagnostics: record events and let the app continue.
+  window.appTraceLog?.add('INFO', 'auth', stage, detail);
 };
+
 window.authErrorDetails = error => {
   if (!error) return 'No error object was provided.';
   return [
@@ -89,7 +135,7 @@ function stickers(){const n=K().stars/5|0;app.innerHTML=`<div class="bar"><butto
 function parent(){const b=(k,v,t)=>`<button class="btn ${st[k]===v?'':'o'}" onclick="st.${k}=${typeof v=='string'?"'"+v+"'":v};save();parent()">${t}</button>`;app.innerHTML=`<div class="bar"><button class="btn o" onclick="home()">⬅ Home</button><h2>⚙️ Parent corner</h2></div>${kidsUI()}<p>Language</p><div class="opts" style="margin:6px">${b('lang','en','English')}${b('lang','hi','हिन्दी')}${b('lang','both','Both')}</div><p>Voice</p><div class="opts" style="margin:6px">${b('sound',1,'🔊 On')}${b('sound',0,'🔇 Off')}</div><p>Hindi speech needs a Hindi voice installed in your browser or computer.</p><p><button class="btn o" onclick="rst(this)">Reset progress</button></p>`;setTimeout(gbtn,0)}
 function rst(b){if(b.dataset.c){K().stars=0;save();hdr();home()}else{b.dataset.c=1;b.textContent='Tap again to confirm'}}
 addEventListener('keydown',e=>{if(e.key=='Escape')home();else if(cur==0&&/^[a-z]$/i.test(e.key)&&app.querySelector('.card'))say(AL[e.key.toUpperCase().charCodeAt(0)-65])});
-function kidsUI(){const a=window.fb&&fb.ok?(st.user?`<p>Signed in: ${st.user}</p><p><button class="btn o" onclick="fb.signOut()">Sign out</button></p>`:`<p>${fb.gis?'<span id="gbtn"></span>':'<button class="btn o" onclick="signInClick()">Sign in with Google to save progress online</button>'}</p>`):`<p>Guest mode: progress is saved on this device.</p>`;const er=(window.msg?`<p style="font-weight:700">${window.msg}</p>`:'')+(st.err?`<p style="color:#e53935;font-weight:700">${st.err}</p>`:'');return `<p>Who is playing?</p><div class="opts" style="margin:6px">${Object.keys(st.kids).map(k=>`<button class="btn ${k==st.kid?'':'o'}" onclick="st.kid='${k}';save();hdr();parent()">${st.kids[k].name}</button>`).join('')}<button class="btn o" onclick="addKid()">➕ Add kid</button></div><p><button class="btn o" onclick="renKid()">✏️ Rename ${K().name}</button> <button class="btn o" onclick="st.ob=0;st.step=0;save();onb()">👋 Welcome tour</button></p>${dp?'<p><button class="btn" onclick="doInstall()">📲 Install app</button></p>':''}${a}${er}<p style="font-size:14px;opacity:.7">Build 13 · ${isStd()?'Installed app':dp?'Install ready':'Install: browser menu ⋮ > Install app'} · SW: ${window.swS||'?'} · ${window.fbStatus||'Firebase: loading…'}${window.net?' · '+window.net:''}${window.cloudStatus?' · Cloud: '+window.cloudStatus:''}${window.lastErr?' · Err: '+window.lastErr:''}</p>`}
+function kidsUI(){const a=window.fb&&fb.ok?(st.user?`<p>Signed in: ${st.user}</p><p><button class="btn o" onclick="fb.signOut()">Sign out</button></p>`:`<p>${fb.gis?'<span id="gbtn"></span>':'<button class="btn o" onclick="signInClick()">Sign in with Google to save progress online</button>'}</p>`):`<p>Guest mode: progress is saved on this device.</p>`;const er=(window.msg?`<p style="font-weight:700">${window.msg}</p>`:'')+(st.err?`<p style="color:#e53935;font-weight:700">${st.err}</p>`:'');return `<p>Who is playing?</p><div class="opts" style="margin:6px">${Object.keys(st.kids).map(k=>`<button class="btn ${k==st.kid?'':'o'}" onclick="st.kid='${k}';save();hdr();parent()">${st.kids[k].name}</button>`).join('')}<button class="btn o" onclick="addKid()">➕ Add kid</button></div><p><button class="btn o" onclick="renKid()">✏️ Rename ${K().name}</button> <button class="btn o" onclick="st.ob=0;st.step=0;save();onb()">👋 Welcome tour</button></p>${dp?'<p><button class="btn" onclick="doInstall()">📲 Install app</button></p>':''}${a}${er}<p><button class="btn o" onclick="openDiagnostics()">🧰 Developer diagnostics · <span id="diagCount">0</span> events</button></p><p style="font-size:14px;opacity:.7">Build 14 · ${isStd()?'Installed app':dp?'Install ready':'Install: browser menu ⋮ > Install app'} · SW: ${window.swS||'?'} · ${window.fbStatus||'Firebase: loading…'}${window.net?' · '+window.net:''}${window.cloudStatus?' · Cloud: '+window.cloudStatus:''}${window.lastErr?' · Err: '+window.lastErr:''}</p>`}
 function addKid(){const n=(prompt("Kid's name?")||'').replace(/[<>&\"']/g,'').trim().slice(0,12);if(!n)return;const id='k'+Date.now();st.kids[id]={name:n,stars:0};st.kid=id;save();hdr();parent()}
 function onb(){onbActive=1;document.body.classList.add('ob');app.style.setProperty('--a','#7c4dff');
 const bt=(k,v,t)=>`<button class="btn ${st[k]===v?'':'o'}" onclick="pick('${k}',${typeof v=='string'?"'"+v+"'":v},this)">${t}</button>`,er=(window.msg?`<p style="font-weight:700">${window.msg}</p>`:'')+(st.err?`<p style="color:#e53935;font-weight:700">${st.err}</p>`:'');let h;
@@ -110,6 +156,48 @@ try{if(!window.fb||!fb.signIn)throw{code:'',message:'Firebase is not ready yet'}
 window.kl={authed(has){const ks=Object.keys(st.kids);if(!st.ob){if(has){if(st.kids.me&&!st.kids.me.stars&&st.kids.me.name=='Me'&&ks.length>1)delete st.kids.me;if(!st.kids[st.kid])st.kid=Object.keys(st.kids)[0];st.ob=1;st.step=3}else if(st.step<2)st.step=2}save();hdr();if(st.ob&&onbActive)home();else if(!st.ob&&onbActive)onb()},err(e){const c=e&&e.code||'';window.lastErr=c||(e&&e.message)||String(e);const m={'auth/operation-not-allowed':'Google sign-in is not enabled yet: Firebase > Authentication > Sign-in method > Google > Enable.','auth/unauthorized-domain':'Add srma4tech.github.io in Firebase > Authentication > Settings > Authorized domains.','auth/popup-blocked':'The browser blocked the sign-in popup. Allow popups for this site and try again.','auth/invalid-api-key':'The apiKey in firebase-config.js looks wrong.','auth/network-request-failed':'No internet connection.'};if(c=='auth/popup-closed-by-user'||c=='auth/cancelled-popup-request')return;st.err=m[c]||('Sign-in failed: '+(c||e&&e.message||e));kl.refresh()},st:()=>st,save,refresh:()=>{hdr();if(!st.ob&&onbActive)onb();else if(app.textContent.includes('Parent corner'))parent()}};
 if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').then(()=>navigator.serviceWorker.ready).then(()=>window.swS='active').catch(e=>window.swS='failed: '+e.message));
 hdr();st.ob?home():onb();
+// Console UI is reachable from Parent corner. Events are recorded before the panel is opened.
+function ensureDiagnosticsUI(){
+  if(document.getElementById('diagPanel')) return;
+  const diagMode = new URLSearchParams(location.search).get('diagnostics') === '1' || window.authDebug;
+  const fab=document.createElement('button'); fab.id='diagFab'; fab.textContent='🧰 Logs'; fab.onclick=openDiagnostics; fab.style.display=diagMode?'':'none'; document.body.appendChild(fab);
+  const panel=document.createElement('div'); panel.id='diagPanel'; panel.setAttribute('role','dialog'); panel.setAttribute('aria-modal','true'); panel.setAttribute('aria-label','Developer diagnostics');
+  panel.innerHTML='<div class="dp-card"><div class="dp-head"><div class="dp-title">🧰 Developer diagnostics</div><div class="dp-actions"><button id="diagCopy">Copy all</button><button id="diagExport" class="dp-muted">Export JSON</button><button id="diagClear" class="dp-muted">Clear</button><button id="diagClose" class="dp-muted">Close</button></div></div><div class="dp-summary" id="diagSummary"></div><div id="diagEvents" aria-live="polite"></div></div>';
+  document.body.appendChild(panel);
+  panel.addEventListener('click',e=>{if(e.target===panel)closeDiagnostics()});
+  panel.querySelector('#diagClose').onclick=closeDiagnostics;
+  panel.querySelector('#diagCopy').onclick=copyDiagnosticLogs;
+  panel.querySelector('#diagExport').onclick=exportDiagnosticLogs;
+  panel.querySelector('#diagClear').onclick=()=>{if(confirm('Clear all diagnostic events for this tab?')){window.appTraceLog.clear();renderDiagnosticEvents();updateDiagnosticCount()}};
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDiagnostics()});
+  updateDiagnosticCount();
+}
+function renderDiagnosticEvents(){
+  const root=document.getElementById('diagEvents'),summary=document.getElementById('diagSummary'); if(!root||!summary)return;
+  const events=window.appTraceLog.all();
+  summary.textContent=events.length+' events · session-only storage · latest '+Math.min(events.length,500)+' retained';
+  if(!events.length){root.innerHTML='<div class="dp-empty">No events recorded yet.</div>';return}
+  root.replaceChildren(...events.slice().reverse().map(ev=>{
+    const row=document.createElement('div');row.className='dp-event '+(ev.level==='ERROR'?'dp-error':ev.level==='WARN'?'dp-warn':'dp-info');
+    const head=document.createElement('strong');head.textContent=ev.time+'  ['+ev.level+']  '+ev.source+' — '+ev.message;row.appendChild(head);
+    if(ev.details){const detail=document.createElement('div');detail.textContent=ev.details;row.appendChild(detail)}
+    return row;
+  }));
+}
+function updateDiagnosticCount(){const e=document.getElementById('diagCount');if(e)e.textContent=window.appTraceLog.count()}
+function openDiagnostics(){ensureDiagnosticsUI();document.getElementById('diagPanel').style.display='flex';renderDiagnosticEvents();document.getElementById('diagFab').style.display='none'}
+function closeDiagnostics(){const p=document.getElementById('diagPanel');if(p)p.style.display='none';const f=document.getElementById('diagFab');if(f)f.style.display=(new URLSearchParams(location.search).get('diagnostics')==='1'||window.authDebug)?'':'none'}
+function copyDiagnosticLogs(){
+  const text=JSON.stringify({app:'Little Learners',build:'14',origin:location.origin,sessionStarted:window.appTraceLog.all()[0]?.time||null,exportedAt:new Date().toISOString(),events:window.appTraceLog.all()},null,2);
+  const fallback=()=>{const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();let ok=false;try{ok=document.execCommand('copy')}catch(_){}ta.remove();alert(ok?'All diagnostic logs copied.':'Copy failed. Use Export JSON instead.');};
+  if(navigator.clipboard?.writeText)navigator.clipboard.writeText(text).then(()=>alert('All '+window.appTraceLog.count()+' diagnostic events copied.')).catch(fallback);else fallback();
+}
+function exportDiagnosticLogs(){
+  const text=JSON.stringify({app:'Little Learners',build:'14',exportedAt:new Date().toISOString(),events:window.appTraceLog.all()},null,2);
+  const url=URL.createObjectURL(new Blob([text],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download='little-learners-diagnostics.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+ensureDiagnosticsUI();
+if (window.authDebug || new URLSearchParams(location.search).get('diagnostics') === '1') openDiagnostics();
 </script>
 <script type="module">
 try {
