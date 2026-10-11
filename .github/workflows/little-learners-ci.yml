@@ -1,0 +1,86 @@
+name: Little Learners CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+  schedule:
+    - cron: "17 */6 * * *"
+
+permissions:
+  contents: read
+
+jobs:
+  source-check:
+    name: Source syntax and configuration checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Check inline JavaScript syntax
+        run: |
+          python3 - <<'PY'
+          from html.parser import HTMLParser
+          from pathlib import Path
+          class Scripts(HTMLParser):
+              def __init__(self):
+                  super().__init__(); self.scripts=[]; self.current=None
+              def handle_starttag(self, tag, attrs):
+                  if tag == "script":
+                      attrs=dict(attrs)
+                      self.current={"type":attrs.get("type",""),"src":attrs.get("src"),"text":""}
+              def handle_data(self, data):
+                  if self.current is not None: self.current["text"] += data
+              def handle_endtag(self, tag):
+                  if tag == "script" and self.current is not None:
+                      self.scripts.append(self.current); self.current=None
+          parser=Scripts()
+          parser.feed(Path("index.html").read_text(encoding="utf-8"))
+          inline=[s for s in parser.scripts if not s["src"] and s["text"].strip()]
+          if not inline: raise SystemExit("No inline scripts found")
+          for i,s in enumerate(inline):
+              Path(f"/tmp/inline-{i}.mjs" if s["type"]=="module" else f"/tmp/inline-{i}.js").write_text(s["text"],encoding="utf-8")
+              print(f"Prepared inline script {i} ({s['type'] or 'classic'})")
+          PY
+          for f in /tmp/inline-*.js /tmp/inline-*.mjs; do
+            [ -f "$f" ] || continue
+            node --check "$f"
+          done
+      - name: Check required app files and cache version
+        run: |
+          test -s index.html
+          test -s firebase-config.js
+          test -s firestore.rules
+          test -s manifest.webmanifest
+          grep -q "little-learners-v" sw.js
+          grep -q "onAuthStateChanged" index.html
+          grep -q "signInWithRedirect" index.html
+          echo "Required files and auth flow markers found."
+
+  live-smoke:
+    name: Live site browser smoke test
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install Playwright
+        run: npm install --no-save playwright
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Check deployed site and capture browser errors
+        run: node .github/scripts/live-smoke.mjs
+      - name: Upload diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: little-learners-browser-diagnostics
+          path: artifacts/
+          if-no-files-found: ignore
+          retention-days: 14
