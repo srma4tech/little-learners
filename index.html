@@ -199,6 +199,24 @@ function exportDiagnosticLogs(){
 ensureDiagnosticsUI();
 if (window.authDebug || new URLSearchParams(location.search).get('diagnostics') === '1') openDiagnostics();
 </script>
+<script>
+// Capture the Google iframe runtime shape without exposing credentials or user data.
+window.authRuntimeSnapshot = function (stage) {
+  const g = window.gapi;
+  const detail = {
+    stage,
+    gapiPresent: !!g,
+    gapiIframesPresent: !!g?.iframes,
+    gapiGetContextType: typeof g?.iframes?.getContext,
+    googlePresent: !!window.google,
+    googleAccountsPresent: !!window.google?.accounts,
+    googleIdentityPresent: !!window.google?.accounts?.id,
+    userAgent: navigator.userAgent,
+    standalone: !!(window.matchMedia && window.matchMedia('(display-mode: standalone)').matches)
+  };
+  window.authStep('AUTH RUNTIME SNAPSHOT — ' + stage, JSON.stringify(detail));
+};
+</script>
 <script type="module">
 try {
   window.authStep('S1 — Firebase module loading started', 'Loading the local Firebase config and Firebase SDK modules one at a time. Press OK to continue to each checkpoint.');
@@ -209,8 +227,10 @@ try {
   const appSdk = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js');
   window.authStep('S3 PASSED — Firebase App SDK loaded', 'initializeApp is available: ' + (typeof appSdk.initializeApp));
   window.authStep('S4 — Loading Firebase Auth SDK', 'Importing firebase-auth.js version 10.12.2. If the getContext error occurs here, we have isolated the failing stage.');
+  window.authRuntimeSnapshot('before-auth-sdk-import');
   const authSdk = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js');
   window.authStep('S4 PASSED — Firebase Auth SDK loaded', 'getAuth: ' + typeof authSdk.getAuth + '; signInWithRedirect: ' + typeof authSdk.signInWithRedirect + '; getRedirectResult: ' + typeof authSdk.getRedirectResult);
+  window.authRuntimeSnapshot('after-auth-sdk-import');
   window.authStep('S4b — Loading Firestore SDK', 'Importing firebase-firestore.js version 10.12.2.');
   const dbSdk = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js');
   window.authStep('S4b PASSED — Firestore SDK loaded', 'getFirestore is available: ' + (typeof dbSdk.getFirestore));
@@ -221,9 +241,11 @@ try {
     window.authStep('S5a — Initializing Firebase app', 'Calling initializeApp(config). Config values remain hidden.');
     const appInstance = appSdk.initializeApp(config);
     window.authStep('S5a PASSED — Firebase app initialized', 'App name: ' + appInstance.name);
+    window.authRuntimeSnapshot('before-getAuth');
     window.authStep('S5b — Initializing Firebase Auth', 'Calling getAuth(app). This checkpoint is important for the getContext failure.');
     const auth = authSdk.getAuth(appInstance);
     window.authStep('S5b PASSED — Firebase Auth initialized', 'Auth object created successfully.');
+    window.authRuntimeSnapshot('after-getAuth');
     window.authStep('S5c — Initializing Firestore', 'Calling getFirestore(app).');
     const db = dbSdk.getFirestore(appInstance);
     window.authStep('S5c PASSED — Firestore initialized', 'Firestore object created successfully.');
@@ -249,6 +271,7 @@ try {
         kl.st().err = '';
         // Start the popup API directly in the user gesture on every device.
         // If the browser blocks or does not support it, fall back to redirect.
+        window.authRuntimeSnapshot('before-signInWithPopup');
         window.authStep('S7 — Popup sign-in selected', 'Calling signInWithPopup directly from the sign-in button click.');
         try {
           const result = await authSdk.signInWithPopup(auth, provider);
