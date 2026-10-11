@@ -112,8 +112,8 @@ try {
     const db = dbSdk.getFirestore(appInstance);
     const provider = new authSdk.GoogleAuthProvider();
     provider.setCustomParameters({ prompt: 'select_account' });
-    const mobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
-      matchMedia('(display-mode: standalone)').matches;
+    // Use full-page redirect on every device. This avoids popup blockers and
+    // inconsistent popup behavior in installed PWAs and mobile browsers.
     let cloudWrite = Promise.resolve();
     const profileRef = uid => dbSdk.doc(db, 'users', uid);
     const localSnapshot = () => {
@@ -128,13 +128,7 @@ try {
       ok: true,
       signIn: async () => {
         kl.st().err = '';
-        if (mobile) return authSdk.signInWithRedirect(auth, provider);
-        try { return await authSdk.signInWithPopup(auth, provider); }
-        catch (error) {
-          if (['auth/popup-blocked', 'auth/operation-not-supported-in-this-environment'].includes(error?.code))
-            return authSdk.signInWithRedirect(auth, provider);
-          throw error;
-        }
+        return authSdk.signInWithRedirect(auth, provider);
       },
       signOut: () => authSdk.signOut(auth),
       push: async () => {
@@ -155,7 +149,7 @@ try {
     authSdk.onAuthStateChanged(auth, async user => {
       const state = kl.st();
       state.user = user ? (user.displayName || user.email || 'Google user') : null;
-      if (!user) { window.cloudStatus = 'signed out'; window.fbStatus = 'Firebase: ready'; kl.refresh(); return; }
+      if (!user) { window.cloudStatus = 'signed out'; window.fbStatus = 'Firebase: ready · redirect sign-in'; kl.refresh(); return; }
       window.cloudStatus = 'loading profile'; window.fbStatus = 'Firebase: ready'; kl.refresh();
       try {
         const ref = profileRef(user.uid), snapshot = await dbSdk.getDoc(ref);
