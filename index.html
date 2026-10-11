@@ -48,7 +48,7 @@ p{text-align:center;font-size:18px}body.ob header{display:none}.ib{display:flex;
 
 </style></head><body>
 <a class="skip-link" href="#app">Skip to main content</a>
-<header aria-label="Little Learners header"><button class="pill" type="button" aria-label="Go to home" title="Home" onclick="home()">🏠</button><span class="build-tag" aria-label="Application build 18">BUILD 18</span><span class="pill" id="stars" aria-live="polite" aria-label="Stars earned"></span><span><button class="pill" id="inst" type="button" aria-label="Install Little Learners" title="Install app" style="display:none" onclick="doInstall()">📲 Install</button> <button class="pill" id="kid" type="button" aria-label="Open parent settings" onclick="gate()"></button> <button class="pill" type="button" aria-label="Open stickers" title="Stickers" onclick="stickers()">🎁</button> <button class="pill" type="button" aria-label="Open parent settings" title="Parent settings" onclick="gate()">⚙️</button></span></header>
+<header aria-label="Little Learners header"><button class="pill" type="button" aria-label="Go to home" title="Home" onclick="home()">🏠</button><span class="build-tag" aria-label="Application build 19">BUILD 19</span><span class="pill" id="stars" aria-live="polite" aria-label="Stars earned"></span><span><button class="pill" id="inst" type="button" aria-label="Install Little Learners" title="Install app" style="display:none" onclick="doInstall()">📲 Install</button> <button class="pill" id="kid" type="button" aria-label="Open parent settings" onclick="gate()"></button> <button class="pill" type="button" aria-label="Open stickers" title="Stickers" onclick="stickers()">🎁</button> <button class="pill" type="button" aria-label="Open parent settings" title="Parent settings" onclick="gate()">⚙️</button></span></header>
 <main id="app" tabindex="-1"></main>
 <footer class="site-footer" aria-label="Site footer"><nav class="footer-nav" aria-label="Primary navigation"><button type="button" onclick="home()">🏠 Home</button><button type="button" onclick="stickers()">🎁 Stickers</button><button type="button" onclick="gate()">⚙️ Parents</button></nav><p class="footer-copy">Little Learners · Learn, play and grow 🌱<br>Alphabets · हिंदी वर्णमाला · Numbers · Animals · Good manners</p></footer>
 <script>
@@ -86,6 +86,41 @@ window.authStep = (stage, detail = '') => {
   // Never use blocking alert() for diagnostics: record events and let the app continue.
   window.appTraceLog?.add('INFO', 'auth', stage, detail);
 };
+
+// Firebase's popup/redirect promise may remain pending if its internal GAPI iframe
+// initialization throws outside the promise chain. Convert that global signal into
+// a bounded failure for the active sign-in attempt; never expose credentials.
+let authSessionInProgress = false;
+window.addEventListener('error', event => {
+  if (!authSessionInProgress || !String(event.message || '').toLowerCase().includes('getcontext')) return;
+  window.authStep('AUTH CRITICAL — GAPI getContext runtime error', 'A window-level getContext exception occurred during sign-in. The Firebase Auth promise may not reject; the guarded attempt will fail safely.');
+  window.dispatchEvent(new CustomEvent('auth-critical-failure', { detail: { code: 'auth/gapi-context-failure', message: 'Google sign-in could not initialize its browser iframe. Reload this page and try again; if it repeats, use Chrome in a regular browser tab rather than an installed app.' } }));
+});
+
+function signInWithTimeout(authPromise, timeoutMs = 15000) {
+  let timeoutHandle;
+  let failureHandler;
+  const timeoutPromise = new Promise((_, reject) => {
+    timeoutHandle = setTimeout(() => {
+      const error = new Error('Google sign-in did not complete within 15 seconds. Reload this page before retrying.');
+      error.code = 'auth/timeout';
+      reject(error);
+    }, timeoutMs);
+  });
+  const failurePromise = new Promise((_, reject) => {
+    failureHandler = event => {
+      const error = new Error(event.detail?.message || 'Google sign-in hit a browser iframe initialization error. Reload this page before retrying.');
+      error.code = event.detail?.code || 'auth/iframe-failure';
+      window.removeEventListener('auth-critical-failure', failureHandler);
+      reject(error);
+    };
+    window.addEventListener('auth-critical-failure', failureHandler, { once: true });
+  });
+  return Promise.race([Promise.resolve(authPromise), timeoutPromise, failurePromise]).finally(() => {
+    clearTimeout(timeoutHandle);
+    if (failureHandler) window.removeEventListener('auth-critical-failure', failureHandler);
+  });
+}
 
 window.authErrorDetails = error => {
   if (!error) return 'No error object was provided.';
@@ -138,7 +173,7 @@ function stickers(){const n=K().stars/5|0;app.innerHTML=`<div class="bar"><butto
 function parent(){const b=(k,v,t)=>`<button class="btn ${st[k]===v?'':'o'}" onclick="st.${k}=${typeof v=='string'?"'"+v+"'":v};save();parent()">${t}</button>`;app.innerHTML=`<div class="bar"><button class="btn o" onclick="home()">⬅ Home</button><h2>⚙️ Parent corner</h2></div>${kidsUI()}<p>Language</p><div class="opts" style="margin:6px">${b('lang','en','English')}${b('lang','hi','हिन्दी')}${b('lang','both','Both')}</div><p>Voice</p><div class="opts" style="margin:6px">${b('sound',1,'🔊 On')}${b('sound',0,'🔇 Off')}</div><p>Hindi speech needs a Hindi voice installed in your browser or computer.</p><p><button class="btn o" onclick="rst(this)">Reset progress</button></p>`;setTimeout(gbtn,0)}
 function rst(b){if(b.dataset.c){K().stars=0;save();hdr();home()}else{b.dataset.c=1;b.textContent='Tap again to confirm'}}
 addEventListener('keydown',e=>{if(e.key=='Escape')home();else if(cur==0&&/^[a-z]$/i.test(e.key)&&app.querySelector('.card'))say(AL[e.key.toUpperCase().charCodeAt(0)-65])});
-function kidsUI(){const a=window.fb&&fb.ok?(st.user?`<p>Signed in: ${st.user}</p><p><button class="btn o" onclick="fb.signOut()">Sign out</button></p>`:`<p>${fb.gis?'<span id="gbtn"></span>':'<button class="btn o" onclick="signInClick()">Sign in with Google to save progress online</button>'}</p>`):`<p>Guest mode: progress is saved on this device.</p>`;const er=(window.msg?`<p style="font-weight:700">${window.msg}</p>`:'')+(st.err?`<p style="color:#e53935;font-weight:700">${st.err}</p>`:'');return `<p>Who is playing?</p><div class="opts" style="margin:6px">${Object.keys(st.kids).map(k=>`<button class="btn ${k==st.kid?'':'o'}" onclick="st.kid='${k}';save();hdr();parent()">${st.kids[k].name}</button>`).join('')}<button class="btn o" onclick="addKid()">➕ Add kid</button></div><p><button class="btn o" onclick="renKid()">✏️ Rename ${K().name}</button> <button class="btn o" onclick="st.ob=0;st.step=0;save();onb()">👋 Welcome tour</button></p>${dp?'<p><button class="btn" onclick="doInstall()">📲 Install app</button></p>':''}${a}${er}<p><button class="btn o" onclick="openDiagnostics()">🧰 Developer diagnostics · <span id="diagCount">0</span> events</button></p><p style="font-size:14px;opacity:.7">Build 18 · ${isStd()?'Installed app':dp?'Install ready':'Install: browser menu ⋮ > Install app'} · SW: ${window.swS||'?'} · ${window.fbStatus||'Firebase: loading…'}${window.net?' · '+window.net:''}${window.cloudStatus?' · Cloud: '+window.cloudStatus:''}${window.lastErr?' · Err: '+window.lastErr:''}</p>`}
+function kidsUI(){const a=window.fb&&fb.ok?(st.user?`<p>Signed in: ${st.user}</p><p><button class="btn o" onclick="fb.signOut()">Sign out</button></p>`:`<p>${fb.gis?'<span id="gbtn"></span>':'<button class="btn o" onclick="signInClick()">Sign in with Google to save progress online</button>'}</p>`):`<p>Guest mode: progress is saved on this device.</p>`;const er=(window.msg?`<p style="font-weight:700">${window.msg}</p>`:'')+(st.err?`<p style="color:#e53935;font-weight:700">${st.err}</p>`:'');return `<p>Who is playing?</p><div class="opts" style="margin:6px">${Object.keys(st.kids).map(k=>`<button class="btn ${k==st.kid?'':'o'}" onclick="st.kid='${k}';save();hdr();parent()">${st.kids[k].name}</button>`).join('')}<button class="btn o" onclick="addKid()">➕ Add kid</button></div><p><button class="btn o" onclick="renKid()">✏️ Rename ${K().name}</button> <button class="btn o" onclick="st.ob=0;st.step=0;save();onb()">👋 Welcome tour</button></p>${dp?'<p><button class="btn" onclick="doInstall()">📲 Install app</button></p>':''}${a}${er}<p><button class="btn o" onclick="openDiagnostics()">🧰 Developer diagnostics · <span id="diagCount">0</span> events</button></p><p style="font-size:14px;opacity:.7">Build 19 · ${isStd()?'Installed app':dp?'Install ready':'Install: browser menu ⋮ > Install app'} · SW: ${window.swS||'?'} · ${window.fbStatus||'Firebase: loading…'}${window.net?' · '+window.net:''}${window.cloudStatus?' · Cloud: '+window.cloudStatus:''}${window.lastErr?' · Err: '+window.lastErr:''}</p>`}
 function addKid(){const n=(prompt("Kid's name?")||'').replace(/[<>&\"']/g,'').trim().slice(0,12);if(!n)return;const id='k'+Date.now();st.kids[id]={name:n,stars:0};st.kid=id;save();hdr();parent()}
 function onb(){onbActive=1;document.body.classList.add('ob');app.style.setProperty('--a','#7c4dff');
 const bt=(k,v,t)=>`<button class="btn ${st[k]===v?'':'o'}" onclick="pick('${k}',${typeof v=='string'?"'"+v+"'":v},this)">${t}</button>`,er=(window.msg?`<p style="font-weight:700">${window.msg}</p>`:'')+(st.err?`<p style="color:#e53935;font-weight:700">${st.err}</p>`:'');let h;
@@ -153,10 +188,10 @@ function renKid(){const n=(prompt('New name',K().name)||'').replace(/[<>&"']/g,'
 let SIGN_WAIT=30000,wait=0,authInFlight=false;
 function gbtn(){const e=document.getElementById('gbtn');if(e&&window.fb&&fb.renderGoogle)fb.renderGoogle(e)}
 addEventListener('error',e=>{const m=e.message||'Unknown JavaScript error',where=e.filename?(' @ '+e.filename+':'+(e.lineno||0)+':'+(e.colno||0)):'';const stack=e.error&&e.error.stack?String(e.error.stack):'';if(m!=='Script error.'&&m!=='Script error')window.lastErr=(m+where+(stack?'\\n'+stack:'' )).slice(0,3000);else if(e.filename)window.lastErr=('Cross-origin script error @ '+e.filename+':'+(e.lineno||0)+':'+(e.colno||0)+(stack?'\\n'+stack:'' )).slice(0,3000);if(window.kl)kl.refresh()});addEventListener('unhandledrejection',e=>{const r=e.reason;const detail=r&&typeof r==='object'?[r.code,r.message,r.stack].filter(Boolean).join('\\n'):String(r);window.lastErr=(detail||String(r)||'Unhandled promise rejection').slice(0,3000);if(window.kl)kl.refresh()});
-function signInClick(){if(authInFlight){window.authStep('S6 IGNORED — sign-in already pending','Ignored a repeated tap to avoid starting a competing popup request.');return}authInFlight=true;st.err='';window.msg='⏳ Starting Google sign-in…';window.authStep('S6 — Sign-in button handler entered','The user click reached signInClick().');kl.refresh();clearTimeout(wait);wait=setTimeout(()=>{if(window.msg){window.msg='Google sign-in is taking longer than usual. Keep this page open and do not tap again; it may still complete.';window.authStep('SIGN-IN SLOW — still waiting','The sign-in promise has not completed within 30 seconds. The operation is still pending; no automatic retry was started.');kl.refresh()}},SIGN_WAIT);
-const done=()=>{clearTimeout(wait);authInFlight=false;window.msg='';kl.refresh()};
-try{if(!window.fb||!fb.signIn)throw{code:'',message:'Firebase is not ready yet'};window.authStep('S6a — Calling fb.signIn()','Firebase is ready; invoking the selected popup/redirect flow.');Promise.resolve(fb.signIn()).then(result=>{window.authStep('S6b — fb.signIn() resolved','Sign-in call resolved.');done()},e=>{window.authStep('SIGN-IN FAILED — fb.signIn() rejected',window.authErrorDetails(e));done();kl.err(e)})}catch(e){window.authStep('SIGN-IN FAILED — synchronous handler error',window.authErrorDetails(e));done();kl.err(e)}}
-window.kl={authed(has){const ks=Object.keys(st.kids);if(!st.ob){if(has){if(st.kids.me&&!st.kids.me.stars&&st.kids.me.name=='Me'&&ks.length>1)delete st.kids.me;if(!st.kids[st.kid])st.kid=Object.keys(st.kids)[0];st.ob=1;st.step=3}else if(st.step<2)st.step=2}save();hdr();if(st.ob&&onbActive)home();else if(!st.ob&&onbActive)onb()},err(e){const c=e&&e.code||'';window.lastErr=c||(e&&e.message)||String(e);const m={'auth/operation-not-allowed':'Google sign-in is not enabled yet: Firebase > Authentication > Sign-in method > Google > Enable.','auth/unauthorized-domain':'Add srma4tech.github.io in Firebase > Authentication > Settings > Authorized domains.','auth/popup-blocked':'The browser blocked the sign-in popup. Allow popups for this site and try again.','auth/invalid-api-key':'The apiKey in firebase-config.js looks wrong.','auth/network-request-failed':'No internet connection.'};if(c=='auth/popup-closed-by-user'||c=='auth/cancelled-popup-request')return;st.err=m[c]||('Sign-in failed: '+(c||e&&e.message||e));kl.refresh()},st:()=>st,save,refresh:()=>{hdr();if(!st.ob&&onbActive)onb();else if(app.textContent.includes('Parent corner'))parent()}};
+function signInClick(){if(authInFlight){window.authStep('S6 IGNORED — sign-in already pending','Ignored a repeated tap to avoid starting a competing popup request.');return}authInFlight=true;authSessionInProgress=true;st.err='';window.msg='⏳ Starting Google sign-in…';window.authStep('S6 — Sign-in button handler entered','The user click reached signInClick(). Sign-in is guarded by a 15-second timeout and a global getContext error signal.');kl.refresh();clearTimeout(wait);
+const done=()=>{clearTimeout(wait);authInFlight=false;authSessionInProgress=false;window.msg='';kl.refresh()};
+try{if(!window.fb||!fb.signIn)throw{code:'auth/not-ready',message:'Firebase is not ready yet'};window.authStep('S6a — Calling fb.signIn()','Firebase is ready; invoking popup sign-in with bounded failure handling.');signInWithTimeout(fb.signIn(),15000).then(result=>{window.authStep('S6b — fb.signIn() resolved','Sign-in call resolved.');done()},e=>{window.authStep('SIGN-IN FAILED — guarded auth operation ended',window.authErrorDetails(e));done();kl.err(e)})}catch(e){window.authStep('SIGN-IN FAILED — synchronous handler error',window.authErrorDetails(e));done();kl.err(e)}}
+window.kl={authed(has){const ks=Object.keys(st.kids);if(!st.ob){if(has){if(st.kids.me&&!st.kids.me.stars&&st.kids.me.name=='Me'&&ks.length>1)delete st.kids.me;if(!st.kids[st.kid])st.kid=Object.keys(st.kids)[0];st.ob=1;st.step=3}else if(st.step<2)st.step=2}save();hdr();if(st.ob&&onbActive)home();else if(!st.ob&&onbActive)onb()},err(e){const c=e&&e.code||'';window.lastErr=c||(e&&e.message)||String(e);const m={'auth/operation-not-allowed':'Google sign-in is not enabled yet: Firebase > Authentication > Sign-in method > Google > Enable.','auth/unauthorized-domain':'Add srma4tech.github.io in Firebase > Authentication > Settings > Authorized domains.','auth/popup-blocked':'The browser blocked the sign-in popup. Allow popups for this site and try again.','auth/invalid-api-key':'The apiKey in firebase-config.js looks wrong.','auth/network-request-failed':'No internet connection.','auth/timeout':'Google sign-in did not complete within 15 seconds. The request may still be pending inside Firebase. Reload this page before retrying; if it repeats, open the site in a regular Chrome tab instead of the installed app.','auth/gapi-context-failure':'Google sign-in could not initialize its browser iframe (getContext error). Reload this page and try again; if it repeats, open the site in a regular Chrome tab instead of the installed app.','auth/iframe-failure':'Google sign-in hit a browser iframe initialization error. Reload this page before retrying.'};if(c=='auth/popup-closed-by-user'||c=='auth/cancelled-popup-request')return;st.err=m[c]||('Sign-in failed: '+(c||e&&e.message||e));kl.refresh()},st:()=>st,save,refresh:()=>{hdr();if(!st.ob&&onbActive)onb();else if(app.textContent.includes('Parent corner'))parent()}};
 if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').then(()=>navigator.serviceWorker.ready).then(()=>window.swS='active').catch(e=>window.swS='failed: '+e.message));
 hdr();st.ob?home():onb();
 // Console UI is reachable from Parent corner. Events are recorded before the panel is opened.
@@ -191,12 +226,12 @@ function updateDiagnosticCount(){const e=document.getElementById('diagCount');if
 function openDiagnostics(){ensureDiagnosticsUI();document.getElementById('diagPanel').style.display='flex';renderDiagnosticEvents();document.getElementById('diagFab').style.display='none'}
 function closeDiagnostics(){const p=document.getElementById('diagPanel');if(p)p.style.display='none';const f=document.getElementById('diagFab');if(f)f.style.display=(new URLSearchParams(location.search).get('diagnostics')==='1'||window.authDebug)?'':'none'}
 function copyDiagnosticLogs(){
-  const text=JSON.stringify({app:'Little Learners',build:'18',origin:location.origin,sessionStarted:window.appTraceLog.all()[0]?.time||null,exportedAt:new Date().toISOString(),events:window.appTraceLog.all()},null,2);
+  const text=JSON.stringify({app:'Little Learners',build:'19',origin:location.origin,sessionStarted:window.appTraceLog.all()[0]?.time||null,exportedAt:new Date().toISOString(),events:window.appTraceLog.all()},null,2);
   const fallback=()=>{const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();let ok=false;try{ok=document.execCommand('copy')}catch(_){}ta.remove();alert(ok?'All diagnostic logs copied.':'Copy failed. Use Export JSON instead.');};
   if(navigator.clipboard?.writeText)navigator.clipboard.writeText(text).then(()=>alert('All '+window.appTraceLog.count()+' diagnostic events copied.')).catch(fallback);else fallback();
 }
 function exportDiagnosticLogs(){
-  const text=JSON.stringify({app:'Little Learners',build:'18',exportedAt:new Date().toISOString(),events:window.appTraceLog.all()},null,2);
+  const text=JSON.stringify({app:'Little Learners',build:'19',exportedAt:new Date().toISOString(),events:window.appTraceLog.all()},null,2);
   const url=URL.createObjectURL(new Blob([text],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download='little-learners-diagnostics.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 ensureDiagnosticsUI();
@@ -256,8 +291,9 @@ try {
     const provider = new authSdk.GoogleAuthProvider();
     provider.setCustomParameters({ prompt: 'select_account' });
     window.authStep('S5d PASSED — Google provider configured', 'GoogleAuthProvider is ready.');
-    // Use full-page redirect on every device. This avoids popup blockers and
-    // inconsistent popup behavior in installed PWAs and mobile browsers.
+    // Popup-first remains the primary strategy. A timeout/getContext runtime fault is
+    // handled by the outer guard; we deliberately do not auto-start redirect for that
+    // fault because Firebase redirect uses the same iframe resolver and may hang too.
     let cloudWrite = Promise.resolve();
     const profileRef = uid => dbSdk.doc(db, 'users', uid);
     const localSnapshot = () => {
@@ -325,7 +361,7 @@ try {
       const state = kl.st();
       state.user = user ? (user.displayName || user.email || 'Google user') : null;
       window.authStep('S9 — Auth state changed', user ? 'Firebase reports a signed-in user. Checking Firestore profile access next.' : 'Firebase reports no signed-in user.');
-      if (!user) { window.cloudStatus = 'signed out'; window.fbStatus = 'Firebase: ready · redirect sign-in'; kl.refresh(); return; }
+      if (!user) { window.cloudStatus = 'signed out'; window.fbStatus = 'Firebase: ready · guarded Google sign-in'; kl.refresh(); return; }
       window.cloudStatus = 'loading profile'; window.fbStatus = 'Firebase: ready'; kl.refresh();
       try {
         window.authStep('S10 — Reading Firestore profile', 'Calling getDoc(users/{current-user-uid}). The UID and profile data are intentionally not displayed.');
