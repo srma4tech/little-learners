@@ -35,7 +35,7 @@ p{text-align:center;font-size:18px}button{touch-action:manipulation;-webkit-tap-
 const $=s=>document.querySelector(s),app=$('#app');
 let st={kids:{me:{name:'Me',stars:0}},kid:'me',lang:'both',sound:1},cur=0,q={};
 try{Object.assign(st,JSON.parse(localStorage.getItem('kl')||'{}'))}catch(e){}
-const save=()=>{try{localStorage.setItem('kl',JSON.stringify({...st,user:undefined}))}catch(e){}try{window.fb&&fb.push()}catch(e){}};
+const save=()=>{try{localStorage.setItem('kl',JSON.stringify({...st,user:undefined,err:undefined}))}catch(e){}try{window.fb&&fb.push()}catch(e){}};
 const K=()=>st.kids[st.kid]||(st.kid='me',st.kids.me=st.kids.me||{name:'Me',stars:0});
 const P=s=>s.split(';').map(x=>{const[e,en,hi]=x.split('|');return{e,en,hi:hi||''}});
 const AL=P("🍎|Apple;⚽|Ball;🐱|Cat;🐶|Dog;🐘|Elephant;🐟|Fish;🍇|Grapes;🐴|Horse;🍦|Ice cream;🧃|Juice;🪁|Kite;🦁|Lion;🌙|Moon;🪺|Nest;🍊|Orange;🦜|Parrot;👑|Queen;🐰|Rabbit;☀️|Sun;🐯|Tiger;☂️|Umbrella;🚐|Van;⌚|Watch;🎹|Xylophone;🪀|Yo-yo;🦓|Zebra").map((x,i)=>{const L=String.fromCharCode(65+i);return{e:x.e,big:L,en:L+' for '+x.en,hi:''}});
@@ -68,9 +68,9 @@ function stickers(){const n=K().stars/5|0;app.innerHTML=`<div class="bar"><butto
 function parent(){const b=(k,v,t)=>`<button class="btn ${st[k]===v?'':'o'}" onclick="st.${k}=${typeof v=='string'?"'"+v+"'":v};save();parent()">${t}</button>`;app.innerHTML=`<div class="bar"><button class="btn o" onclick="home()">⬅ Home</button><h2>⚙️ Parent corner</h2></div>${kidsUI()}<p>Language</p><div class="opts" style="margin:6px">${b('lang','en','English')}${b('lang','hi','हिन्दी')}${b('lang','both','Both')}</div><p>Voice</p><div class="opts" style="margin:6px">${b('sound',1,'🔊 On')}${b('sound',0,'🔇 Off')}</div><p>Hindi speech needs a Hindi voice installed in your browser or computer.</p><p><button class="btn o" onclick="rst(this)">Reset progress</button></p>`}
 function rst(b){if(b.dataset.c){K().stars=0;save();hdr();home()}else{b.dataset.c=1;b.textContent='Tap again to confirm'}}
 addEventListener('keydown',e=>{if(e.key=='Escape')home();else if(cur==0&&/^[a-z]$/i.test(e.key)&&app.querySelector('.card'))say(AL[e.key.toUpperCase().charCodeAt(0)-65])});
-function kidsUI(){const a=window.fb&&fb.ok?(st.user?`<p>Signed in: ${st.user}</p><p><button class="btn o" onclick="fb.out()">Sign out</button></p>`:`<p><button class="btn o" onclick="fb.in()">Sign in with Google to save progress online</button></p>`):`<p>Guest mode: progress is saved on this device.</p>`;return `<p>Who is playing?</p><div class="opts" style="margin:6px">${Object.keys(st.kids).map(k=>`<button class="btn ${k==st.kid?'':'o'}" onclick="st.kid='${k}';save();hdr();parent()">${st.kids[k].name}</button>`).join('')}<button class="btn o" onclick="addKid()">➕ Add kid</button></div>${a}`}
+function kidsUI(){const a=window.fb&&fb.ok?(st.user?`<p>Signed in: ${st.user}</p><p><button class="btn o" onclick="fb.signOut()">Sign out</button></p>`:`<p><button class="btn o" onclick="fb.signIn()">Sign in with Google to save progress online</button></p>`):`<p>Guest mode: progress is saved on this device.</p>`;const er=st.err?`<p style="color:#e53935;font-weight:700">${st.err}</p>`:'';return `<p>Who is playing?</p><div class="opts" style="margin:6px">${Object.keys(st.kids).map(k=>`<button class="btn ${k==st.kid?'':'o'}" onclick="st.kid='${k}';save();hdr();parent()">${st.kids[k].name}</button>`).join('')}<button class="btn o" onclick="addKid()">➕ Add kid</button></div>${a}${er}`}
 function addKid(){const n=(prompt("Kid's name?")||'').replace(/[<>&\"']/g,'').trim().slice(0,12);if(!n)return;const id='k'+Date.now();st.kids[id]={name:n,stars:0};st.kid=id;save();hdr();parent()}
-window.kl={st:()=>st,save,refresh:()=>{hdr();if(app.textContent.includes('Parent corner'))parent()}};
+window.kl={err(e){const c=e&&e.code||'';const m={'auth/operation-not-allowed':'Google sign-in is not enabled yet: Firebase > Authentication > Sign-in method > Google > Enable.','auth/unauthorized-domain':'Add srma4tech.github.io in Firebase > Authentication > Settings > Authorized domains.','auth/popup-blocked':'The browser blocked the sign-in popup. Allow popups for this site and try again.','auth/invalid-api-key':'The apiKey in firebase-config.js looks wrong.','auth/network-request-failed':'No internet connection.'};if(c=='auth/popup-closed-by-user'||c=='auth/cancelled-popup-request')return;st.err=m[c]||('Sign-in failed: '+(c||e&&e.message||e));kl.refresh()},st:()=>st,save,refresh:()=>{hdr();if(app.textContent.includes('Parent corner'))parent()}};
 if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
 hdr();home();
 </script>
@@ -79,8 +79,9 @@ try{const{firebaseConfig:c}=await import('./firebase-config.js');
 if(c.apiKey&&!c.apiKey.startsWith('YOUR')){
 const B='https://www.gstatic.com/firebasejs/10.12.2/',[{initializeApp},A,F]=await Promise.all([import(B+'firebase-app.js'),import(B+'firebase-auth.js'),import(B+'firebase-firestore.js')]);
 const ap=initializeApp(c),au=A.getAuth(ap),db=F.getFirestore(ap),pr=new A.GoogleAuthProvider(),mob=/iPhone|iPad|Android/i.test(navigator.userAgent)||matchMedia('(display-mode: standalone)').matches;
-window.fb={ok:1,in:()=>mob?A.signInWithRedirect(au,pr):A.signInWithPopup(au,pr),out:()=>A.signOut(au),
+window.fb={ok:1,signIn:()=>{kl.st().err='';return(mob?A.signInWithRedirect(au,pr):A.signInWithPopup(au,pr)).catch(kl.err)},signOut:()=>A.signOut(au),
 push:()=>{const u=au.currentUser;if(u)F.setDoc(F.doc(db,'users',u.uid),{kids:kl.st().kids,updated:Date.now()},{merge:true}).catch(()=>{})}};
+A.getRedirectResult(au).catch(kl.err);
 A.onAuthStateChanged(au,async u=>{const st=kl.st();st.user=u?(u.displayName||u.email):null;
 if(u){try{const d=await F.getDoc(F.doc(db,'users',u.uid)),r=d.exists()?d.data().kids||{}:{};for(const k in r)if(!st.kids[k]||(r[k].stars||0)>st.kids[k].stars)st.kids[k]=r[k];kl.save()}catch(e){}}
 kl.refresh()})}}catch(e){console.warn('Guest mode',e)}
