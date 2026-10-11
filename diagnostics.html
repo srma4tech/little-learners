@@ -83,13 +83,30 @@ $('google').disabled=false;
 }
 async function googleTest(){
 if(authBusy||!window.__llDiag){log('AUTH','Sign-in test ignored: another test is pending or initialization has not completed.');return}
-authBusy=true;$('google').disabled=true;const t0=Date.now();check('auth','Google popup sign-in','NOT TESTED','Attempt started by user gesture; waiting up to 12 seconds for Firebase to resolve.');log('AUTH','User initiated signInWithPopup',{viewport:innerWidth+'x'+innerHeight,standalone:matchMedia('(display-mode: standalone)').matches,hasGapi:!!window.gapi,hasGapiGetContext:typeof window.gapi?.iframes?.getContext==='function'});
+authBusy=true;$('google').disabled=true;const t0=Date.now();let timedOut=false,lateHandled=false;
+check('auth','Google popup sign-in','NOT TESTED','Attempt started by user gesture; waiting up to 12 seconds for Firebase to resolve.');
+log('AUTH','User initiated signInWithPopup',{viewport:innerWidth+'x'+innerHeight,standalone:matchMedia('(display-mode: standalone)').matches,hasGapi:!!window.gapi,hasGapiIframes:!!window.gapi?.iframes,hasGapiGetContext:typeof window.gapi?.iframes?.getContext==='function'});
 const {auth,provider,signInWithPopup,db,doc,getDoc}=window.__llDiag;
+async function checkUserDocument(user,late=false){
+ try{const snap=await getDoc(doc(db,'users',user.user.uid));check('firebase','User-scoped Firestore read','PASS',snap.exists()?'Read of users/{uid} succeeded. Document contents not collected.':'Read succeeded; user document does not exist yet.');if(late)log('AUTH_LATE','Firestore user-scoped read completed after the popup timeout.')}
+ catch(e){check('firebase','User-scoped Firestore read','FAIL',safeError(e).code+' — '+safeError(e).message);if(late)log('AUTH_LATE_ERROR','Firestore read after late popup resolution failed',safeError(e))}
+}
 try{
-const user=await Promise.race([signInWithPopup(auth,provider),new Promise((_,rej)=>setTimeout(()=>rej(Object.assign(new Error('Popup promise has not resolved after 12 seconds; the underlying Firebase request may still be pending.'),{code:'diagnostics/popup-timeout'})),12000))]);
+const popupPromise=signInWithPopup(auth,provider);
+popupPromise.then(async user=>{
+ if(!timedOut||lateHandled)return;lateHandled=true;
+ log('AUTH_LATE','Firebase popup promise RESOLVED after the diagnostic timeout',{elapsedMs:Date.now()-t0,authCurrentUserPresent:!!auth.currentUser});
+ check('auth','Google popup sign-in','PASS','Firebase popup promise resolved late, after '+(Date.now()-t0)+' ms. UID and account details hidden.');
+ await checkUserDocument(user,true);
+},error=>{
+ if(!timedOut||lateHandled)return;lateHandled=true;const er=safeError(error);
+ log('AUTH_LATE_ERROR','Firebase popup promise REJECTED after the diagnostic timeout',er);
+ check('auth','Google popup sign-in','FAIL','Late rejection after '+(Date.now()-t0)+' ms: '+er.code+' — '+er.message);
+});
+const user=await Promise.race([popupPromise,new Promise((_,rej)=>setTimeout(()=>{timedOut=true;rej(Object.assign(new Error('Popup promise has not resolved after 12 seconds; tracking continues to capture any later resolution or rejection.'),{code:'diagnostics/popup-timeout'}))},12000))]);
 check('auth','Google popup sign-in','PASS','Firebase popup resolved in '+(Date.now()-t0)+' ms. UID and account details hidden.');
-try{const snap=await getDoc(doc(db,'users',user.user.uid));check('firebase','User-scoped Firestore read','PASS',snap.exists()?'Read of users/{uid} succeeded. Document contents not collected.':'Read succeeded; user document does not exist yet.')}catch(e){check('firebase','User-scoped Firestore read','FAIL',safeError(e).code+' — '+safeError(e).message)}
-}catch(e){const er=safeError(e);check('auth','Google popup sign-in',er.code==='diagnostics/popup-timeout'?'NOT TESTED':'FAIL',er.code+' — '+er.message);log('AUTH_ERROR','Google popup sign-in did not complete',er);if(er.code==='auth/cancelled-popup-request')log('HINT','Firebase reports a cancelled popup operation. Do not repeatedly start overlapping sign-in attempts.');}
+await checkUserDocument(user,false);
+}catch(e){const er=safeError(e);check('auth','Google popup sign-in',er.code==='diagnostics/popup-timeout'?'NOT TESTED':'FAIL',er.code+' — '+er.message);log(er.code==='diagnostics/popup-timeout'?'AUTH_TIMEOUT':'AUTH_ERROR','Google popup sign-in did not complete within the diagnostic wait',er);if(er.code==='auth/cancelled-popup-request')log('HINT','Firebase reports a cancelled popup operation. Do not repeatedly start overlapping sign-in attempts.')}
 finally{authBusy=false;$('google').disabled=false}
 }
 function exportObject(){return {...report,finishedAt:new Date().toISOString(),runtime:{viewport:{width:innerWidth,height:innerHeight,devicePixelRatio},online:navigator.onLine,secureContext:isSecureContext,standalone:matchMedia('(display-mode: standalone)').matches,hasGapi:!!window.gapi,hasGapiIframes:!!window.gapi?.iframes,hasGapiGetContext:typeof window.gapi?.iframes?.getContext==='function'},secrets:'Firebase config values, tokens, user IDs, and document contents are not included.'}}
