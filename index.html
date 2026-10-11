@@ -87,7 +87,7 @@ function gate(){if(Date.now()<unlock)return parent();const a=2+Math.random()*7|0
 function renKid(){const n=(prompt('New name',K().name)||'').replace(/[<>&"']/g,'').trim().slice(0,12);if(n){K().name=n;save();hdr();parent()}}
 let SIGN_WAIT=8000,wait=0;
 function gbtn(){const e=document.getElementById('gbtn');if(e&&window.fb&&fb.renderGoogle)fb.renderGoogle(e)}
-addEventListener('error',e=>{const m=e.message||'Unknown JavaScript error';if(m!=='Script error.'&&m!=='Script error')window.lastErr=m});addEventListener('unhandledrejection',e=>{const r=e.reason;window.lastErr=(r&&(r.code||r.message))||String(r)});
+addEventListener('error',e=>{const m=e.message||'Unknown JavaScript error',where=e.filename?(' @ '+e.filename.split('/').slice(-2).join('/')+':'+(e.lineno||0)+':'+(e.colno||0)):'';if(m!=='Script error.'&&m!=='Script error')window.lastErr=m+where;else if(e.filename)window.lastErr='Cross-origin script error @ '+e.filename+':'+(e.lineno||0)});addEventListener('unhandledrejection',e=>{const r=e.reason;window.lastErr=(r&&(r.code||r.message||r.stack))||String(r)});
 function signInClick(){st.err='';window.msg='⏳ Opening Google sign-in… allow the popup if asked.';kl.refresh();clearTimeout(wait);wait=setTimeout(()=>{if(window.msg){window.msg='Still waiting. If no Google window opened, allow popups for this site and tap again.';kl.refresh()}},SIGN_WAIT);
 const done=()=>{clearTimeout(wait);window.msg='';kl.refresh()};
 try{if(!window.fb||!fb.signIn)throw{code:'',message:'Firebase is not ready yet'};Promise.resolve(fb.signIn()).then(done,e=>{done();kl.err(e)})}catch(e){done();kl.err(e)}}
