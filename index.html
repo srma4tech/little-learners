@@ -171,7 +171,7 @@ function signInClick(){
     Promise.resolve(authAttempt).then(()=>{
       settled=true;
       window.authStep(timedOut?'AUTH LATE — popup eventually resolved':'AUTH SUCCESS — popup promise resolved','Firebase auth-state listener updates the session and loads the cloud profile.');
-      if(!timedOut)finish(false);
+      if(timedOut){authInFlight=false;window.msg='';kl.refresh()}else finish(false);
     },error=>{
       settled=true;
       window.authStep('AUTH FAILURE — popup promise rejected',window.authErrorDetails(error));
