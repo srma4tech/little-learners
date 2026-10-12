@@ -282,16 +282,8 @@ try {
     window.authStep('S5d — Creating Google provider', 'Using the same GoogleAuthProvider configuration as the successful standalone sign-in test.');
     const provider = new authSdk.GoogleAuthProvider();
     window.authStep('S5d PASSED — Google provider configured', 'GoogleAuthProvider is ready; no custom prompt parameter is applied.');
-    // Match the known-good diagnostic flow: process any pending redirect result
-    // before enabling the app's explicit popup sign-in button.
-    window.authStep('S5e — Processing pending redirect result', 'Matching diagnostics.html before enabling Google popup sign-in.');
-    try {
-      const redirectResult = await authSdk.getRedirectResult(auth);
-      window.authStep('S5e PASSED — Redirect result processed', redirectResult?.user ? 'A redirect result returned a signed-in user.' : 'No pending redirect sign-in result; popup sign-in can proceed.');
-    } catch (error) {
-      window.authStep('S5e WARNING — Redirect result processing failed', window.authErrorDetails(error));
-      // Keep the app usable: a failed startup check must not permanently block popup sign-in.
-    }
+    // Do not await getRedirectResult during startup: on affected mobile browsers it can remain pending
+    // and prevent window.fb and the user-clicked popup sign-in handler from being registered.
     let cloudWrite = Promise.resolve();
     const profileRef = uid => dbSdk.doc(db, 'users', uid);
     const localSnapshot = () => {
