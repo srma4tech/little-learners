@@ -97,14 +97,19 @@ window.authStep = (stage, detail = '') => {
 // Capture failures that can happen outside Firebase's promise chain. Keep details sanitized
 // by appTraceLog before they are retained or printed.
 window.addEventListener('error', event => {
+  const target = event.target;
+  const isResourceError = target && target !== window;
   const detail = {
-    message: event.message || 'Uncaught browser error',
+    message: event.message || (isResourceError ? 'Resource failed to load' : 'Uncaught browser error'),
     filename: event.filename ? window.appTraceLog.safeUrl(event.filename) : '(not exposed)',
     line: event.lineno || null,
     column: event.colno || null,
+    targetTag: isResourceError ? (target.tagName || '(unknown element)') : '(window)',
+    resourceUrl: isResourceError ? window.appTraceLog.safeUrl(target.src || target.href || '') : '(not applicable)',
     error: event.error ? window.authErrorDetails?.(event.error) || String(event.error) : '(browser did not expose the Error object)'
   };
-  window.appTraceLog.add('ERROR', 'window.error', 'Uncaught browser/runtime error', detail);
+  window.appTraceLog.add(isResourceError ? 'ERROR' : 'ERROR', isResourceError ? 'resource.error' : 'window.error',
+    isResourceError ? 'Script/style/image or other page resource failed to load' : 'Uncaught browser/runtime error', detail);
 }, true);
 window.addEventListener('unhandledrejection', event => {
   const reason = event.reason;
@@ -228,7 +233,29 @@ function signInClick(){
   }
 }
 window.kl={authed(has){const ks=Object.keys(st.kids);if(!st.ob){if(has){if(st.kids.me&&!st.kids.me.stars&&st.kids.me.name=='Me'&&ks.length>1)delete st.kids.me;if(!st.kids[st.kid])st.kid=Object.keys(st.kids)[0];st.ob=1;st.step=3}else if(st.step<2)st.step=2}save();hdr();if(st.ob&&onbActive)home();else if(!st.ob&&onbActive)onb()},err(e){const c=e&&e.code||'';window.lastErr=c||(e&&e.message)||String(e);const m={'auth/operation-not-allowed':'Google sign-in is not enabled yet: Firebase > Authentication > Sign-in method > Google > Enable.','auth/unauthorized-domain':'Add srma4tech.github.io in Firebase > Authentication > Settings > Authorized domains.','auth/popup-blocked':'The browser blocked the sign-in popup. Allow popups for this site and try again.','auth/invalid-api-key':'The apiKey in firebase-config.js looks wrong.','auth/network-request-failed':'No internet connection.','auth/timeout':'Google sign-in did not complete within 45 seconds. Reload this page before retrying; if it repeats, open the site in a regular Chrome tab instead of the installed app.','auth/gapi-context-failure':'Google sign-in could not initialize its browser iframe (getContext error). Reload this page and try again; if it repeats, open the site in a regular Chrome tab instead of the installed app.','auth/iframe-failure':'Google sign-in hit a browser iframe initialization error. Reload this page before retrying.'};if(c=='auth/popup-closed-by-user'||c=='auth/cancelled-popup-request')return;st.err=m[c]||('Sign-in failed: '+(c||e&&e.message||e));kl.refresh()},st:()=>st,save,refresh:()=>{hdr();if(!st.ob&&onbActive)onb();else if(app.textContent.includes('Parent corner'))parent()}};
-if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').then(()=>navigator.serviceWorker.ready).then(()=>window.swS='active').catch(e=>window.swS='failed: '+e.message));
+if('serviceWorker' in navigator)addEventListener('load',()=>{
+  window.appTraceLog.add('INFO','service-worker','Registering service worker','./sw.js');
+  navigator.serviceWorker.register('./sw.js')
+    .then(registration=>{
+      window.appTraceLog.add('INFO','service-worker','Service worker registered',{
+        scope:window.appTraceLog.safeUrl(registration.scope),
+        active:!!registration.active,
+        waiting:!!registration.waiting,
+        installing:!!registration.installing
+      });
+      return navigator.serviceWorker.ready;
+    })
+    .then(registration=>{
+      window.swS='active';
+      window.appTraceLog.add('INFO','service-worker','Service worker ready',{
+        activeScript:registration.active?.scriptURL ? window.appTraceLog.safeUrl(registration.active.scriptURL) : '(no active script)'
+      });
+    })
+    .catch(e=>{
+      window.swS='failed: '+e.message;
+      window.appTraceLog.add('ERROR','service-worker','Service worker registration failed',window.authErrorDetails(e));
+    });
+});
 hdr();st.ob?home():onb();
 // Console UI is reachable from Parent corner. Events are recorded before the panel is opened.
 function ensureDiagnosticsUI(){
