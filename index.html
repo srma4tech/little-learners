@@ -76,6 +76,13 @@ window.appTraceLog = (() => {
   const add = (level, source, message, details) => {
     const item = { time: new Date().toISOString(), level, source, message: safeText(message), ...(details ? {details:safeText(details)} : {}) };
     events.push(item); if (events.length > LIMIT) events = events.slice(-LIMIT); save();
+    // Mirror every in-app diagnostic event to DevTools so the normal app can be debugged
+    // without opening diagnostics.html or the in-app log panel.
+    try {
+      const consoleMethod = level === 'ERROR' ? 'error' : level === 'WARN' ? 'warn' : 'info';
+      console[consoleMethod]('[LittleLearners][' + level + '][' + source + '] ' + item.message,
+        details === undefined || details === null || details === '' ? '' : item.details);
+    } catch (_) {}
     try { if (typeof updateDiagnosticCount === 'function') updateDiagnosticCount(); if (typeof renderDiagnosticEvents === 'function' && document.getElementById('diagPanel')?.style.display === 'flex') renderDiagnosticEvents(); } catch (_) {}
     return item;
   };
@@ -86,6 +93,43 @@ window.authStep = (stage, detail = '') => {
   // Never use blocking alert() for diagnostics: record events and let the app continue.
   window.appTraceLog?.add('INFO', 'auth', stage, detail);
 };
+
+// Capture failures that can happen outside Firebase's promise chain. Keep details sanitized
+// by appTraceLog before they are retained or printed.
+window.addEventListener('error', event => {
+  const detail = {
+    message: event.message || 'Uncaught browser error',
+    filename: event.filename ? window.appTraceLog.safeUrl(event.filename) : '(not exposed)',
+    line: event.lineno || null,
+    column: event.colno || null,
+    error: event.error ? window.authErrorDetails?.(event.error) || String(event.error) : '(browser did not expose the Error object)'
+  };
+  window.appTraceLog.add('ERROR', 'window.error', 'Uncaught browser/runtime error', detail);
+}, true);
+window.addEventListener('unhandledrejection', event => {
+  const reason = event.reason;
+  window.appTraceLog.add('ERROR', 'unhandledrejection', 'Unhandled promise rejection',
+    reason instanceof Error ? window.authErrorDetails(reason) : String(reason ?? '(empty rejection reason)'));
+});
+window.addEventListener('pageshow', event => {
+  window.appTraceLog.add('INFO', 'lifecycle', 'Page shown', {
+    persistedFromBackForwardCache: event.persisted,
+    visibility: document.visibilityState,
+    online: navigator.onLine,
+    url: location.origin + location.pathname + location.search
+  });
+});
+window.addEventListener('online', () => window.appTraceLog.add('INFO', 'network', 'Browser reports network online'));
+window.addEventListener('offline', () => window.appTraceLog.add('WARN', 'network', 'Browser reports network offline'));
+window.appTraceLog.add('INFO', 'startup', 'Console diagnostics enabled', {
+  userAgent: navigator.userAgent,
+  platform: navigator.platform,
+  language: navigator.language,
+  online: navigator.onLine,
+  visibility: document.visibilityState,
+  standalone: !!(window.matchMedia && window.matchMedia('(display-mode: standalone)').matches),
+  page: location.origin + location.pathname + location.search
+});
 
 // Popup-only auth: no GAPI global interception or redirect-result startup gate.
 
