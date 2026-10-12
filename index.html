@@ -353,11 +353,8 @@ try {
     window.authStep('S5d — Creating Google provider', 'Using the same GoogleAuthProvider configuration as the successful standalone sign-in test.');
     const provider = new authSdk.GoogleAuthProvider();
     window.authStep('S5d PASSED — Google provider configured', 'GoogleAuthProvider is ready; no custom prompt parameter is applied.');
-    // Start redirect-result processing in the background to match diagnostics.html,
-    // but never await it: it may remain pending on Android and must not block window.fb setup.
-    window.authStep('S5e — Starting non-blocking redirect-result check', 'Processing runs in the background while popup sign-in is registered.');
     // Match diagnostics.html: settle redirect-result processing (or cap the wait at 8s)
-    // before opening a popup. Do not let a pending redirect check race the popup flow.
+    // before enabling sign-in. Do not let a pending redirect check race the popup flow.
     const redirectResultCheck = Promise.race([
       authSdk.getRedirectResult(auth),
       new Promise(resolve => setTimeout(() => {
@@ -383,12 +380,20 @@ try {
       cloudWrite = cloudWrite.then(() => dbSdk.setDoc(profileRef(user.uid), data, { merge: true }));
       return cloudWrite;
     };
+    // Match the working diagnostic's ordering: finish the bounded redirect-result
+    // check BEFORE exposing the sign-in handler. Never await anything between the
+    // user's click and the call to signInWithPopup, or browser user activation may be lost.
+    window.authStep('S5e — Waiting for bounded redirect-result check before enabling sign-in',
+      'Sign-in setup waits at most 8 seconds here; the popup itself will be started directly from the user click.');
+    await redirectResultCheck;
+    window.authStep('S5e COMPLETE — Redirect-result check settled; sign-in handler can be exposed',
+      'Any pending redirect check has resolved or reached its 8-second limit.');
+
     window.fb = {
       ok: true,
       signIn: async () => {
         kl.st().err = '';
-        // The standalone diagnostic settles this check (maximum 8s) before enabling sign-in.
-        await redirectResultCheck;
+        // IMPORTANT: no await before signInWithPopup; preserve the original click's user activation.
         window.authRuntimeSnapshot('before-signInWithPopup');
         window.authStep('AUTH POPUP — Calling Firebase signInWithPopup', 'Using the same plain GoogleAuthProvider popup call as the successful standalone diagnostic test.');
         try {
