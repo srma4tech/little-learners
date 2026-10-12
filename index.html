@@ -237,12 +237,12 @@ function updateDiagnosticCount(){const e=document.getElementById('diagCount');if
 function openDiagnostics(){ensureDiagnosticsUI();document.getElementById('diagPanel').style.display='flex';renderDiagnosticEvents();document.getElementById('diagFab').style.display='none'}
 function closeDiagnostics(){const p=document.getElementById('diagPanel');if(p)p.style.display='none';const f=document.getElementById('diagFab');if(f)f.style.display=(new URLSearchParams(location.search).get('diagnostics')==='1'||window.authDebug)?'':'none'}
 function copyDiagnosticLogs(){
-  const text=JSON.stringify({app:'Little Learners',build:'20',origin:location.origin,sessionStarted:window.appTraceLog.all()[0]?.time||null,exportedAt:new Date().toISOString(),events:window.appTraceLog.all()},null,2);
+  const text=JSON.stringify({app:'Little Learners',build:'21',origin:location.origin,sessionStarted:window.appTraceLog.all()[0]?.time||null,exportedAt:new Date().toISOString(),events:window.appTraceLog.all()},null,2);
   const fallback=()=>{const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();let ok=false;try{ok=document.execCommand('copy')}catch(_){}ta.remove();alert(ok?'All diagnostic logs copied.':'Copy failed. Use Export JSON instead.');};
   if(navigator.clipboard?.writeText)navigator.clipboard.writeText(text).then(()=>alert('All '+window.appTraceLog.count()+' diagnostic events copied.')).catch(fallback);else fallback();
 }
 function exportDiagnosticLogs(){
-  const text=JSON.stringify({app:'Little Learners',build:'20',exportedAt:new Date().toISOString(),events:window.appTraceLog.all()},null,2);
+  const text=JSON.stringify({app:'Little Learners',build:'21',exportedAt:new Date().toISOString(),events:window.appTraceLog.all()},null,2);
   const url=URL.createObjectURL(new Blob([text],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download='little-learners-diagnostics.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 ensureDiagnosticsUI();
