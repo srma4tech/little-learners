@@ -285,10 +285,22 @@ try {
     // Start redirect-result processing in the background to match diagnostics.html,
     // but never await it: it may remain pending on Android and must not block window.fb setup.
     window.authStep('S5e — Starting non-blocking redirect-result check', 'Processing runs in the background while popup sign-in is registered.');
-    authSdk.getRedirectResult(auth).then(redirectResult => {
-      window.authStep('S5e PASSED — Redirect result processed', redirectResult?.user ? 'A redirect result returned a signed-in user.' : 'No pending redirect result.');
+    // Match diagnostics.html: settle redirect-result processing (or cap the wait at 8s)
+    // before opening a popup. Do not let a pending redirect check race the popup flow.
+    const redirectResultCheck = Promise.race([
+      authSdk.getRedirectResult(auth),
+      new Promise(resolve => setTimeout(() => {
+        window.authStep('S5e INFO — Redirect-result check reached 8-second limit', 'Continuing with the user-initiated popup without waiting indefinitely.');
+        resolve(null);
+      }, 8000))
+    ]).then(redirectResult => {
+      if (redirectResult !== null) {
+        window.authStep('S5e PASSED — Redirect result processed', redirectResult?.user ? 'A redirect result returned a signed-in user.' : 'No pending redirect result.');
+      }
+      return redirectResult;
     }).catch(error => {
       window.authStep('S5e WARNING — Redirect result processing failed', window.authErrorDetails(error));
+      return null;
     });
     let cloudWrite = Promise.resolve();
     const profileRef = uid => dbSdk.doc(db, 'users', uid);
@@ -304,6 +316,8 @@ try {
       ok: true,
       signIn: async () => {
         kl.st().err = '';
+        // The standalone diagnostic settles this check (maximum 8s) before enabling sign-in.
+        await redirectResultCheck;
         window.authRuntimeSnapshot('before-signInWithPopup');
         window.authStep('AUTH POPUP — Calling Firebase signInWithPopup', 'Using the same plain GoogleAuthProvider popup call as the successful standalone diagnostic test.');
         try {
