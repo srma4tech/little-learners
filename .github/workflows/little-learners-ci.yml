@@ -50,6 +50,8 @@ jobs:
             [ -f "$f" ] || continue
             node --check "$f"
           done
+      - name: Check live browser smoke script syntax
+        run: node --check .github/scripts/live-smoke.mjs
       - name: Test reset-aware progress merge rules
         run: node --test tests/progress-model.test.cjs
       - name: Scan tracked files for private credentials
