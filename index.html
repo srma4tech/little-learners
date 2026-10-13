@@ -261,8 +261,8 @@ try {
     ;
     authSdk.onAuthStateChanged(auth, async user => {
       const state = kl.st();
-      let previousUid = '';
-      try { previousUid = localStorage.getItem('kl_account_uid') || ''; } catch (_) {}
+      let previousUid = '', lastUid = '';
+      try { previousUid = localStorage.getItem('kl_account_uid') || ''; lastUid = localStorage.getItem('kl_last_account_uid') || ''; } catch (_) {}
       if (!user) {
         profileReady = false;
         state.user = null;
@@ -271,6 +271,8 @@ try {
         // Firebase also emits an initial null user for ordinary guest sessions.
         // Preserve their live local state unless we are actually leaving an account.
         if (!previousUid) { kl.refresh(); return; }
+        // Preserve account-local work (including any unsynced offline changes) separately.
+        try { localStorage.setItem('kl_account_cache_' + previousUid, localStorage.getItem('kl') || '{}'); localStorage.setItem('kl_last_account_uid', previousUid); } catch (_) {}
         // Never expose an account's cached profile as guest progress.
         let guest = null;
         try { guest = JSON.parse(localStorage.getItem('kl_guest') || 'null'); } catch (_) {}
@@ -293,20 +295,36 @@ try {
       let choice = 'account';
       try {
         if (!previousUid) {
-          const current = JSON.parse(localStorage.getItem('kl') || '{}');
-          const guestSnapshot = {
-            kids: current.kids && typeof current.kids === 'object' ? current.kids : { me: { name: 'Me', stars: 0 } },
-            kid: current.kid || 'me',
-            settings: { lang: current.lang || 'both', sound: typeof current.sound === 'number' ? current.sound : 1 },
-            schemaVersion: 2,
-            savedAt: Date.now()
-          };
-          localStorage.setItem('kl_guest', JSON.stringify(guestSnapshot));
-          const meaningful = Object.values(guestSnapshot.kids).some(k => k && ((k.name && k.name !== 'Me') || Number(k.stars) > 0));
-          if (meaningful) {
-            choice = window.confirm(
-              'You have learning data saved on this device.\n\nOK: explicitly merge this device’s progress into the Google account.\nCancel: use the Google account’s progress and keep guest data separate on this device.'
-            ) ? 'merge' : 'account';
+          if (lastUid && lastUid === user.uid) {
+            // Returning to the same account: restore only that account's local cache.
+            let cached = null;
+            try { cached = JSON.parse(localStorage.getItem('kl_account_cache_' + user.uid) || 'null'); } catch (_) {}
+            if (cached && typeof cached === 'object') {
+              state.kids = cached.kids && typeof cached.kids === 'object' ? cached.kids : { me: { name: 'Me', stars: 0 } };
+              state.kid = cached.kid || 'me'; state.lang = cached.lang || 'both'; state.sound = typeof cached.sound === 'number' ? cached.sound : 1;
+              state.ob = cached.ob ? 1 : 0; state.step = Number(cached.step) || 0;
+              choice = 'merge';
+            } else {
+              choice = 'account';
+            }
+          } else {
+            const current = JSON.parse(localStorage.getItem('kl') || '{}');
+            const guestSnapshot = {
+              kids: current.kids && typeof current.kids === 'object' ? current.kids : { me: { name: 'Me', stars: 0 } },
+              kid: current.kid || 'me',
+              settings: { lang: current.lang || 'both', sound: typeof current.sound === 'number' ? current.sound : 1 },
+              schemaVersion: 2,
+              savedAt: Date.now()
+            };
+            localStorage.setItem('kl_guest', JSON.stringify(guestSnapshot));
+            const meaningful = Object.values(guestSnapshot.kids).some(k => k && ((k.name && k.name !== 'Me') || Number(k.stars) > 0));
+            if (meaningful && !lastUid) {
+              choice = window.confirm(
+                'You have learning data saved on this device.\n\nOK: explicitly merge this device’s progress into the Google account.\nCancel: use the Google account’s progress and keep guest data separate on this device.'
+              ) ? 'merge' : 'account';
+            } else {
+              choice = 'account';
+            }
           }
         } else if (previousUid !== user.uid) {
           // Preserve the previous account's device cache under its own UID.
@@ -323,7 +341,7 @@ try {
       }
 
       state.user = user.displayName || user.email || 'Google user';
-      try { localStorage.setItem('kl_account_uid', user.uid); } catch (_) {}
+      try { localStorage.setItem('kl_account_uid', user.uid); localStorage.setItem('kl_last_account_uid', user.uid); } catch (_) {}
       profileReady = false;
       window.cloudStatus = 'loading profile'; window.fbStatus = 'Firebase: ready'; kl.refresh();
       try {
