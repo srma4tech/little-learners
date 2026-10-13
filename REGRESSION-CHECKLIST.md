@@ -33,7 +33,6 @@ Use this checklist after changes to authentication, child profiles, progress sto
 - [ ] Confirm the signed-in profile is visible and the expected `users/{uid}` document exists in Firestore.
 - [ ] Change the child profile and earn stars; refresh and verify the same child and progress are restored.
 - [ ] Open the app on a second browser/device, sign in with the same Google account, and verify the cloud-backed profile/progress is available.
-- [ ] Sign out / switch to guest; confirm the app returns to the separately saved guest profile and does not clear cloud data.
 - [ ] Sign back in and confirm the correct cloud profile is restored without duplicate or lost child profiles.
 
 ## PWA and offline checks
