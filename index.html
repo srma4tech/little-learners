@@ -393,25 +393,6 @@ try {
           ...localSnapshot(),
           createdAt: typeof cloud.createdAt === 'number' ? cloud.createdAt : Date.now()
         });
-        kl.save(); kl.authed(true, Object.keys(state.kids).length);
-      } catch (error) {
-        profileReady = false;
-        window.lastErr = error?.code || error?.message || String(error);
-        window.cloudStatus = 'profile failed';
-        state.err = 'Google sign-in succeeded, but cloud profile access failed. ' + window.lastErr;
-        kl.refresh();
-      }
-    });
-        kl.save(); kl.authed(true, Object.keys(state.kids).length);
-      } catch (error) {
-        ;
-        window.lastErr = error?.code || error?.message || String(error);
-        profileReady = false;
-        window.cloudStatus = 'profile failed';
-        state.err = 'Google sign-in succeeded, but cloud profile access failed. ' + window.lastErr;
-        kl.refresh();
-      }
-    });
     window.fbStatus = 'Firebase: ready'; kl.refresh();
   }
 } catch (error) {
