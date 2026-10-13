@@ -11,7 +11,7 @@ A child-friendly, installable learning PWA for young children. Activities cover 
 1. Open the live app in a supported browser.
 2. Follow the welcome flow and choose the child's name and language.
 3. Use the parent corner to switch children, language and voice settings, or reset progress.
-4. Sign in with Google from the parent corner to sync the profile and progress through Firebase. Guest mode keeps progress on the current device.
+4. Sign in with Google from the parent corner to sync through Firebase. If this device already has a configured guest profile or earned stars, the app asks whether to merge that data into the Google account or keep it separate. Choosing separate keeps the guest snapshot on this device and loads the account profile without uploading guest data. Signing out returns to the saved guest profile; it does not delete cloud data.
 5. To install, use the app's Install prompt when available, or the browser menu's **Install app** / **Add to Home Screen** option.
 
 ## Firebase setup
@@ -44,7 +44,7 @@ To inspect a run, open the repository's **Actions** tab and select the relevant 
 
 ## Updating the app and service-worker cache
 
-The service worker uses a versioned cache in `sw.js` (currently `little-learners-v36`). When changing app files that should refresh for existing installations, increment the cache name, for example from `little-learners-v35` to `little-learners-v36`. Commit the change to `master`, wait for GitHub Pages deployment, then test both a fresh browser session and an already-installed PWA. The reset-aware progress model lives in `progress-model.js` and is covered by `node --test tests/progress-model.test.cjs`.
+The service worker uses a versioned cache in `sw.js` (currently `little-learners-v37`). When changing app files that should refresh for existing installations, increment the cache name, for example from `little-learners-v36` to `little-learners-v37`. Commit the change to `master`, wait for GitHub Pages deployment, then test both a fresh browser session and an already-installed PWA. The reset-aware progress model lives in `progress-model.js` and is covered by `node --test tests/progress-model.test.cjs`.
 
 ## Data and privacy notes
 
