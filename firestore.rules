@@ -2,7 +2,36 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     match /users/{uid} {
-      allow read, write: if request.auth != null && request.auth.uid == uid;
+      function signedInOwner() {
+        return request.auth != null && request.auth.uid == uid;
+      }
+      function validProfile() {
+        return request.resource.data.keys().hasOnly([
+          'kids', 'settings', 'schemaVersion', 'createdAt', 'updatedAt',
+          'email', 'displayName'
+        ])
+        && request.resource.data.kids is map
+        && request.resource.data.kids.size() <= 10
+        && request.resource.data.settings is map
+        && request.resource.data.settings.keys().hasOnly(['lang', 'sound'])
+        && request.resource.data.settings.lang in ['en', 'hi', 'both']
+        && request.resource.data.settings.sound is number
+        && request.resource.data.settings.sound in [0, 1]
+        && request.resource.data.updatedAt is number
+        && (!('createdAt' in request.resource.data)
+          || request.resource.data.createdAt is number)
+        && (!('schemaVersion' in request.resource.data)
+          || request.resource.data.schemaVersion == 2)
+        && (!('email' in request.resource.data)
+          || request.resource.data.email is string
+          || request.resource.data.email == null)
+        && (!('displayName' in request.resource.data)
+          || request.resource.data.displayName is string
+          || request.resource.data.displayName == null);
+      }
+      allow read: if signedInOwner();
+      allow create, update: if signedInOwner() && validProfile();
+      allow delete: if signedInOwner();
     }
   }
 }
