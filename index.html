@@ -359,7 +359,6 @@ try {
     window.authStep('S5d — Creating Google provider', 'Using the same GoogleAuthProvider configuration as the successful standalone sign-in test.');
     const provider = new authSdk.GoogleAuthProvider();
     window.authStep('S5d PASSED — Google provider configured', 'GoogleAuthProvider is ready; no custom prompt parameter is applied.');
-redirect check
     let cloudWrite = Promise.resolve();
     const profileRef = uid => dbSdk.doc(db, 'users', uid);
     const localSnapshot = () => {
