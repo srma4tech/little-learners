@@ -48,7 +48,7 @@ p{text-align:center;font-size:18px}body.ob header{display:none}.ib{display:flex;
 
 </style></head><body>
 <a class="skip-link" href="#app">Skip to main content</a>
-<header aria-label="Little Learners header"><button class="pill" type="button" aria-label="Go to home" title="Home" onclick="home()">🏠</button><span class="build-tag" aria-label="Application build 22">BUILD 22</span><span class="pill" id="stars" aria-live="polite" aria-label="Stars earned"></span><span><button class="pill" id="inst" type="button" aria-label="Install Little Learners" title="Install app" style="display:none" onclick="doInstall()">📲 Install</button> <button class="pill" id="kid" type="button" aria-label="Open parent settings" onclick="gate()"></button> <button class="pill" type="button" aria-label="Open stickers" title="Stickers" onclick="stickers()">🎁</button> <button class="pill" type="button" aria-label="Open parent settings" title="Parent settings" onclick="gate()">⚙️</button></span></header>
+<header aria-label="Little Learners header"><button class="pill" type="button" aria-label="Go to home" title="Home" onclick="home()">🏠</button><span class="build-tag" aria-label="Application build 22">BUILD 23</span><span class="pill" id="stars" aria-live="polite" aria-label="Stars earned"></span><span><button class="pill" id="inst" type="button" aria-label="Install Little Learners" title="Install app" style="display:none" onclick="doInstall()">📲 Install</button> <button class="pill" id="kid" type="button" aria-label="Open parent settings" onclick="gate()"></button> <button class="pill" type="button" aria-label="Open stickers" title="Stickers" onclick="stickers()">🎁</button> <button class="pill" type="button" aria-label="Open parent settings" title="Parent settings" onclick="gate()">⚙️</button></span></header>
 <main id="app" tabindex="-1"></main>
 <footer class="site-footer" aria-label="Site footer"><nav class="footer-nav" aria-label="Primary navigation"><button type="button" onclick="home()">🏠 Home</button><button type="button" onclick="stickers()">🎁 Stickers</button><button type="button" onclick="gate()">⚙️ Parents</button></nav><p class="footer-copy">Little Learners · Learn, play and grow 🌱<br>Alphabets · हिंदी वर्णमाला · Numbers · Animals · Good manners</p></footer>
 <script>
@@ -425,9 +425,22 @@ try {
     window.authStep('S5 — Registering auth state listener', 'Waiting for Firebase to report whether a user is signed in.');
     authSdk.onAuthStateChanged(auth, async user => {
       const state = kl.st();
+      const wasSignedIn = Boolean(state.user);
       state.user = user ? (user.displayName || user.email || 'Google user') : null;
       window.authStep('S9 — Auth state changed', user ? 'Firebase reports a signed-in user. Checking Firestore profile access next.' : 'Firebase reports no signed-in user.');
-      if (!user) { window.cloudStatus = 'signed out'; window.fbStatus = 'Firebase: ready · guarded Google sign-in'; kl.refresh(); return; }
+      if (!user) {
+        window.cloudStatus = 'signed out';
+        window.fbStatus = 'Firebase: ready · guarded Google sign-in';
+        if (wasSignedIn) {
+          // Signing out should leave the parent corner and return to learning home.
+          // Keep the local child profile/progress; signing out must not erase learning data.
+          window.msg = '';
+          home();
+        } else {
+          kl.refresh();
+        }
+        return;
+      }
       window.cloudStatus = 'loading profile'; window.fbStatus = 'Firebase: ready'; kl.refresh();
       try {
         window.authStep('S10 — Reading Firestore profile', 'Calling getDoc(users/{current-user-uid}). The UID and profile data are intentionally not displayed.');
