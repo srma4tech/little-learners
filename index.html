@@ -34,6 +34,7 @@ p{text-align:center;font-size:18px}body.ob header{display:none}.ib{display:flex;
 <header aria-label="Little Learners header"><button class="pill" type="button" aria-label="Go to home" title="Home" onclick="home()">🏠</button><span class="pill" id="stars" aria-live="polite" aria-label="Stars earned"></span><span><button class="pill" id="inst" type="button" aria-label="Install Little Learners" title="Install app" style="display:none" onclick="doInstall()">📲 Install</button> <button class="pill" id="kid" type="button" aria-label="Open parent settings" onclick="gate()"></button> <button class="pill" type="button" aria-label="Open stickers" title="Stickers" onclick="stickers()">🎁</button> <button class="pill" type="button" aria-label="Open parent settings" title="Parent settings" onclick="gate()">⚙️</button></span></header>
 <main id="app" tabindex="-1"></main>
 <footer class="site-footer" aria-label="Site footer"><nav class="footer-nav" aria-label="Primary navigation"><button type="button" onclick="home()">🏠 Home</button><button type="button" onclick="stickers()">🎁 Stickers</button><button type="button" onclick="gate()">⚙️ Parents</button></nav><p class="footer-copy">Little Learners · Build 2026.10.13.1 · Learn, play and grow 🌱<br>Alphabets · हिंदी वर्णमाला · Numbers · Animals · Good manners</p></footer>
+<script src="./progress-model.js"></script>
 <script>
 window.authErrorDetails = error => {
   if (!error) return 'Unknown error';
@@ -62,7 +63,7 @@ let st={kids:{me:{name:'Me',stars:0}},kid:'me',lang:'both',sound:1,ob:0,step:0},
 try{Object.assign(st,JSON.parse(localStorage.getItem('kl')||'{}'))}catch(e){}
 let deviceId='';
 try{deviceId=localStorage.getItem('kl_device_id')||'';if(!deviceId){deviceId=crypto.randomUUID?crypto.randomUUID():'d'+Date.now().toString(36)+Math.random().toString(36).slice(2);localStorage.setItem('kl_device_id',deviceId)}}catch(e){deviceId='device-local'}
-const normalizeKid=k=>{if(!k||typeof k!=='object')return{name:'Me',stars:0,starCounters:{}};const counters=k.starCounters&&typeof k.starCounters==='object'?{...k.starCounters}:{};if(!Object.keys(counters).length&&Number(k.stars)>0)counters[deviceId]=Math.max(0,Number(k.stars)||0);const stars=Object.values(counters).reduce((n,v)=>n+Math.max(0,Number(v)||0),0);return{...k,stars:Math.max(stars,Math.max(0,Number(k.stars)||0)),starCounters:counters}}
+const normalizeKid=k=>LLProgress.normalizeKid(k,deviceId);
 Object.keys(st.kids||{}).forEach(id=>st.kids[id]=normalizeKid(st.kids[id]));
 const save=()=>{try{localStorage.setItem('kl',JSON.stringify({...st,user:undefined,err:undefined}))}catch(e){}try{window.fb&&fb.push()?.catch?.(()=>{})}catch(e){}};
 const K=()=>st.kids[st.kid]||(st.kid='me',st.kids.me=st.kids.me||{name:'Me',stars:0});
@@ -95,9 +96,9 @@ function ans(j,b){if(q.lock)return;if(q.o[j]===q.t){q.lock=1;b.classList.add('go
 function done(){app.innerHTML=`<div class="q"><div class="big">🏆</div><h1>You earned 5 stars!</h1><button class="btn" onclick="play()">Play again</button> <button class="btn o" onclick="openS(cur)">Back</button></div>`}
 function stickers(){const n=K().stars/5|0;app.innerHTML=`<div class="bar"><button class="btn o" onclick="home()">⬅ Home</button><h2>🎁 My Stickers (${Math.min(n,20)}/20)</h2></div><div class="grid">${SK.map((s,i)=>`<div class="st">${i<n?s:'❓'}</div>`).join('')}</div><p>Earn 1 sticker for every 5 stars!</p>`}
 function parent(){const b=(k,v,t)=>`<button class="btn ${st[k]===v?'':'o'}" onclick="st.${k}=${typeof v=='string'?"'"+v+"'":v};save();parent()">${t}</button>`;app.innerHTML=`<div class="bar"><button class="btn o" onclick="home()">⬅ Home</button><h2>⚙️ Parent corner</h2></div>${kidsUI()}<p>Language</p><div class="opts" style="margin:6px">${b('lang','en','English')}${b('lang','hi','हिन्दी')}${b('lang','both','Both')}</div><p>Voice</p><div class="opts" style="margin:6px">${b('sound',1,'🔊 On')}${b('sound',0,'🔇 Off')}</div><p>Hindi speech needs a Hindi voice installed in your browser or computer.</p><p><button class="btn o" onclick="rst(this)">Reset progress</button></p>`;setTimeout(gbtn,0)}
-function rst(b){if(b.dataset.c){K().stars=0;save();hdr();home()}else{b.dataset.c=1;b.textContent='Tap again to confirm'}}
+async function rst(b){if(!b.dataset.c){b.dataset.c=1;b.textContent='Tap again to confirm';return}st.kids[st.kid]=LLProgress.resetKid(K());window.resetNotice=st.user?'Reset saved on this device; cloud reset is pending.':'Progress reset on this device.';save();hdr();parent();if(window.fb&&fb.ok&&st.user){try{await fb.push();window.resetNotice='Progress reset synced to your account.';parent()}catch(e){window.resetNotice='Progress reset is saved locally; cloud sync is pending. Reconnect to finish.';parent()}}}
 addEventListener('keydown',e=>{if(e.key=='Escape')home();else if(cur==0&&/^[a-z]$/i.test(e.key)&&app.querySelector('.card'))say(AL[e.key.toUpperCase().charCodeAt(0)-65])});
-function kidsUI(){const a=window.fb&&fb.ok?(st.user?`<p>Signed in: ${st.user}</p><p><button class="btn o" onclick="fb.signOut()">Sign out</button></p>`:`<p>${fb.gis?'<span id="gbtn"></span>':'<button class="btn o" onclick="signInClick()">Sign in with Google to save progress online</button>'}</p>`):`<p>Guest mode: progress is saved on this device.</p>`;const er=(window.msg?`<p style="font-weight:700">${window.msg}</p>`:'')+(st.err?`<p style="color:#e53935;font-weight:700">${st.err}</p>`:'');return `<p>Who is playing?</p><div class="opts" style="margin:6px">${Object.keys(st.kids).map(k=>`<button class="btn ${k==st.kid?'':'o'}" onclick="st.kid='${k}';save();hdr();parent()">${st.kids[k].name}</button>`).join('')}<button class="btn o" onclick="addKid()">➕ Add kid</button></div><p><button class="btn o" onclick="renKid()">✏️ Rename ${K().name}</button> <button class="btn o" onclick="st.ob=0;st.step=0;save();onb()">👋 Welcome tour</button></p>${dp?'<p><button class="btn" onclick="doInstall()">📲 Install app</button></p>':''}${a}${er}<p style="font-size:14px;opacity:.7">${isStd() ? "Installed app" : dp ? "Install ready" : "Install: browser menu ⋮ > Install app"}</p>`}
+function kidsUI(){const a=window.fb&&fb.ok?(st.user?`<p>Signed in: ${st.user}</p><p><button class="btn o" onclick="fb.signOut()">Sign out</button></p>`:`<p>${fb.gis?'<span id="gbtn"></span>':'<button class="btn o" onclick="signInClick()">Sign in with Google to save progress online</button>'}</p>`):`<p>Guest mode: progress is saved on this device.</p>`;const er=(window.msg?`<p style="font-weight:700">${window.msg}</p>`:'')+(st.err?`<p style="color:#e53935;font-weight:700">${st.err}</p>`:'')+(window.resetNotice?`<p role="status" aria-live="polite" style="font-weight:700">${window.resetNotice}</p>`:'');return `<p>Who is playing?</p><div class="opts" style="margin:6px">${Object.keys(st.kids).map(k=>`<button class="btn ${k==st.kid?'':'o'}" onclick="st.kid='${k}';save();hdr();parent()">${st.kids[k].name}</button>`).join('')}<button class="btn o" onclick="addKid()">➕ Add kid</button></div><p><button class="btn o" onclick="renKid()">✏️ Rename ${K().name}</button> <button class="btn o" onclick="st.ob=0;st.step=0;save();onb()">👋 Welcome tour</button></p>${dp?'<p><button class="btn" onclick="doInstall()">📲 Install app</button></p>':''}${a}${er}<p style="font-size:14px;opacity:.7">${isStd() ? "Installed app" : dp ? "Install ready" : "Install: browser menu ⋮ > Install app"}</p>`}
 function addKid(){const n=(prompt("Kid's name?")||'').replace(/[<>&\"']/g,'').trim().slice(0,12);if(!n)return;const id='k'+Date.now();st.kids[id]={name:n,stars:0};st.kid=id;save();hdr();parent()}
 function onb(){onbActive=1;document.body.classList.add('ob');app.style.setProperty('--a','#7c4dff');
 const bt=(k,v,t)=>`<button class="btn ${st[k]===v?'':'o'}" onclick="pick('${k}',${typeof v=='string'?"'"+v+"'":v},this)">${t}</button>`,er=(window.msg?`<p style="font-weight:700">${window.msg}</p>`:'')+(st.err?`<p style="color:#e53935;font-weight:700">${st.err}</p>`:'');let h;
@@ -176,9 +177,17 @@ try {
     };
     const writeProfile = (user, data) => {
       // Do not write until the initial reconciliation has completed.
-      if (!profileReady) return Promise.resolve();
-      // A failed write must not poison the queue and block every later save.
-      cloudWrite = cloudWrite.catch(() => {}).then(() => dbSdk.setDoc(profileRef(user.uid), data));
+      if (!profileReady) return Promise.resolve(null);
+      // Serialize transactions. Every write merges against the latest server
+      // profile so delayed/offline snapshots cannot overwrite a newer reset.
+      cloudWrite = cloudWrite.catch(() => {}).then(() => dbSdk.runTransaction(db, async transaction => {
+        const ref = profileRef(user.uid);
+        const snapshot = await transaction.get(ref);
+        const remote = snapshot.exists() ? snapshot.data() : {};
+        const merged = window.LLProgress.mergeProfile(data, remote, deviceId);
+        transaction.set(ref, merged);
+        return merged;
+      }));
       return cloudWrite;
     };
     // Use Google Identity Services for the ID token, then exchange it with Firebase.
@@ -247,7 +256,11 @@ try {
         const user = auth.currentUser, state = kl.st();
         if (!user || !state.ob) return;
         try {
-          await writeProfile(user, localSnapshot());
+          const savedProfile = await writeProfile(user, localSnapshot());
+          if (savedProfile && savedProfile.kids) {
+            state.kids = window.LLProgress.mergeKids(state.kids, savedProfile.kids, deviceId);
+            try { localStorage.setItem('kl', JSON.stringify({ ...state, user: undefined, err: undefined })); } catch (_) {}
+          }
           window.cloudStatus = 'saved'; state.err = '';
         } catch (error) {
           window.lastErr = error?.code || error?.message || String(error);
@@ -287,35 +300,8 @@ try {
         const cloud = snapshot.exists() ? snapshot.data() : {};
         const cloudKids = cloud.kids && typeof cloud.kids === 'object' ? cloud.kids : {};
         const localKids = state.kids && typeof state.kids === 'object' ? state.kids : {};
-        const mergedKids = {};
-        const validKid = kid => kid && typeof kid === 'object' &&
-          typeof kid.name === 'string' && Number.isFinite(Number(kid.stars)) &&
-          Number(kid.stars) >= 0;
-        // Reconcile by stable child ID. Keep the highest observed star total so
-        // offline-earned stars are not discarded by an older cloud snapshot.
-        // Prefer a configured cloud name; use the local name when cloud is new/default.
-        for (const id of new Set([...Object.keys(cloudKids), ...Object.keys(localKids)])) {
-          const remote = validKid(cloudKids[id]) ? cloudKids[id] : null;
-          const local = validKid(localKids[id]) ? localKids[id] : null;
-          if (!remote && !local) continue;
-          const name = remote && remote.name && remote.name !== 'Me'
-            ? remote.name
-            : (local?.name || remote?.name || 'Me');
-          const counters = { ...(remote?.starCounters || {}), ...(local?.starCounters || {}) };
-          for (const device of Object.keys(counters)) {
-            counters[device] = Math.max(0, Number(remote?.starCounters?.[device] || 0), Number(local?.starCounters?.[device] || 0));
-          }
-          const counterTotal = Object.values(counters).reduce((n, value) => n + value, 0);
-          const baseline = Math.max(0, Number(remote?.stars || 0), Number(local?.stars || 0), counterTotal);
-          // Migrate legacy aggregate totals without double-counting the same old stars.
-          if (baseline > counterTotal) counters[deviceId] = (Number(counters[deviceId]) || 0) + baseline - counterTotal;
-          mergedKids[id] = {
-            name: String(name).replace(/[<>&"']/g, '').trim().slice(0, 12) || 'Me',
-            stars: Object.values(counters).reduce((n, value) => n + Math.max(0, Number(value) || 0), 0),
-            starCounters: counters
-          };
-        }
-        state.kids = Object.keys(mergedKids).length ? mergedKids : { me: { name: 'Me', stars: 0 } };
+        state.kids = LLProgress.mergeKids(localKids, cloudKids, deviceId);
+        if (!Object.keys(state.kids).length) state.kids = { me: { name: 'Me', stars: 0, starCounters: {}, resetGeneration: 0 } };
         if (!state.kids[state.kid]) state.kid = Object.keys(state.kids)[0];
         if (cloud.settings && typeof cloud.settings === 'object') {
           if (['en', 'hi', 'both'].includes(cloud.settings.lang)) state.lang = cloud.settings.lang;
@@ -346,6 +332,9 @@ try {
         state.err = 'Google sign-in succeeded, but cloud profile access failed. ' + window.lastErr;
         kl.refresh();
       }
+    });
+    addEventListener('online', () => {
+      if (window.fb && window.fb.ok && kl.st().user) window.fb.push().catch(() => {});
     });
     window.fbStatus = 'Firebase: ready'; kl.refresh();
   }
