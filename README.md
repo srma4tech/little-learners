@@ -11,7 +11,7 @@ A child-friendly, installable learning PWA for young children. Activities cover 
 1. Open the live app in a supported browser.
 2. Follow the welcome flow and choose the child's name and language.
 3. Use the parent corner to switch children, language and voice settings, or reset progress.
-4. Sign in with Google from the parent corner to sync the profile and progress through Firebase. Guest mode keeps progress on the current device.
+4. Sign in with Google from the parent corner to sync through Firebase. If this device already has a configured guest profile or earned stars, the app asks whether to merge that data into the Google account or keep it separate. Choosing separate keeps the guest snapshot on this device and loads the account profile without uploading guest data. Signing out returns to the saved guest profile; it does not delete cloud data.
 5. To install, use the app's Install prompt when available, or the browser menu's **Install app** / **Add to Home Screen** option.
 
 ## Firebase setup
