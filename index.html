@@ -112,7 +112,7 @@ function signInClick(){
   if(window.fb&&fb.renderGoogle){gbtn();return}
   window.msg='Google sign-in is still loading. Please wait a moment.';kl.refresh();
 }
-window.kl={authed(isAuthenticated,childCount=Object.keys(st.kids).length){if(!st.ob){if(isAuthenticated){if(st.kids.me&&!st.kids.me.stars&&st.kids.me.name=='Me'&&Object.keys(st.kids).length>1)delete st.kids.me;if(!st.kids[st.kid])st.kid=Object.keys(st.kids)[0];st.ob=1;st.step=3}else if(st.step<2)st.step=2}save();hdr();if(st.ob&&onbActive)home();else if(!st.ob&&onbActive)onb()},err(e){const c=e&&e.code||'';window.lastErr=c||(e&&e.message)||String(e);const m={'auth/operation-not-allowed':'Google sign-in is not enabled yet: Firebase > Authentication > Sign-in method > Google > Enable.','auth/unauthorized-domain':'Add srma4tech.github.io in Firebase > Authentication > Settings > Authorized domains.','auth/popup-blocked':'The browser blocked the sign-in popup. Allow popups for this site and try again.','auth/invalid-api-key':'The apiKey in firebase-config.js looks wrong.','auth/network-request-failed':'No internet connection.','auth/timeout':'Google sign-in did not complete within 45 seconds. Reload this page before retrying; if it repeats, open the site in a regular Chrome tab instead of the installed app.','auth/gapi-context-failure':'Google sign-in could not initialize its browser iframe (getContext error). Reload this page and try again; if it repeats, open the site in a regular Chrome tab instead of the installed app.','auth/iframe-failure':'Google sign-in hit a browser iframe initialization error. Reload this page before retrying.'};if(c=='auth/popup-closed-by-user'||c=='auth/cancelled-popup-request')return;st.err=m[c]||('Sign-in failed: '+(c||e&&e.message||e));kl.refresh()},st:()=>st,save,refresh:()=>{hdr();if(!st.ob&&onbActive)onb();else if(app.textContent.includes('Parent corner'))parent()}};
+window.kl={authed(isAuthenticated,childCount=Object.keys(st.kids).length){if(!st.ob&&st.step<2)st.step=2;save();hdr();if(st.ob&&onbActive)home();else if(!st.ob&&onbActive)onb()},err(e){const c=e&&e.code||'';window.lastErr=c||(e&&e.message)||String(e);const m={'auth/operation-not-allowed':'Google sign-in is not enabled yet: Firebase > Authentication > Sign-in method > Google > Enable.','auth/unauthorized-domain':'Add srma4tech.github.io in Firebase > Authentication > Settings > Authorized domains.','auth/popup-blocked':'The browser blocked the sign-in popup. Allow popups for this site and try again.','auth/invalid-api-key':'The apiKey in firebase-config.js looks wrong.','auth/network-request-failed':'No internet connection.','auth/timeout':'Google sign-in did not complete within 45 seconds. Reload this page before retrying; if it repeats, open the site in a regular Chrome tab instead of the installed app.','auth/gapi-context-failure':'Google sign-in could not initialize its browser iframe (getContext error). Reload this page and try again; if it repeats, open the site in a regular Chrome tab instead of the installed app.','auth/iframe-failure':'Google sign-in hit a browser iframe initialization error. Reload this page before retrying.'};if(c=='auth/popup-closed-by-user'||c=='auth/cancelled-popup-request')return;st.err=m[c]||('Sign-in failed: '+(c||e&&e.message||e));kl.refresh()},st:()=>st,save,refresh:()=>{hdr();if(!st.ob&&onbActive)onb();else if(app.textContent.includes('Parent corner'))parent()}};
 if('serviceWorker' in navigator)addEventListener('load',()=>{
   navigator.serviceWorker.register('./sw.js')
     .then(()=>navigator.serviceWorker.ready)
@@ -164,14 +164,17 @@ try {
     const provider = new authSdk.GoogleAuthProvider();
     ;
     let cloudWrite = Promise.resolve();
+    let profileReady = false;
     const profileRef = uid => dbSdk.doc(db, 'users', uid);
     const localSnapshot = () => {
       const state = kl.st();
-      return { kids: state.kids, settings: { lang: state.lang, sound: state.sound }, updatedAt: Date.now() };
+      return { kids: state.kids, settings: { lang: state.lang, sound: state.sound }, schemaVersion: 2, updatedAt: Date.now() };
     };
     const writeProfile = (user, data) => {
+      // Do not write until the initial reconciliation has completed.
+      if (!profileReady) return Promise.resolve();
       // A failed write must not poison the queue and block every later save.
-      cloudWrite = cloudWrite.catch(() => {}).then(() => dbSdk.setDoc(profileRef(user.uid), data, { merge: true }));
+      cloudWrite = cloudWrite.catch(() => {}).then(() => dbSdk.setDoc(profileRef(user.uid), data));
       return cloudWrite;
     };
     // Use Google Identity Services for the ID token, then exchange it with Firebase.
@@ -240,7 +243,7 @@ try {
         const user = auth.currentUser, state = kl.st();
         if (!user || !state.ob) return;
         try {
-          await writeProfile(user, { ...localSnapshot(), email: user.email || null, displayName: user.displayName || null });
+          await writeProfile(user, localSnapshot());
           window.cloudStatus = 'saved'; state.err = '';
         } catch (error) {
           window.lastErr = error?.code || error?.message || String(error);
@@ -270,6 +273,7 @@ try {
         }
         return;
       }
+      profileReady = false;
       window.cloudStatus = 'loading profile'; window.fbStatus = 'Firebase: ready'; kl.refresh();
       try {
         ;
@@ -278,43 +282,53 @@ try {
 
         const cloud = snapshot.exists() ? snapshot.data() : {};
         const cloudKids = cloud.kids && typeof cloud.kids === 'object' ? cloud.kids : {};
-        if (snapshot.exists()) {
-          // For an authenticated account, its cloud document is the source of truth.
-          // Do not merge by star count: equal-star renames, deletions and other edits
-          // must not be silently ignored or leak another account's local children.
-          state.kids = Object.keys(cloudKids).length ? { ...cloudKids } : { me: { name: 'Me', stars: 0 } };
-          if (!state.kids[state.kid]) state.kid = Object.keys(state.kids)[0];
-          if (cloud.settings && typeof cloud.settings === 'object') {
-            if (['en', 'hi', 'both'].includes(cloud.settings.lang)) state.lang = cloud.settings.lang;
-            if (typeof cloud.settings.sound === 'number') state.sound = cloud.settings.sound;
-          }
-          state.ob = 1;
-          state.step = 3;
-          window.cloudStatus = 'profile loaded';
-        } else {
-          // Preserve the pre-login device state as a recovery backup, but do not
-          // silently attach it to a newly authenticated account.
-          try {
-            localStorage.setItem('kl_guest_backup_v1', JSON.stringify({ kids: state.kids, kid: state.kid, lang: state.lang, sound: state.sound, savedAt: Date.now() }));
-          } catch (_) {}
-          state.kids = { me: { name: 'Me', stars: 0 } };
-          state.kid = 'me';
-          state.lang = 'both';
-          state.sound = 1;
-          state.ob = 1;
-          state.step = 3;
-          await dbSdk.setDoc(ref, {
-            kids: state.kids, settings: { lang: state.lang, sound: state.sound },
-            email: user.email || null, displayName: user.displayName || null,
-            createdAt: Date.now(), updatedAt: Date.now()
-          });
-          window.cloudStatus = 'profile created';
+        const localKids = state.kids && typeof state.kids === 'object' ? state.kids : {};
+        const mergedKids = {};
+        const validKid = kid => kid && typeof kid === 'object' &&
+          typeof kid.name === 'string' && Number.isFinite(Number(kid.stars)) &&
+          Number(kid.stars) >= 0;
+        // Reconcile by stable child ID. Keep the highest observed star total so
+        // offline-earned stars are not discarded by an older cloud snapshot.
+        // Prefer a configured cloud name; use the local name when cloud is new/default.
+        for (const id of new Set([...Object.keys(cloudKids), ...Object.keys(localKids)])) {
+          const remote = validKid(cloudKids[id]) ? cloudKids[id] : null;
+          const local = validKid(localKids[id]) ? localKids[id] : null;
+          if (!remote && !local) continue;
+          const name = remote && remote.name && remote.name !== 'Me'
+            ? remote.name
+            : (local?.name || remote?.name || 'Me');
+          mergedKids[id] = {
+            name: String(name).replace(/[<>&"']/g, '').trim().slice(0, 12) || 'Me',
+            stars: Math.max(0, Number(remote?.stars || 0), Number(local?.stars || 0))
+          };
         }
-        ;
+        state.kids = Object.keys(mergedKids).length ? mergedKids : { me: { name: 'Me', stars: 0 } };
+        if (!state.kids[state.kid]) state.kid = Object.keys(state.kids)[0];
+        if (cloud.settings && typeof cloud.settings === 'object') {
+          if (['en', 'hi', 'both'].includes(cloud.settings.lang)) state.lang = cloud.settings.lang;
+          if (typeof cloud.settings.sound === 'number') state.sound = cloud.settings.sound ? 1 : 0;
+        }
+        const hasConfiguredChild = Object.values(state.kids).some(kid => kid.name && kid.name !== 'Me');
+        state.ob = hasConfiguredChild ? 1 : 0;
+        state.step = state.ob ? 3 : 2;
+        if (!state.ob) {
+          // A new account must complete child setup; sign-in alone is not onboarding.
+          window.cloudStatus = 'needs child setup';
+        } else {
+          window.cloudStatus = snapshot.exists() ? 'profile reconciled' : 'profile created';
+        }
+        profileReady = true;
+        // Persist the reconciled state locally before publishing it to the cloud.
+        kl.save();
+        await writeProfile(user, {
+          ...localSnapshot(),
+          createdAt: typeof cloud.createdAt === 'number' ? cloud.createdAt : Date.now()
+        });
         kl.save(); kl.authed(true, Object.keys(state.kids).length);
       } catch (error) {
         ;
         window.lastErr = error?.code || error?.message || String(error);
+        profileReady = false;
         window.cloudStatus = 'profile failed';
         state.err = 'Google sign-in succeeded, but cloud profile access failed. ' + window.lastErr;
         kl.refresh();
