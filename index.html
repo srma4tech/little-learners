@@ -399,10 +399,19 @@ try {
         });
         kl.save(); kl.authed(true, Object.keys(state.kids).length);
       } catch (error) {
+        // Fail closed: never leave guest progress visible under a signed-in
+        // account when the account's cloud profile could not be loaded.
         profileReady = false;
+        state.kids = { me: { name: 'Me', stars: 0, starCounters: {}, resetGeneration: 0 } };
+        state.kid = 'me';
+        state.lang = 'both';
+        state.sound = 1;
+        state.ob = 0;
+        state.step = 0;
         window.lastErr = error?.code || error?.message || String(error);
         window.cloudStatus = 'profile failed';
-        state.err = 'Google sign-in succeeded, but cloud profile access failed. ' + window.lastErr;
+        state.err = 'Google sign-in succeeded, but cloud profile access failed. Account progress is not loaded; sign out to return to guest mode, or reload to retry. ' + window.lastErr;
+        kl.save();
         kl.refresh();
       }
     });
