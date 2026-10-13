@@ -29,11 +29,48 @@ h1{font-size:clamp(26px,5vw,44px);text-align:center;margin:8px 0 18px}
 #fb{min-height:40px;font-size:26px;font-weight:700}
 .st{font-size:48px;background:var(--card);border-radius:18px;padding:10px;text-align:center}
 p{text-align:center;font-size:18px}body.ob header{display:none}.ib{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;background:var(--card);border:3px dashed var(--a);border-radius:18px;padding:10px 14px;margin:0 0 14px;font-size:18px}button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}body{overflow-wrap:anywhere}@media(max-width:600px){.grid{grid-template-columns:repeat(2,1fr)}.card .e{font-size:44px}.bar h2{font-size:22px}}@media(pointer:coarse){.kb{display:none}}
-.ll-toast{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));left:50%;transform:translate(-50%,-12px);z-index:10002;width:min(92vw,520px);padding:13px 18px;border-radius:16px;background:#2e7d32;color:#fff;box-shadow:0 5px 24px #0004;font-weight:750;text-align:center;opacity:0;pointer-events:none;transition:opacity .18s ease,transform .18s ease}.ll-toast[data-kind="error"]{background:#b3261e}.ll-toast[data-kind="info"]{background:#3949ab}.ll-toast.visible{opacity:1;transform:translate(-50%,0)}.sync-status{border:1px solid #8885;border-radius:14px;padding:10px 12px;font-size:14px;line-height:1.5;background:var(--card);margin:12px 0}.sync-status strong{display:block;margin-bottom:2px}@media(prefers-reduced-motion:reduce){.ll-toast{transition:none}}</style></head><body>
+.ll-toast{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));left:50%;transform:translate(-50%,-12px);z-index:10002;width:min(92vw,520px);padding:13px 18px;border-radius:16px;background:#2e7d32;color:#fff;box-shadow:0 5px 24px #0004;font-weight:750;text-align:center;opacity:0;pointer-events:none;transition:opacity .18s ease,transform .18s ease}.ll-toast[data-kind="error"]{background:#b3261e}.ll-toast[data-kind="info"]{background:#3949ab}.ll-toast.visible{opacity:1;transform:translate(-50%,0)}.sync-status{border:1px solid #8885;border-radius:14px;padding:10px 12px;font-size:14px;line-height:1.5;background:var(--card);margin:12px 0}.sync-status strong{display:block;margin-bottom:2px}@media(prefers-reduced-motion:reduce){.ll-toast{transition:none}}
+/* Responsive refinements: keep learning controls usable on narrow phones and zoomed layouts. */
+#app,.site-footer,header{min-width:0}
+img,svg,video,canvas{max-width:100%}
+input,select,textarea{max-width:100%;font:inherit}
+button{overflow-wrap:anywhere}
+.opts{min-width:0}
+.opts .opt{flex:1 1 0;width:auto;min-width:0;max-width:200px;padding:4px}
+.card{min-width:0;overflow-wrap:anywhere}
+.card .e{word-break:normal;overflow-wrap:anywhere}
+.card .l{max-width:100%;overflow-wrap:anywhere;text-align:center}
+.tile{min-width:0;overflow-wrap:anywhere;text-align:center}
+.bar>*{min-width:0}
+.bar h2{overflow-wrap:anywhere}
+@media(max-width:360px){
+  header{justify-content:center}
+  header>span:last-child{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+  header .pill{padding:8px 10px;font-size:17px}
+  #app{padding-right:8px;padding-left:8px}
+  .grid{gap:8px}
+  .tile{font-size:17px;min-height:112px}
+  .opts{gap:8px}
+  .opts .opt{border-width:3px;border-radius:18px;font-size:clamp(32px,10vw,42px)}
+  .bar{gap:8px}
+  .bar .btn{padding:9px 12px;font-size:16px}
+  .footer-nav{gap:6px}
+  .footer-nav button{font-size:13px}
+}
+@media(min-width:601px){
+  .opts .opt{flex:0 1 200px}
+}
+@media(hover:hover){
+  .tile:hover,.card:hover{transform:translateY(-3px)}
+}
+@media(hover:none){
+  .tile:hover,.card:hover{transform:none}
+}
+</style></head><body>
 <a class="skip-link" href="#app">Skip to main content</a>
 <header aria-label="Little Learners header"><button class="pill" type="button" aria-label="Go to home" title="Home" onclick="home()">🏠</button><span class="pill" id="stars" aria-live="polite" aria-label="Stars earned"></span><span><button class="pill" id="inst" type="button" aria-label="Install Little Learners" title="Install app" style="display:none" onclick="doInstall()">📲 Install</button> <button class="pill" id="kid" type="button" aria-label="Open parent settings" onclick="gate()"></button> <button class="pill" type="button" aria-label="Open stickers" title="Stickers" onclick="stickers()">🎁</button> <button class="pill" type="button" aria-label="Open parent settings" title="Parent settings" onclick="gate()">⚙️</button></span></header>
 <main id="app" tabindex="-1"></main><div id="ll-toast" class="ll-toast" role="status" aria-live="polite" aria-atomic="true"></div>
-<footer class="site-footer" aria-label="Site footer"><nav class="footer-nav" aria-label="Primary navigation"><button type="button" onclick="home()">🏠 Home</button><button type="button" onclick="stickers()">🎁 Stickers</button><button type="button" onclick="gate()">⚙️ Parents</button></nav><p class="footer-version" aria-label="Application version">Version 2026.10.13.2</p><p class="footer-copy">Little Learners · Learn, play and grow 🌱<br>Alphabets · हिंदी वर्णमाला · Numbers · Animals · Good manners</p></footer>
+<footer class="site-footer" aria-label="Site footer"><nav class="footer-nav" aria-label="Primary navigation"><button type="button" onclick="home()">🏠 Home</button><button type="button" onclick="stickers()">🎁 Stickers</button><button type="button" onclick="gate()">⚙️ Parents</button></nav><p class="footer-version" aria-label="Application version">Version 2026.10.13.3</p><p class="footer-copy">Little Learners · Learn, play and grow 🌱<br>Alphabets · हिंदी वर्णमाला · Numbers · Animals · Good manners</p></footer>
 <script src="./progress-model.js"></script>
 <script>
 let llToastTimer;
