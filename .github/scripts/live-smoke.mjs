@@ -42,7 +42,7 @@ async function waitForExpectedDeployment(page, width) {
     if (lastVersion.includes(expectedVersion) && lastCache.includes(expectedCache)) return;
     if (attempt < 11) await new Promise(resolve => setTimeout(resolve, 10000));
   }
-  throw new Error("GitHub Pages did not serve the expected release after 120 seconds. Expected footer " + expectedVersion + " and cache " + expectedCache + "; observed " + lastVersion + " / " + (lastCache.match(/little-learners-v\\d+/)?.[0] || lastCache.slice(0, 80)));
+  throw new Error("GitHub Pages did not serve the expected release after 120 seconds. Expected footer " + expectedVersion + " and cache " + expectedCache + "; observed " + lastVersion + " / " + (lastCache.match(/little-learners-v\d+/)?.[0] || lastCache.slice(0, 80)));
 }
 
 async function checkInteractiveControls(page, width, screen) {
