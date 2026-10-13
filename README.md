@@ -44,7 +44,7 @@ To inspect a run, open the repository's **Actions** tab and select the relevant 
 
 ## Updating the app and service-worker cache
 
-The service worker uses a versioned cache in `sw.js` (currently `little-learners-v34`). When changing app files that should refresh for existing installations, increment the cache name, for example from `little-learners-v34` to `little-learners-v35`. Commit the change to `master`, wait for GitHub Pages deployment, then test both a fresh browser session and an already-installed PWA.
+The service worker uses a versioned cache in `sw.js` (currently `little-learners-v36`). When changing app files that should refresh for existing installations, increment the cache name, for example from `little-learners-v35` to `little-learners-v36`. Commit the change to `master`, wait for GitHub Pages deployment, then test both a fresh browser session and an already-installed PWA. The reset-aware progress model lives in `progress-model.js` and is covered by `node --test tests/progress-model.test.cjs`.
 
 ## Data and privacy notes
 
