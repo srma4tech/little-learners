@@ -22,7 +22,7 @@ The app uses Firebase Authentication, Google Identity Services (GIS), and Cloud 
 2. Copy the Firebase web-app configuration into `firebase-config.js`. Set `googleClientId` to the OAuth 2.0 **Web application client ID** used by Google Identity Services. These are browser-side configuration values, not Firebase Admin credentials; never commit service-account keys or OAuth client secrets.
 3. In **Authentication → Sign-in method**, enable **Google**.
 4. In **Authentication → Settings → Authorized domains**, add `srma4tech.github.io`.
-5. In Google Cloud Console, verify the OAuth web client has the GitHub Pages origin `https://srma4tech.github.io) authorized where required by its configuration.
+5. In Google Cloud Console, verify the OAuth web client has the GitHub Pages origin `https://srma4tech.github.io` authorized where required by its configuration.
 6. Create a Cloud Firestore database and publish the rules from `firestore.rules`.
 7. Open the live app, sign in with Google, and verify that the child profile and progress persist after refresh.
 
