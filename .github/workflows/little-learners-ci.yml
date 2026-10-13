@@ -50,12 +50,15 @@ jobs:
             [ -f "$f" ] || continue
             node --check "$f"
           done
+      - name: Test reset-aware progress merge rules
+        run: node --test tests/progress-model.test.cjs
       - name: Scan tracked files for private credentials
         run: python3 .github/scripts/secret-scan.py
       - name: Check required app files and cache version
         run: |
           test -s index.html
           test -s firebase-config.js
+          test -s progress-model.js
           test -s firestore.rules
           test -s manifest.webmanifest
           grep -q "little-learners-v" sw.js
