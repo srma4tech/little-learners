@@ -33,7 +33,7 @@ p{text-align:center;font-size:18px}body.ob header{display:none}.ib{display:flex;
 <a class="skip-link" href="#app">Skip to main content</a>
 <header aria-label="Little Learners header"><button class="pill" type="button" aria-label="Go to home" title="Home" onclick="home()">🏠</button><span class="pill" id="stars" aria-live="polite" aria-label="Stars earned"></span><span><button class="pill" id="inst" type="button" aria-label="Install Little Learners" title="Install app" style="display:none" onclick="doInstall()">📲 Install</button> <button class="pill" id="kid" type="button" aria-label="Open parent settings" onclick="gate()"></button> <button class="pill" type="button" aria-label="Open stickers" title="Stickers" onclick="stickers()">🎁</button> <button class="pill" type="button" aria-label="Open parent settings" title="Parent settings" onclick="gate()">⚙️</button></span></header>
 <main id="app" tabindex="-1"></main>
-<footer class="site-footer" aria-label="Site footer"><nav class="footer-nav" aria-label="Primary navigation"><button type="button" onclick="home()">🏠 Home</button><button type="button" onclick="stickers()">🎁 Stickers</button><button type="button" onclick="gate()">⚙️ Parents</button></nav><p class="footer-copy">Little Learners · Learn, play and grow 🌱<br>Alphabets · हिंदी वर्णमाला · Numbers · Animals · Good manners</p></footer>
+<footer class="site-footer" aria-label="Site footer"><nav class="footer-nav" aria-label="Primary navigation"><button type="button" onclick="home()">🏠 Home</button><button type="button" onclick="stickers()">🎁 Stickers</button><button type="button" onclick="gate()">⚙️ Parents</button></nav><p class="footer-copy">Little Learners · Build 2026.10.13.1 · Learn, play and grow 🌱<br>Alphabets · हिंदी वर्णमाला · Numbers · Animals · Good manners</p></footer>
 <script>
 window.authErrorDetails = error => {
   if (!error) return 'Unknown error';
@@ -60,6 +60,10 @@ async function doInstall(){if(!dp)return;dp.prompt();try{await dp.userChoice}cat
 function instBar(){if(isStd()||st.noInst)return'';if(dp)return`<div class="ib">📲 Install Little Learners on this device <button class="btn" onclick="doInstall()">Install</button><button class="btn o" onclick="st.noInst=1;save();home()">✕</button></div>`;if(isIOS())return`<div class="ib">📲 To install: tap Share ⬆️ then Add to Home Screen <button class="btn o" onclick="st.noInst=1;save();home()">✕</button></div>`;return''}
 let st={kids:{me:{name:'Me',stars:0}},kid:'me',lang:'both',sound:1,ob:0,step:0},cur=0,q={},onbActive=0,unlock=0;
 try{Object.assign(st,JSON.parse(localStorage.getItem('kl')||'{}'))}catch(e){}
+let deviceId='';
+try{deviceId=localStorage.getItem('kl_device_id')||'';if(!deviceId){deviceId=crypto.randomUUID?crypto.randomUUID():'d'+Date.now().toString(36)+Math.random().toString(36).slice(2);localStorage.setItem('kl_device_id',deviceId)}}catch(e){deviceId='device-local'}
+const normalizeKid=k=>{if(!k||typeof k!=='object')return{name:'Me',stars:0,starCounters:{}};const counters=k.starCounters&&typeof k.starCounters==='object'?{...k.starCounters}:{};if(!Object.keys(counters).length&&Number(k.stars)>0)counters[deviceId]=Math.max(0,Number(k.stars)||0);const stars=Object.values(counters).reduce((n,v)=>n+Math.max(0,Number(v)||0),0);return{...k,stars:Math.max(stars,Math.max(0,Number(k.stars)||0)),starCounters:counters}}
+Object.keys(st.kids||{}).forEach(id=>st.kids[id]=normalizeKid(st.kids[id]));
 const save=()=>{try{localStorage.setItem('kl',JSON.stringify({...st,user:undefined,err:undefined}))}catch(e){}try{window.fb&&fb.push()?.catch?.(()=>{})}catch(e){}};
 const K=()=>st.kids[st.kid]||(st.kid='me',st.kids.me=st.kids.me||{name:'Me',stars:0});
 const P=s=>s.split(';').map(x=>{const[e,en,hi]=x.split('|');return{e,en,hi:hi||''}});
@@ -87,7 +91,7 @@ function home(){onbActive=0;document.body.classList.remove('ob');app.innerHTML=`
 function openS(i){cur=i;const s=S[i];app.style.setProperty('--a',s.c);app.innerHTML=`<div class="bar"><button class="btn o" onclick="home()">⬅ Home</button><h2>${s.i} ${s.n} ${s.h}</h2><button class="btn" onclick="play()">⭐ Play</button></div><div class="grid">${s.it.map((x,j)=>`<button class="card" onclick="say(S[cur].it[${j}])"><span class="e" style="${es(x.e)}">${x.e}</span>${x.big?`<span class="b">${x.big}</span>`:''}<span class="l">${lbl(x)}</span></button>`).join('')}</div>${cur==0?'<p class="kb">Tip: press any letter key on the keyboard! ⌨️</p>':''}`}
 function play(){q={n:0,ok:0};next()}
 function next(){const s=S[cur],sh=a=>a.sort(()=>Math.random()-.5),t=s.it[Math.random()*s.it.length|0],o=sh([t,...sh(s.it.filter(x=>x.e!=t.e)).slice(0,2)]);q.t=t;q.o=o;q.lock=0;app.innerHTML=`<div class="bar"><button class="btn o" onclick="openS(cur)">⬅ Back</button><h2>Round ${q.n+1}/5</h2></div><div class="q"><div class="big">${t.big||lbl(t)}</div><button class="btn" onclick="say(q.t)">🔊 Hear</button><div class="opts">${o.map((x,j)=>`<button class="opt" style="${es(x.e)}" onclick="ans(${j},this)">${x.e}</button>`).join('')}</div><div id="fb"></div></div>`;say(t)}
-function ans(j,b){if(q.lock)return;if(q.o[j]===q.t){q.lock=1;b.classList.add('good');K().stars++;q.ok++;save();hdr();const ns=K().stars%5==0;$('#fb').textContent=ns?'🎉 New sticker!':'🌟 Great job!';sp(ns?'Wow! New sticker!':'Great job!','en-IN');q.n++;setTimeout(q.n>=5?done:next,1200)}else{b.classList.add('bad');sp('Try again','en-IN');setTimeout(()=>b.classList.remove('bad'),500)}}
+function ans(j,b){if(q.lock)return;if(q.o[j]===q.t){q.lock=1;b.classList.add('good');const kid=K();kid.starCounters=kid.starCounters&&typeof kid.starCounters==='object'?kid.starCounters:{};kid.starCounters[deviceId]=(Number(kid.starCounters[deviceId])||0)+1;kid.stars=Object.values(kid.starCounters).reduce((n,v)=>n+Math.max(0,Number(v)||0),0);q.ok++;save();hdr();const ns=K().stars%5==0;$('#fb').textContent=ns?'🎉 New sticker!':'🌟 Great job!';sp(ns?'Wow! New sticker!':'Great job!','en-IN');q.n++;setTimeout(q.n>=5?done:next,1200)}else{b.classList.add('bad');sp('Try again','en-IN');setTimeout(()=>b.classList.remove('bad'),500)}}
 function done(){app.innerHTML=`<div class="q"><div class="big">🏆</div><h1>You earned 5 stars!</h1><button class="btn" onclick="play()">Play again</button> <button class="btn o" onclick="openS(cur)">Back</button></div>`}
 function stickers(){const n=K().stars/5|0;app.innerHTML=`<div class="bar"><button class="btn o" onclick="home()">⬅ Home</button><h2>🎁 My Stickers (${Math.min(n,20)}/20)</h2></div><div class="grid">${SK.map((s,i)=>`<div class="st">${i<n?s:'❓'}</div>`).join('')}</div><p>Earn 1 sticker for every 5 stars!</p>`}
 function parent(){const b=(k,v,t)=>`<button class="btn ${st[k]===v?'':'o'}" onclick="st.${k}=${typeof v=='string'?"'"+v+"'":v};save();parent()">${t}</button>`;app.innerHTML=`<div class="bar"><button class="btn o" onclick="home()">⬅ Home</button><h2>⚙️ Parent corner</h2></div>${kidsUI()}<p>Language</p><div class="opts" style="margin:6px">${b('lang','en','English')}${b('lang','hi','हिन्दी')}${b('lang','both','Both')}</div><p>Voice</p><div class="opts" style="margin:6px">${b('sound',1,'🔊 On')}${b('sound',0,'🔇 Off')}</div><p>Hindi speech needs a Hindi voice installed in your browser or computer.</p><p><button class="btn o" onclick="rst(this)">Reset progress</button></p>`;setTimeout(gbtn,0)}
@@ -112,7 +116,7 @@ function signInClick(){
   if(window.fb&&fb.renderGoogle){gbtn();return}
   window.msg='Google sign-in is still loading. Please wait a moment.';kl.refresh();
 }
-window.kl={authed(isAuthenticated,childCount=Object.keys(st.kids).length){if(!st.ob){if(isAuthenticated){if(st.kids.me&&!st.kids.me.stars&&st.kids.me.name=='Me'&&Object.keys(st.kids).length>1)delete st.kids.me;if(!st.kids[st.kid])st.kid=Object.keys(st.kids)[0];st.ob=1;st.step=3}else if(st.step<2)st.step=2}save();hdr();if(st.ob&&onbActive)home();else if(!st.ob&&onbActive)onb()},err(e){const c=e&&e.code||'';window.lastErr=c||(e&&e.message)||String(e);const m={'auth/operation-not-allowed':'Google sign-in is not enabled yet: Firebase > Authentication > Sign-in method > Google > Enable.','auth/unauthorized-domain':'Add srma4tech.github.io in Firebase > Authentication > Settings > Authorized domains.','auth/popup-blocked':'The browser blocked the sign-in popup. Allow popups for this site and try again.','auth/invalid-api-key':'The apiKey in firebase-config.js looks wrong.','auth/network-request-failed':'No internet connection.','auth/timeout':'Google sign-in did not complete within 45 seconds. Reload this page before retrying; if it repeats, open the site in a regular Chrome tab instead of the installed app.','auth/gapi-context-failure':'Google sign-in could not initialize its browser iframe (getContext error). Reload this page and try again; if it repeats, open the site in a regular Chrome tab instead of the installed app.','auth/iframe-failure':'Google sign-in hit a browser iframe initialization error. Reload this page before retrying.'};if(c=='auth/popup-closed-by-user'||c=='auth/cancelled-popup-request')return;st.err=m[c]||('Sign-in failed: '+(c||e&&e.message||e));kl.refresh()},st:()=>st,save,refresh:()=>{hdr();if(!st.ob&&onbActive)onb();else if(app.textContent.includes('Parent corner'))parent()}};
+window.kl={authed(isAuthenticated,childCount=Object.keys(st.kids).length){if(!st.ob&&st.step<2)st.step=2;save();hdr();if(st.ob&&onbActive)home();else if(!st.ob&&onbActive)onb()},err(e){const c=e&&e.code||'';window.lastErr=c||(e&&e.message)||String(e);const m={'auth/operation-not-allowed':'Google sign-in is not enabled yet: Firebase > Authentication > Sign-in method > Google > Enable.','auth/unauthorized-domain':'Add srma4tech.github.io in Firebase > Authentication > Settings > Authorized domains.','auth/popup-blocked':'The browser blocked the sign-in popup. Allow popups for this site and try again.','auth/invalid-api-key':'The apiKey in firebase-config.js looks wrong.','auth/network-request-failed':'No internet connection.','auth/timeout':'Google sign-in did not complete within 45 seconds. Reload this page before retrying; if it repeats, open the site in a regular Chrome tab instead of the installed app.','auth/gapi-context-failure':'Google sign-in could not initialize its browser iframe (getContext error). Reload this page and try again; if it repeats, open the site in a regular Chrome tab instead of the installed app.','auth/iframe-failure':'Google sign-in hit a browser iframe initialization error. Reload this page before retrying.'};if(c=='auth/popup-closed-by-user'||c=='auth/cancelled-popup-request')return;st.err=m[c]||('Sign-in failed: '+(c||e&&e.message||e));kl.refresh()},st:()=>st,save,refresh:()=>{hdr();if(!st.ob&&onbActive)onb();else if(app.textContent.includes('Parent corner'))parent()}};
 if('serviceWorker' in navigator)addEventListener('load',()=>{
   navigator.serviceWorker.register('./sw.js')
     .then(()=>navigator.serviceWorker.ready)
@@ -164,14 +168,17 @@ try {
     const provider = new authSdk.GoogleAuthProvider();
     ;
     let cloudWrite = Promise.resolve();
+    let profileReady = false;
     const profileRef = uid => dbSdk.doc(db, 'users', uid);
     const localSnapshot = () => {
       const state = kl.st();
-      return { kids: state.kids, settings: { lang: state.lang, sound: state.sound }, updatedAt: Date.now() };
+      return { kids: state.kids, settings: { lang: state.lang, sound: state.sound }, schemaVersion: 2, updatedAt: Date.now() };
     };
     const writeProfile = (user, data) => {
+      // Do not write until the initial reconciliation has completed.
+      if (!profileReady) return Promise.resolve();
       // A failed write must not poison the queue and block every later save.
-      cloudWrite = cloudWrite.catch(() => {}).then(() => dbSdk.setDoc(profileRef(user.uid), data, { merge: true }));
+      cloudWrite = cloudWrite.catch(() => {}).then(() => dbSdk.setDoc(profileRef(user.uid), data));
       return cloudWrite;
     };
     // Use Google Identity Services for the ID token, then exchange it with Firebase.
@@ -240,7 +247,7 @@ try {
         const user = auth.currentUser, state = kl.st();
         if (!user || !state.ob) return;
         try {
-          await writeProfile(user, { ...localSnapshot(), email: user.email || null, displayName: user.displayName || null });
+          await writeProfile(user, localSnapshot());
           window.cloudStatus = 'saved'; state.err = '';
         } catch (error) {
           window.lastErr = error?.code || error?.message || String(error);
@@ -270,6 +277,7 @@ try {
         }
         return;
       }
+      profileReady = false;
       window.cloudStatus = 'loading profile'; window.fbStatus = 'Firebase: ready'; kl.refresh();
       try {
         ;
@@ -278,43 +286,62 @@ try {
 
         const cloud = snapshot.exists() ? snapshot.data() : {};
         const cloudKids = cloud.kids && typeof cloud.kids === 'object' ? cloud.kids : {};
-        if (snapshot.exists()) {
-          // For an authenticated account, its cloud document is the source of truth.
-          // Do not merge by star count: equal-star renames, deletions and other edits
-          // must not be silently ignored or leak another account's local children.
-          state.kids = Object.keys(cloudKids).length ? { ...cloudKids } : { me: { name: 'Me', stars: 0 } };
-          if (!state.kids[state.kid]) state.kid = Object.keys(state.kids)[0];
-          if (cloud.settings && typeof cloud.settings === 'object') {
-            if (['en', 'hi', 'both'].includes(cloud.settings.lang)) state.lang = cloud.settings.lang;
-            if (typeof cloud.settings.sound === 'number') state.sound = cloud.settings.sound;
+        const localKids = state.kids && typeof state.kids === 'object' ? state.kids : {};
+        const mergedKids = {};
+        const validKid = kid => kid && typeof kid === 'object' &&
+          typeof kid.name === 'string' && Number.isFinite(Number(kid.stars)) &&
+          Number(kid.stars) >= 0;
+        // Reconcile by stable child ID. Keep the highest observed star total so
+        // offline-earned stars are not discarded by an older cloud snapshot.
+        // Prefer a configured cloud name; use the local name when cloud is new/default.
+        for (const id of new Set([...Object.keys(cloudKids), ...Object.keys(localKids)])) {
+          const remote = validKid(cloudKids[id]) ? cloudKids[id] : null;
+          const local = validKid(localKids[id]) ? localKids[id] : null;
+          if (!remote && !local) continue;
+          const name = remote && remote.name && remote.name !== 'Me'
+            ? remote.name
+            : (local?.name || remote?.name || 'Me');
+          const counters = { ...(remote?.starCounters || {}), ...(local?.starCounters || {}) };
+          for (const device of Object.keys(counters)) {
+            counters[device] = Math.max(0, Number(remote?.starCounters?.[device] || 0), Number(local?.starCounters?.[device] || 0));
           }
-          state.ob = 1;
-          state.step = 3;
-          window.cloudStatus = 'profile loaded';
-        } else {
-          // Preserve the pre-login device state as a recovery backup, but do not
-          // silently attach it to a newly authenticated account.
-          try {
-            localStorage.setItem('kl_guest_backup_v1', JSON.stringify({ kids: state.kids, kid: state.kid, lang: state.lang, sound: state.sound, savedAt: Date.now() }));
-          } catch (_) {}
-          state.kids = { me: { name: 'Me', stars: 0 } };
-          state.kid = 'me';
-          state.lang = 'both';
-          state.sound = 1;
-          state.ob = 1;
-          state.step = 3;
-          await dbSdk.setDoc(ref, {
-            kids: state.kids, settings: { lang: state.lang, sound: state.sound },
-            email: user.email || null, displayName: user.displayName || null,
-            createdAt: Date.now(), updatedAt: Date.now()
-          });
-          window.cloudStatus = 'profile created';
+          const counterTotal = Object.values(counters).reduce((n, value) => n + value, 0);
+          const baseline = Math.max(0, Number(remote?.stars || 0), Number(local?.stars || 0), counterTotal);
+          // Migrate legacy aggregate totals without double-counting the same old stars.
+          if (baseline > counterTotal) counters[deviceId] = (Number(counters[deviceId]) || 0) + baseline - counterTotal;
+          mergedKids[id] = {
+            name: String(name).replace(/[<>&"']/g, '').trim().slice(0, 12) || 'Me',
+            stars: Object.values(counters).reduce((n, value) => n + Math.max(0, Number(value) || 0), 0),
+            starCounters: counters
+          };
         }
-        ;
+        state.kids = Object.keys(mergedKids).length ? mergedKids : { me: { name: 'Me', stars: 0 } };
+        if (!state.kids[state.kid]) state.kid = Object.keys(state.kids)[0];
+        if (cloud.settings && typeof cloud.settings === 'object') {
+          if (['en', 'hi', 'both'].includes(cloud.settings.lang)) state.lang = cloud.settings.lang;
+          if (typeof cloud.settings.sound === 'number') state.sound = cloud.settings.sound ? 1 : 0;
+        }
+        const hasConfiguredChild = Object.values(state.kids).some(kid => kid.name && kid.name !== 'Me');
+        state.ob = hasConfiguredChild ? 1 : 0;
+        state.step = state.ob ? 3 : 2;
+        if (!state.ob) {
+          // A new account must complete child setup; sign-in alone is not onboarding.
+          window.cloudStatus = 'needs child setup';
+        } else {
+          window.cloudStatus = snapshot.exists() ? 'profile reconciled' : 'profile created';
+        }
+        profileReady = true;
+        // Persist the reconciled state locally before publishing it to the cloud.
+        kl.save();
+        await writeProfile(user, {
+          ...localSnapshot(),
+          createdAt: typeof cloud.createdAt === 'number' ? cloud.createdAt : Date.now()
+        });
         kl.save(); kl.authed(true, Object.keys(state.kids).length);
       } catch (error) {
         ;
         window.lastErr = error?.code || error?.message || String(error);
+        profileReady = false;
         window.cloudStatus = 'profile failed';
         state.err = 'Google sign-in succeeded, but cloud profile access failed. ' + window.lastErr;
         kl.refresh();
