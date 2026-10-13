@@ -261,55 +261,92 @@ try {
     ;
     authSdk.onAuthStateChanged(auth, async user => {
       const state = kl.st();
-      const wasSignedIn = Boolean(state.user);
-      state.user = user ? (user.displayName || user.email || 'Google user') : null;
-      ;
+      let previousUid = '';
+      try { previousUid = localStorage.getItem('kl_account_uid') || ''; } catch (_) {}
       if (!user) {
+        profileReady = false;
+        state.user = null;
         window.cloudStatus = 'signed out';
-        window.fbStatus = 'Firebase: ready · guarded Google sign-in';
-        if (wasSignedIn) {
-          // Signing out should leave the parent corner and return to learning home.
-          // Keep the local child profile/progress; signing out must not erase learning data.
-          window.msg = '';
-          home();
-        } else {
-          kl.refresh();
-        }
+        window.fbStatus = 'Firebase: ready · guest mode';
+        // Never expose an account's cached profile as guest progress.
+        let guest = null;
+        try { guest = JSON.parse(localStorage.getItem('kl_guest') || 'null'); } catch (_) {}
+        try { localStorage.removeItem('kl_account_uid'); } catch (_) {}
+        state.kids = guest?.kids && typeof guest.kids === 'object' ? guest.kids : { me: { name: 'Me', stars: 0 } };
+        state.kid = state.kids[state.kid] ? state.kid : Object.keys(state.kids)[0] || 'me';
+        if (!state.kids[state.kid]) state.kids.me = { name: 'Me', stars: 0 };
+        state.lang = ['en', 'hi', 'both'].includes(guest?.settings?.lang) ? guest.settings.lang : 'both';
+        state.sound = typeof guest?.settings?.sound === 'number' ? (guest.settings.sound ? 1 : 0) : 1;
+        state.ob = Object.values(state.kids).some(k => k?.name && k.name !== 'Me') ? 1 : 0;
+        state.step = state.ob ? 3 : 0;
+        state.err = '';
+        window.msg = '';
+        kl.save(); home();
         return;
       }
+
+      // Snapshot guest progress before switching the active profile. Account A's
+      // cached data is never treated as guest data or merged into account B.
+      let choice = 'account';
+      try {
+        if (!previousUid) {
+          const current = JSON.parse(localStorage.getItem('kl') || '{}');
+          const guestSnapshot = {
+            kids: current.kids && typeof current.kids === 'object' ? current.kids : { me: { name: 'Me', stars: 0 } },
+            kid: current.kid || 'me',
+            settings: { lang: current.lang || 'both', sound: typeof current.sound === 'number' ? current.sound : 1 },
+            schemaVersion: 2,
+            savedAt: Date.now()
+          };
+          localStorage.setItem('kl_guest', JSON.stringify(guestSnapshot));
+          const meaningful = Object.values(guestSnapshot.kids).some(k => k && ((k.name && k.name !== 'Me') || Number(k.stars) > 0));
+          if (meaningful) {
+            choice = window.confirm(
+              'You have learning data saved on this device.\n\nOK: explicitly merge this device’s progress into the Google account.\nCancel: use the Google account’s progress and keep guest data separate on this device.'
+            ) ? 'merge' : 'account';
+          }
+        } else if (previousUid !== user.uid) {
+          // Preserve the previous account's device cache under its own UID.
+          localStorage.setItem('kl_account_cache_' + previousUid, localStorage.getItem('kl') || '{}');
+          state.kids = { me: { name: 'Me', stars: 0 } };
+          state.kid = 'me'; state.lang = 'both'; state.sound = 1; state.ob = 0; state.step = 0;
+          choice = 'account';
+        } else {
+          choice = 'merge'; // Same account: reconcile same-account offline work.
+        }
+      } catch (_) {
+        // If local storage is unavailable, fail closed: load the account only.
+        choice = previousUid === user.uid ? 'merge' : 'account';
+      }
+
+      state.user = user.displayName || user.email || 'Google user';
+      try { localStorage.setItem('kl_account_uid', user.uid); } catch (_) {}
       profileReady = false;
       window.cloudStatus = 'loading profile'; window.fbStatus = 'Firebase: ready'; kl.refresh();
       try {
-        ;
         const ref = profileRef(user.uid), snapshot = await dbSdk.getDoc(ref);
-        ;
-
         const cloud = snapshot.exists() ? snapshot.data() : {};
         const cloudKids = cloud.kids && typeof cloud.kids === 'object' ? cloud.kids : {};
-        const localKids = state.kids && typeof state.kids === 'object' ? state.kids : {};
+        const localKids = choice === 'merge' && state.kids && typeof state.kids === 'object' ? state.kids : {};
         const mergedKids = {};
         const validKid = kid => kid && typeof kid === 'object' &&
-          typeof kid.name === 'string' && Number.isFinite(Number(kid.stars)) &&
-          Number(kid.stars) >= 0;
-        // Reconcile by stable child ID. Keep the highest observed star total so
-        // offline-earned stars are not discarded by an older cloud snapshot.
-        // Prefer a configured cloud name; use the local name when cloud is new/default.
+          typeof kid.name === 'string' && Number.isFinite(Number(kid.stars)) && Number(kid.stars) >= 0;
         for (const id of new Set([...Object.keys(cloudKids), ...Object.keys(localKids)])) {
           const remote = validKid(cloudKids[id]) ? cloudKids[id] : null;
           const local = validKid(localKids[id]) ? localKids[id] : null;
           if (!remote && !local) continue;
-          const name = remote && remote.name && remote.name !== 'Me'
-            ? remote.name
-            : (local?.name || remote?.name || 'Me');
-          const counters = { ...(remote?.starCounters || {}), ...(local?.starCounters || {}) };
-          for (const device of Object.keys(counters)) {
-            counters[device] = Math.max(0, Number(remote?.starCounters?.[device] || 0), Number(local?.starCounters?.[device] || 0));
+          const name = remote && remote.name && remote.name !== 'Me' ? remote.name : (local?.name || remote?.name || 'Me');
+          const counters = { ...(remote?.starCounters || {}) };
+          if (choice === 'merge') {
+            for (const [device, value] of Object.entries(local?.starCounters || {})) {
+              counters[device] = Math.max(0, Number(counters[device]) || 0, Number(value) || 0);
+            }
           }
-          const counterTotal = Object.values(counters).reduce((n, value) => n + value, 0);
-          const baseline = Math.max(0, Number(remote?.stars || 0), Number(local?.stars || 0), counterTotal);
-          // Migrate legacy aggregate totals without double-counting the same old stars.
+          const counterTotal = Object.values(counters).reduce((n, value) => n + Math.max(0, Number(value) || 0), 0);
+          const baseline = Math.max(0, Number(remote?.stars || 0), choice === 'merge' ? Number(local?.stars || 0) : 0, counterTotal);
           if (baseline > counterTotal) counters[deviceId] = (Number(counters[deviceId]) || 0) + baseline - counterTotal;
           mergedKids[id] = {
+            ...((choice === 'merge' && local) ? local : {}),
             name: String(name).replace(/[<>&"']/g, '').trim().slice(0, 12) || 'Me',
             stars: Object.values(counters).reduce((n, value) => n + Math.max(0, Number(value) || 0), 0),
             starCounters: counters
@@ -320,23 +357,30 @@ try {
         if (cloud.settings && typeof cloud.settings === 'object') {
           if (['en', 'hi', 'both'].includes(cloud.settings.lang)) state.lang = cloud.settings.lang;
           if (typeof cloud.settings.sound === 'number') state.sound = cloud.settings.sound ? 1 : 0;
+        } else if (choice !== 'merge') {
+          state.lang = 'both'; state.sound = 1;
         }
         const hasConfiguredChild = Object.values(state.kids).some(kid => kid.name && kid.name !== 'Me');
         state.ob = hasConfiguredChild ? 1 : 0;
         state.step = state.ob ? 3 : 2;
-        if (!state.ob) {
-          // A new account must complete child setup; sign-in alone is not onboarding.
-          window.cloudStatus = 'needs child setup';
-        } else {
-          window.cloudStatus = snapshot.exists() ? 'profile reconciled' : 'profile created';
-        }
+        window.cloudStatus = !state.ob ? 'needs child setup' : (snapshot.exists() ? 'profile loaded' : 'profile created');
         profileReady = true;
-        // Persist the reconciled state locally before publishing it to the cloud.
         kl.save();
+        // A brand-new cloud profile is written only after the parent selected a
+        // data path. "Keep separate" never uploads the guest snapshot.
         await writeProfile(user, {
           ...localSnapshot(),
           createdAt: typeof cloud.createdAt === 'number' ? cloud.createdAt : Date.now()
         });
+        kl.save(); kl.authed(true, Object.keys(state.kids).length);
+      } catch (error) {
+        profileReady = false;
+        window.lastErr = error?.code || error?.message || String(error);
+        window.cloudStatus = 'profile failed';
+        state.err = 'Google sign-in succeeded, but cloud profile access failed. ' + window.lastErr;
+        kl.refresh();
+      }
+    });
         kl.save(); kl.authed(true, Object.keys(state.kids).length);
       } catch (error) {
         ;
