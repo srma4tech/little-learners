@@ -8,7 +8,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:'Comic Sans MS',
 button{font:inherit;color:inherit;cursor:pointer;border:0}
 header{flex-wrap:wrap;gap:6px;display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:0 auto;padding:10px 12px}
 .pill{background:var(--card);border-radius:99px;padding:6px 16px;box-shadow:0 3px 0 var(--sh);font-size:22px}
-.build-tag{display:inline-flex;align-items:center;gap:4px;border:1px solid #7c4dff66;background:#7c4dff18;color:var(--ink);border-radius:999px;padding:4px 9px;font:700 11px/1.2 system-ui,sans-serif;white-space:nowrap;letter-spacing:.2px}
+
 #app{--a:#7c4dff;max-width:1000px;margin:0 auto;padding:8px 12px 40px}
 h1{font-size:clamp(26px,5vw,44px);text-align:center;margin:8px 0 18px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
@@ -29,114 +29,18 @@ h1{font-size:clamp(26px,5vw,44px);text-align:center;margin:8px 0 18px}
 #fb{min-height:40px;font-size:26px;font-weight:700}
 .st{font-size:48px;background:var(--card);border-radius:18px;padding:10px;text-align:center}
 p{text-align:center;font-size:18px}body.ob header{display:none}.ib{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;background:var(--card);border:3px dashed var(--a);border-radius:18px;padding:10px 14px;margin:0 0 14px;font-size:18px}button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}body{overflow-wrap:anywhere}@media(max-width:600px){.grid{grid-template-columns:repeat(2,1fr)}.card .e{font-size:44px}.bar h2{font-size:22px}}@media(pointer:coarse){.kb{display:none}}
-/* Development diagnostics console */
-#diagFab{position:fixed;right:12px;bottom:12px;z-index:9998;background:#25233b;color:#fff;border:2px solid #a78bfa;border-radius:999px;padding:10px 14px;font-size:14px;font-weight:700;box-shadow:0 4px 16px #0004;display:none}
-#diagPanel{position:fixed;inset:0;z-index:9999;background:rgba(10,10,20,.72);display:none;align-items:center;justify-content:center;padding:12px;box-sizing:border-box;user-select:text;-webkit-user-select:text}
-#diagPanel .dp-card{width:min(900px,100%);height:min(88dvh,760px);background:var(--card);color:var(--ink);border:2px solid #8b5cf6;border-radius:18px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 70px #0006}
-#diagPanel .dp-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:12px;border-bottom:1px solid #8885}
-#diagPanel .dp-title{font-weight:800;font-size:18px;flex:1}
-#diagPanel .dp-actions{display:flex;gap:6px;flex-wrap:wrap}
-#diagPanel .dp-actions button{border-radius:999px;padding:8px 12px;background:#6d4aff;color:#fff;font-size:13px}
-#diagPanel .dp-actions .dp-muted{background:var(--bg);color:var(--ink);border:1px solid #8888}
-#diagPanel .dp-summary{padding:8px 12px;font-size:12px;opacity:.8;border-bottom:1px solid #8885}
-#diagPanel #diagEvents{overflow:auto;flex:1;padding:8px;font:12px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere}
-#diagPanel .dp-event{padding:8px;border-bottom:1px solid #8883}
-#diagPanel .dp-error{color:#e53935}#diagPanel .dp-warn{color:#c88700}#diagPanel .dp-info{color:#4285f4}
-#diagPanel .dp-empty{padding:24px;text-align:center;opacity:.7}
-@media(max-width:600px){#diagFab{right:8px;bottom:8px;padding:9px 12px}#diagPanel{padding:5px}#diagPanel .dp-card{height:94dvh;border-radius:12px}#diagPanel .dp-head{padding:8px}#diagPanel .dp-title{font-size:16px}}
-
-
 </style></head><body>
 <a class="skip-link" href="#app">Skip to main content</a>
-<header aria-label="Little Learners header"><button class="pill" type="button" aria-label="Go to home" title="Home" onclick="home()">🏠</button><span class="build-tag" aria-label="Application build 22">BUILD 24</span><span class="pill" id="stars" aria-live="polite" aria-label="Stars earned"></span><span><button class="pill" id="inst" type="button" aria-label="Install Little Learners" title="Install app" style="display:none" onclick="doInstall()">📲 Install</button> <button class="pill" id="kid" type="button" aria-label="Open parent settings" onclick="gate()"></button> <button class="pill" type="button" aria-label="Open stickers" title="Stickers" onclick="stickers()">🎁</button> <button class="pill" type="button" aria-label="Open parent settings" title="Parent settings" onclick="gate()">⚙️</button></span></header>
+<header aria-label="Little Learners header"><button class="pill" type="button" aria-label="Go to home" title="Home" onclick="home()">🏠</button><span class="pill" id="stars" aria-live="polite" aria-label="Stars earned"></span><span><button class="pill" id="inst" type="button" aria-label="Install Little Learners" title="Install app" style="display:none" onclick="doInstall()">📲 Install</button> <button class="pill" id="kid" type="button" aria-label="Open parent settings" onclick="gate()"></button> <button class="pill" type="button" aria-label="Open stickers" title="Stickers" onclick="stickers()">🎁</button> <button class="pill" type="button" aria-label="Open parent settings" title="Parent settings" onclick="gate()">⚙️</button></span></header>
 <main id="app" tabindex="-1"></main>
 <footer class="site-footer" aria-label="Site footer"><nav class="footer-nav" aria-label="Primary navigation"><button type="button" onclick="home()">🏠 Home</button><button type="button" onclick="stickers()">🎁 Stickers</button><button type="button" onclick="gate()">⚙️ Parents</button></nav><p class="footer-copy">Little Learners · Learn, play and grow 🌱<br>Alphabets · हिंदी वर्णमाला · Numbers · Animals · Good manners</p></footer>
 <script>
-// In-app diagnostics: retained for this tab (including same-tab Google redirects).
-window.appTraceLog = (() => {
-  const KEY = 'll-diagnostic-events-v1', LIMIT = 500;
-  let events = [];
-  try { events = JSON.parse(sessionStorage.getItem(KEY) || '[]'); if (!Array.isArray(events)) events = []; } catch (_) {}
-  const safeText = value => {
-    let text;
-    try { text = typeof value === 'string' ? value : value instanceof Error ? (value.stack || value.message) : JSON.stringify(value); }
-    catch (_) { text = String(value); }
-    return String(text || '')
-      .replace(/(authorization|access_token|id_token|refresh_token|client_secret|password|apiKey|token|secret)\s*[:=]\s*[^\s,;&]+/gi, '$1=[REDACTED]')
-      .replace(/Bearer\s+[A-Za-z0-9._~+\/-]+=*/gi, 'Bearer [REDACTED]')
-      .replace(/eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]*/g, '[JWT REDACTED]')
-      .replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi, '[EMAIL REDACTED]')
-      .slice(0, 5000);
-  };
-  const safeUrl = raw => {
-    try { const u = new URL(raw, location.href); return u.origin + u.pathname; }
-    catch (_) { return String(raw || '').split(/[?#]/)[0].slice(0, 300); }
-  };
-  const save = () => { try { sessionStorage.setItem(KEY, JSON.stringify(events.slice(-LIMIT))); } catch (_) {} };
-  const add = (level, source, message, details) => {
-    const item = { time: new Date().toISOString(), level, source, message: safeText(message), ...(details ? {details:safeText(details)} : {}) };
-    events.push(item); if (events.length > LIMIT) events = events.slice(-LIMIT); save();
-    // Mirror every in-app diagnostic event to DevTools so the normal app can be debugged
-    // without opening diagnostics.html or the in-app log panel.
-    try {
-      const consoleMethod = level === 'ERROR' ? 'error' : level === 'WARN' ? 'warn' : 'info';
-      console[consoleMethod]('[LittleLearners][' + level + '][' + source + '] ' + item.message,
-        details === undefined || details === null || details === '' ? '' : item.details);
-    } catch (_) {}
-    try { if (typeof updateDiagnosticCount === 'function') updateDiagnosticCount(); if (typeof renderDiagnosticEvents === 'function' && document.getElementById('diagPanel')?.style.display === 'flex') renderDiagnosticEvents(); } catch (_) {}
-    return item;
-  };
-  return { add, all: () => events.slice(), clear: () => { events = []; save(); }, count: () => events.length, safeUrl };
-})();
-window.authDebug = new URLSearchParams(location.search).get('authdebug') === '1';
-window.authStep = (stage, detail = '') => {
-  // Never use blocking alert() for diagnostics: record events and let the app continue.
-  window.appTraceLog?.add('INFO', 'auth', stage, detail);
+window.authErrorDetails = error => {
+  if (!error) return 'Unknown error';
+  return [error.code, error.message || String(error)].filter(Boolean).join(': ');
 };
 
-// Capture failures that can happen outside Firebase's promise chain. Keep details sanitized
-// by appTraceLog before they are retained or printed.
-window.addEventListener('error', event => {
-  const target = event.target;
-  const isResourceError = target && target !== window;
-  const detail = {
-    message: event.message || (isResourceError ? 'Resource failed to load' : 'Uncaught browser error'),
-    filename: event.filename ? window.appTraceLog.safeUrl(event.filename) : '(not exposed)',
-    line: event.lineno || null,
-    column: event.colno || null,
-    targetTag: isResourceError ? (target.tagName || '(unknown element)') : '(window)',
-    resourceUrl: isResourceError ? window.appTraceLog.safeUrl(target.src || target.href || '') : '(not applicable)',
-    error: event.error ? window.authErrorDetails?.(event.error) || String(event.error) : '(browser did not expose the Error object)'
-  };
-  window.appTraceLog.add(isResourceError ? 'ERROR' : 'ERROR', isResourceError ? 'resource.error' : 'window.error',
-    isResourceError ? 'Script/style/image or other page resource failed to load' : 'Uncaught browser/runtime error', detail);
-}, true);
-window.addEventListener('unhandledrejection', event => {
-  const reason = event.reason;
-  window.appTraceLog.add('ERROR', 'unhandledrejection', 'Unhandled promise rejection',
-    reason instanceof Error ? window.authErrorDetails(reason) : String(reason ?? '(empty rejection reason)'));
-});
-window.addEventListener('pageshow', event => {
-  window.appTraceLog.add('INFO', 'lifecycle', 'Page shown', {
-    persistedFromBackForwardCache: event.persisted,
-    visibility: document.visibilityState,
-    online: navigator.onLine,
-    url: location.origin + location.pathname + location.search
-  });
-});
-window.addEventListener('online', () => window.appTraceLog.add('INFO', 'network', 'Browser reports network online'));
-window.addEventListener('offline', () => window.appTraceLog.add('WARN', 'network', 'Browser reports network offline'));
-window.appTraceLog.add('INFO', 'startup', 'Console diagnostics enabled', {
-  userAgent: navigator.userAgent,
-  platform: navigator.platform,
-  language: navigator.language,
-  online: navigator.onLine,
-  visibility: document.visibilityState,
-  standalone: !!(window.matchMedia && window.matchMedia('(display-mode: standalone)').matches),
-  page: location.origin + location.pathname + location.search
-});
-
-// Popup-only auth: no GAPI global interception or redirect-result startup gate.
+// Google sign-in uses Google Identity Services and Firebase credentials.
 
 window.authErrorDetails = error => {
   if (!error) return 'No error object was provided.';
@@ -189,7 +93,7 @@ function stickers(){const n=K().stars/5|0;app.innerHTML=`<div class="bar"><butto
 function parent(){const b=(k,v,t)=>`<button class="btn ${st[k]===v?'':'o'}" onclick="st.${k}=${typeof v=='string'?"'"+v+"'":v};save();parent()">${t}</button>`;app.innerHTML=`<div class="bar"><button class="btn o" onclick="home()">⬅ Home</button><h2>⚙️ Parent corner</h2></div>${kidsUI()}<p>Language</p><div class="opts" style="margin:6px">${b('lang','en','English')}${b('lang','hi','हिन्दी')}${b('lang','both','Both')}</div><p>Voice</p><div class="opts" style="margin:6px">${b('sound',1,'🔊 On')}${b('sound',0,'🔇 Off')}</div><p>Hindi speech needs a Hindi voice installed in your browser or computer.</p><p><button class="btn o" onclick="rst(this)">Reset progress</button></p>`;setTimeout(gbtn,0)}
 function rst(b){if(b.dataset.c){K().stars=0;save();hdr();home()}else{b.dataset.c=1;b.textContent='Tap again to confirm'}}
 addEventListener('keydown',e=>{if(e.key=='Escape')home();else if(cur==0&&/^[a-z]$/i.test(e.key)&&app.querySelector('.card'))say(AL[e.key.toUpperCase().charCodeAt(0)-65])});
-function kidsUI(){const a=window.fb&&fb.ok?(st.user?`<p>Signed in: ${st.user}</p><p><button class="btn o" onclick="fb.signOut()">Sign out</button></p>`:`<p>${fb.gis?'<span id="gbtn"></span>':'<button class="btn o" onclick="signInClick()">Sign in with Google to save progress online</button>'}</p>`):`<p>Guest mode: progress is saved on this device.</p>`;const er=(window.msg?`<p style="font-weight:700">${window.msg}</p>`:'')+(st.err?`<p style="color:#e53935;font-weight:700">${st.err}</p>`:'');return `<p>Who is playing?</p><div class="opts" style="margin:6px">${Object.keys(st.kids).map(k=>`<button class="btn ${k==st.kid?'':'o'}" onclick="st.kid='${k}';save();hdr();parent()">${st.kids[k].name}</button>`).join('')}<button class="btn o" onclick="addKid()">➕ Add kid</button></div><p><button class="btn o" onclick="renKid()">✏️ Rename ${K().name}</button> <button class="btn o" onclick="st.ob=0;st.step=0;save();onb()">👋 Welcome tour</button></p>${dp?'<p><button class="btn" onclick="doInstall()">📲 Install app</button></p>':''}${a}${er}<p><button class="btn o" onclick="openDiagnostics()">🧰 Developer diagnostics · <span id="diagCount">0</span> events</button></p><p style="font-size:14px;opacity:.7">Build 22 · ${isStd()?'Installed app':dp?'Install ready':'Install: browser menu ⋮ > Install app'} · SW: ${window.swS||'?'} · ${window.fbStatus||'Firebase: loading…'}${window.net?' · '+window.net:''}${window.cloudStatus?' · Cloud: '+window.cloudStatus:''}${window.lastErr?' · Err: '+window.lastErr:''}</p>`}
+function kidsUI(){const a=window.fb&&fb.ok?(st.user?`<p>Signed in: ${st.user}</p><p><button class="btn o" onclick="fb.signOut()">Sign out</button></p>`:`<p>${fb.gis?'<span id="gbtn"></span>':'<button class="btn o" onclick="signInClick()">Sign in with Google to save progress online</button>'}</p>`):`<p>Guest mode: progress is saved on this device.</p>`;const er=(window.msg?`<p style="font-weight:700">${window.msg}</p>`:'')+(st.err?`<p style="color:#e53935;font-weight:700">${st.err}</p>`:'');return `<p>Who is playing?</p><div class="opts" style="margin:6px">${Object.keys(st.kids).map(k=>`<button class="btn ${k==st.kid?'':'o'}" onclick="st.kid='${k}';save();hdr();parent()">${st.kids[k].name}</button>`).join('')}<button class="btn o" onclick="addKid()">➕ Add kid</button></div><p><button class="btn o" onclick="renKid()">✏️ Rename ${K().name}</button> <button class="btn o" onclick="st.ob=0;st.step=0;save();onb()">👋 Welcome tour</button></p>${dp?'<p><button class="btn" onclick="doInstall()">📲 Install app</button></p>':''}${a}${er}<p style="font-size:14px;opacity:.7">${isStd() ? "Installed app" : dp ? "Install ready" : "Install: browser menu ⋮ > Install app"}</p>`}
 function addKid(){const n=(prompt("Kid's name?")||'').replace(/[<>&\"']/g,'').trim().slice(0,12);if(!n)return;const id='k'+Date.now();st.kids[id]={name:n,stars:0};st.kid=id;save();hdr();parent()}
 function onb(){onbActive=1;document.body.classList.add('ob');app.style.setProperty('--a','#7c4dff');
 const bt=(k,v,t)=>`<button class="btn ${st[k]===v?'':'o'}" onclick="pick('${k}',${typeof v=='string'?"'"+v+"'":v},this)">${t}</button>`,er=(window.msg?`<p style="font-weight:700">${window.msg}</p>`:'')+(st.err?`<p style="color:#e53935;font-weight:700">${st.err}</p>`:'');let h;
@@ -210,95 +114,19 @@ function signInClick(){
 }
 window.kl={authed(isAuthenticated,childCount=Object.keys(st.kids).length){if(!st.ob){if(isAuthenticated){if(st.kids.me&&!st.kids.me.stars&&st.kids.me.name=='Me'&&Object.keys(st.kids).length>1)delete st.kids.me;if(!st.kids[st.kid])st.kid=Object.keys(st.kids)[0];st.ob=1;st.step=3}else if(st.step<2)st.step=2}save();hdr();if(st.ob&&onbActive)home();else if(!st.ob&&onbActive)onb()},err(e){const c=e&&e.code||'';window.lastErr=c||(e&&e.message)||String(e);const m={'auth/operation-not-allowed':'Google sign-in is not enabled yet: Firebase > Authentication > Sign-in method > Google > Enable.','auth/unauthorized-domain':'Add srma4tech.github.io in Firebase > Authentication > Settings > Authorized domains.','auth/popup-blocked':'The browser blocked the sign-in popup. Allow popups for this site and try again.','auth/invalid-api-key':'The apiKey in firebase-config.js looks wrong.','auth/network-request-failed':'No internet connection.','auth/timeout':'Google sign-in did not complete within 45 seconds. Reload this page before retrying; if it repeats, open the site in a regular Chrome tab instead of the installed app.','auth/gapi-context-failure':'Google sign-in could not initialize its browser iframe (getContext error). Reload this page and try again; if it repeats, open the site in a regular Chrome tab instead of the installed app.','auth/iframe-failure':'Google sign-in hit a browser iframe initialization error. Reload this page before retrying.'};if(c=='auth/popup-closed-by-user'||c=='auth/cancelled-popup-request')return;st.err=m[c]||('Sign-in failed: '+(c||e&&e.message||e));kl.refresh()},st:()=>st,save,refresh:()=>{hdr();if(!st.ob&&onbActive)onb();else if(app.textContent.includes('Parent corner'))parent()}};
 if('serviceWorker' in navigator)addEventListener('load',()=>{
-  window.appTraceLog.add('INFO','service-worker','Registering service worker','./sw.js');
   navigator.serviceWorker.register('./sw.js')
-    .then(registration=>{
-      window.appTraceLog.add('INFO','service-worker','Service worker registered',{
-        scope:window.appTraceLog.safeUrl(registration.scope),
-        active:!!registration.active,
-        waiting:!!registration.waiting,
-        installing:!!registration.installing
-      });
-      return navigator.serviceWorker.ready;
-    })
-    .then(registration=>{
-      window.swS='active';
-      window.appTraceLog.add('INFO','service-worker','Service worker ready',{
-        activeScript:registration.active?.scriptURL ? window.appTraceLog.safeUrl(registration.active.scriptURL) : '(no active script)'
-      });
-    })
-    .catch(e=>{
-      window.swS='failed: '+e.message;
-      window.appTraceLog.add('ERROR','service-worker','Service worker registration failed',window.authErrorDetails(e));
-    });
+    .then(()=>navigator.serviceWorker.ready)
+    .then(()=>{window.swS='active'})
+    .catch(()=>{window.swS='unavailable'});
 });
 hdr();st.ob?home():onb();
-// Console UI is reachable from Parent corner. Events are recorded before the panel is opened.
-function ensureDiagnosticsUI(){
-  if(document.getElementById('diagPanel')) return;
-  const diagMode = new URLSearchParams(location.search).get('diagnostics') === '1' || window.authDebug;
-  const fab=document.createElement('button'); fab.id='diagFab'; fab.textContent='🧰 Logs'; fab.onclick=openDiagnostics; fab.style.display=diagMode?'':'none'; document.body.appendChild(fab);
-  const panel=document.createElement('div'); panel.id='diagPanel'; panel.setAttribute('role','dialog'); panel.setAttribute('aria-modal','true'); panel.setAttribute('aria-label','Developer diagnostics');
-  panel.innerHTML='<div class="dp-card"><div class="dp-head"><div class="dp-title">🧰 Developer diagnostics</div><div class="dp-actions"><button id="diagCopy">Copy all</button><button id="diagExport" class="dp-muted">Export JSON</button><button id="diagClear" class="dp-muted">Clear</button><button id="diagClose" class="dp-muted">Close</button></div></div><div class="dp-summary" id="diagSummary"></div><div id="diagEvents" aria-live="polite"></div></div>';
-  document.body.appendChild(panel);
-  panel.addEventListener('click',e=>{if(e.target===panel)closeDiagnostics()});
-  panel.querySelector('#diagClose').onclick=closeDiagnostics;
-  panel.querySelector('#diagCopy').onclick=copyDiagnosticLogs;
-  panel.querySelector('#diagExport').onclick=exportDiagnosticLogs;
-  panel.querySelector('#diagClear').onclick=()=>{if(confirm('Clear all diagnostic events for this tab?')){window.appTraceLog.clear();renderDiagnosticEvents();updateDiagnosticCount()}};
-  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDiagnostics()});
-  updateDiagnosticCount();
-}
-function renderDiagnosticEvents(){
-  const root=document.getElementById('diagEvents'),summary=document.getElementById('diagSummary'); if(!root||!summary)return;
-  const events=window.appTraceLog.all();
-  summary.textContent=events.length+' events · session-only storage · latest '+Math.min(events.length,500)+' retained';
-  if(!events.length){root.innerHTML='<div class="dp-empty">No events recorded yet.</div>';return}
-  root.replaceChildren(...events.slice().reverse().map(ev=>{
-    const row=document.createElement('div');row.className='dp-event '+(ev.level==='ERROR'?'dp-error':ev.level==='WARN'?'dp-warn':'dp-info');
-    const head=document.createElement('strong');head.textContent=ev.time+'  ['+ev.level+']  '+ev.source+' — '+ev.message;row.appendChild(head);
-    if(ev.details){const detail=document.createElement('div');detail.textContent=ev.details;row.appendChild(detail)}
-    return row;
-  }));
-}
-function updateDiagnosticCount(){const e=document.getElementById('diagCount');if(e)e.textContent=window.appTraceLog.count()}
-function openDiagnostics(){ensureDiagnosticsUI();document.getElementById('diagPanel').style.display='flex';renderDiagnosticEvents();document.getElementById('diagFab').style.display='none'}
-function closeDiagnostics(){const p=document.getElementById('diagPanel');if(p)p.style.display='none';const f=document.getElementById('diagFab');if(f)f.style.display=(new URLSearchParams(location.search).get('diagnostics')==='1'||window.authDebug)?'':'none'}
-function copyDiagnosticLogs(){
-  const text=JSON.stringify({app:'Little Learners',build:'24',origin:location.origin,sessionStarted:window.appTraceLog.all()[0]?.time||null,exportedAt:new Date().toISOString(),events:window.appTraceLog.all()},null,2);
-  const fallback=()=>{const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();let ok=false;try{ok=document.execCommand('copy')}catch(_){}ta.remove();alert(ok?'All diagnostic logs copied.':'Copy failed. Use Export JSON instead.');};
-  if(navigator.clipboard?.writeText)navigator.clipboard.writeText(text).then(()=>alert('All '+window.appTraceLog.count()+' diagnostic events copied.')).catch(fallback);else fallback();
-}
-function exportDiagnosticLogs(){
-  const text=JSON.stringify({app:'Little Learners',build:'24',exportedAt:new Date().toISOString(),events:window.appTraceLog.all()},null,2);
-  const url=URL.createObjectURL(new Blob([text],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download='little-learners-diagnostics.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
-}
-ensureDiagnosticsUI();
-if (window.authDebug || new URLSearchParams(location.search).get('diagnostics') === '1') openDiagnostics();
 </script>
-<script>
-// Capture the Google iframe runtime shape without exposing credentials or user data.
-window.authRuntimeSnapshot = function (stage) {
-  const g = window.gapi;
-  const detail = {
-    stage,
-    gapiPresent: !!g,
-    gapiIframesPresent: !!g?.iframes,
-    gapiGetContextType: typeof g?.iframes?.getContext,
-    googlePresent: !!window.google,
-    googleAccountsPresent: !!window.google?.accounts,
-    googleIdentityPresent: !!window.google?.accounts?.id,
-    userAgent: navigator.userAgent,
-    standalone: !!(window.matchMedia && window.matchMedia('(display-mode: standalone)').matches)
-  };
-  window.authStep('AUTH RUNTIME SNAPSHOT — ' + stage, JSON.stringify(detail));
-};
-</script>
+
 <script type="module">
 try {
-  window.authStep('S1 — Firebase module loading started', 'Loading the local config and Firebase SDK modules concurrently, matching diagnostics.html.');
-  window.authStep('S2 — Starting parallel Firebase module imports', 'Importing local config plus Firebase App, Auth, and Firestore SDK modules with Promise.all.');
-  window.authRuntimeSnapshot('before-parallel-sdk-imports');
+  ;
+  ;
+  ;
   const [configModule, appSdk, authSdk, dbSdk] = await Promise.all([
     import('./firebase-config.js'),
     import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js'),
@@ -306,20 +134,20 @@ try {
     import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js')
   ]);
   const { firebaseConfig: config } = configModule;
-  window.authStep('S2 PASSED — Local config module loaded', config?.apiKey && !config.apiKey.startsWith('YOUR') ? 'Config object and apiKey are present (value hidden).' : 'Config object/apiKey is missing or still a placeholder.');
-  window.authStep('S3 PASSED — Firebase App SDK loaded', 'initializeApp is available: ' + (typeof appSdk.initializeApp));
-  window.authStep('S4 PASSED — Firebase Auth SDK loaded', 'getAuth: ' + typeof authSdk.getAuth + '; signInWithRedirect: ' + typeof authSdk.signInWithRedirect + '; getRedirectResult: ' + typeof authSdk.getRedirectResult);
-  window.authStep('S4b PASSED — Firestore SDK loaded', 'getFirestore is available: ' + (typeof dbSdk.getFirestore));
-  window.authRuntimeSnapshot('after-parallel-sdk-imports');
+  ;
+  ;
+  ;
+  ;
+  ;
   if (!config?.apiKey || config.apiKey.startsWith('YOUR')) {
     window.fbStatus = 'Firebase: config not filled in (guest mode)';
     kl.refresh();
   } else {
-    window.authStep('S5a — Initializing Firebase app', 'Calling initializeApp(config). Config values remain hidden.');
+    ;
     const appInstance = appSdk.initializeApp(config);
-    window.authStep('S5a PASSED — Firebase app initialized', 'App name: ' + appInstance.name);
-    window.authRuntimeSnapshot('before-getAuth');
-    window.authStep('S5b — Initializing Firebase Auth without eager popup/iframe resolver', 'Using initializeAuth with browser persistence only. The popup resolver will be initialized only from the sign-in click.');
+    ;
+    ;
+    ;
     const auth = authSdk.initializeAuth(appInstance, {
       persistence: [
         authSdk.indexedDBLocalPersistence,
@@ -327,14 +155,14 @@ try {
         authSdk.inMemoryPersistence
       ]
     });
-    window.authStep('S5b PASSED — Firebase Auth initialized without eager popup resolver', 'Auth object created successfully; popup/iframe resolver has not been initialized at startup.');
-    window.authRuntimeSnapshot('after-initializeAuth');
-    window.authStep('S5c — Initializing Firestore', 'Calling getFirestore(app).');
+    ;
+    ;
+    ;
     const db = dbSdk.getFirestore(appInstance);
-    window.authStep('S5c PASSED — Firestore initialized', 'Firestore object created successfully.');
-    window.authStep('S5d — Creating Google provider', 'Using the same GoogleAuthProvider configuration as the successful standalone sign-in test.');
+    ;
+    ;
     const provider = new authSdk.GoogleAuthProvider();
-    window.authStep('S5d PASSED — Google provider configured', 'GoogleAuthProvider is ready; no custom prompt parameter is applied.');
+    ;
     let cloudWrite = Promise.resolve();
     const profileRef = uid => dbSdk.doc(db, 'users', uid);
     const localSnapshot = () => {
@@ -367,10 +195,10 @@ try {
         if (!response?.credential) throw new Error('Google did not return an ID credential.');
         const credential = authSdk.GoogleAuthProvider.credential(response.credential);
         await authSdk.signInWithCredential(auth, credential);
-        window.authStep('AUTH GIS SUCCESS', 'Google Identity Services credential exchanged with Firebase; auth-state listener handles profile loading.');
+        ;
         window.msg = ''; kl.st().err = '';
       } catch (error) {
-        window.authStep('AUTH GIS FAILURE', window.authErrorDetails(error));
+        ;
         kl.err(error);
       } finally {
         authInFlight = false; window.msg = ''; kl.refresh();
@@ -400,9 +228,9 @@ try {
             type: 'standard', theme: 'filled_blue', size: 'large',
             text: 'signin_with', shape: 'pill', width: Math.min(280, Math.max(220, Math.floor(container.getBoundingClientRect().width || 280)))
           });
-          window.authStep('AUTH GIS READY', 'Google Identity Services sign-in button rendered; Firebase popup/redirect resolver is not used.');
+          ;
         } catch (error) {
-          window.authStep('AUTH GIS INIT FAILURE', window.authErrorDetails(error));
+          ;
           window.msg = 'Google sign-in could not load. Check your connection and reload the page.';
           kl.refresh();
         }
@@ -422,13 +250,13 @@ try {
         }
       }
     };
-    window.authStep('S5 — Google Identity Services ready', 'Sign-in uses the configured Google client ID and Firebase credential exchange, without Firebase popup/redirect iframe resolution.');
-    window.authStep('S5 — Registering auth state listener', 'Waiting for Firebase to report whether a user is signed in.');
+    ;
+    ;
     authSdk.onAuthStateChanged(auth, async user => {
       const state = kl.st();
       const wasSignedIn = Boolean(state.user);
       state.user = user ? (user.displayName || user.email || 'Google user') : null;
-      window.authStep('S9 — Auth state changed', user ? 'Firebase reports a signed-in user. Checking Firestore profile access next.' : 'Firebase reports no signed-in user.');
+      ;
       if (!user) {
         window.cloudStatus = 'signed out';
         window.fbStatus = 'Firebase: ready · guarded Google sign-in';
@@ -444,9 +272,9 @@ try {
       }
       window.cloudStatus = 'loading profile'; window.fbStatus = 'Firebase: ready'; kl.refresh();
       try {
-        window.authStep('S10 — Reading Firestore profile', 'Calling getDoc(users/{current-user-uid}). The UID and profile data are intentionally not displayed.');
+        ;
         const ref = profileRef(user.uid), snapshot = await dbSdk.getDoc(ref);
-        window.authStep('S11 — Firestore profile read completed', snapshot.exists() ? 'Profile document exists.' : 'Profile document does not exist; app will create it.');
+        ;
 
         const cloud = snapshot.exists() ? snapshot.data() : {};
         const cloudKids = cloud.kids && typeof cloud.kids === 'object' ? cloud.kids : {};
@@ -482,10 +310,10 @@ try {
           });
           window.cloudStatus = 'profile created';
         }
-        window.authStep('S12 — Firestore profile processing completed', 'Profile loaded/created. Returning control to the app onboarding flow.');
+        ;
         kl.save(); kl.authed(true, Object.keys(state.kids).length);
       } catch (error) {
-        window.authStep('S11 FAILED — Firestore profile access', window.authErrorDetails(error));
+        ;
         window.lastErr = error?.code || error?.message || String(error);
         window.cloudStatus = 'profile failed';
         state.err = 'Google sign-in succeeded, but cloud profile access failed. ' + window.lastErr;
@@ -495,7 +323,7 @@ try {
     window.fbStatus = 'Firebase: ready'; kl.refresh();
   }
 } catch (error) {
-  window.authStep('FATAL — Firebase module import/initialization failed', window.authErrorDetails(error));
+  ;
   window.fbStatus = 'Firebase: failed to load';
   window.lastErr = error?.code || error?.message || String(error);
   console.error('Firebase initialization failed:', error);
