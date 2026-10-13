@@ -1,15 +1,53 @@
 # Little Learners
-Kids' learning PWA: Alphabets, Varnamala, Numbers, Fruits, Vegetables, Animals, Birds, Body Parts, Manners (English + Hindi).
 
-## Publish on GitHub Pages
-1. Create a repo named `little-learners` and upload the contents of this folder to the repo root.
-2. Settings > Pages > Deploy from branch > `main` / root.
-3. Open `https://<your-username>.github.io/little-learners/` and use Install / Add to Home Screen.
+A child-friendly, installable learning PWA for young children. Activities cover English alphabets, Hindi Varnamala, numbers, fruits, vegetables, animals, birds, body parts and good manners. The interface supports English, Hindi and bilingual learning.
 
-## Firebase (later)
-1. Create a Firebase project, add a Web app, copy its config into `firebase-config.js`.
-2. Authentication > Sign-in method > enable Google. Add `<your-username>.github.io` under Authorized domains.
-3. Create a Firestore database and paste `firestore.rules` into Rules.
-Progress is stored in `users/{uid}` (kids and stars). Without config the app runs in guest mode.
+- **Live app:** https://srma4tech.github.io/little-learners/
+- **Repository:** https://github.com/srma4tech/little-learners
+- **Deployment branch:** `master` (GitHub Pages serves the repository root)
 
-When you change files, bump `CACHE` version in `sw.js` (`little-learners-v1` > `v2`) so devices refresh.
+## Use the app
+
+1. Open the live app in a supported browser.
+2. Follow the welcome flow and choose the child's name and language.
+3. Use the parent corner to switch children, language and voice settings, or reset progress.
+4. Sign in with Google from the parent corner to sync the profile and progress through Firebase. Guest mode keeps progress on the current device.
+5. To install, use the app's Install prompt when available, or the browser menu's **Install app** / **Add to Home Screen** option.
+
+## Firebase setup
+
+The app uses Firebase Authentication, Google Identity Services (GIS), and Cloud Firestore.
+
+1. In Firebase Console, create or select the project and register a **Web app**.
+2. Copy the Firebase web-app configuration into `firebase-config.js`. Set `googleClientId` to the OAuth 2.0 **Web application client ID** used by Google Identity Services. These are browser-side configuration values, not Firebase Admin credentials; never commit service-account keys or OAuth client secrets.
+3. In **Authentication → Sign-in method**, enable **Google**.
+4. In **Authentication → Settings → Authorized domains**, add `srma4tech.github.io`.
+5. In Google Cloud Console, verify the OAuth web client has the GitHub Pages origin `https://srma4tech.github.io) authorized where required by its configuration.
+6. Create a Cloud Firestore database and publish the rules from `firestore.rules`.
+7. Open the live app, sign in with Google, and verify that the child profile and progress persist after refresh.
+
+The Firestore rules allow an authenticated user to read and write only their own `users/{uid}` document. Review any future data-model changes against these rules before deployment.
+
+If Firebase is not configured, the app can still be used in guest mode, with progress saved locally on that device. Guest progress is not automatically shared across devices.
+
+## GitHub Pages deployment
+
+The site is published from the repository root on `master`. A push to `master` triggers the Pages deployment workflow.
+
+## Continuous integration and browser smoke test
+
+The **Little Learners CI** workflow runs source checks on pushes and pull requests targeting `master`. It checks inline JavaScript syntax, scans tracked files for private credentials, and validates required app files and key authentication markers.
+
+A separate Playwright browser smoke test runs on the scheduled workflow and when manually started from **Actions → Little Learners CI → Run workflow**. It checks the deployed page, confirms expected learning/onboarding content renders, checks for horizontal overflow at a mobile viewport, and captures browser errors and a screenshot as workflow artifacts.
+
+To inspect a run, open the repository's **Actions** tab and select the relevant workflow run. The smoke test is a deployment sanity check; it does not sign into a real Google account or replace manual checks of sign-in and cross-device persistence.
+
+## Updating the app and service-worker cache
+
+The service worker uses a versioned cache in `sw.js` (currently `little-learners-v34`). When changing app files that should refresh for existing installations, increment the cache name, for example from `little-learners-v34` to `little-learners-v35`. Commit the change to `master`, wait for GitHub Pages deployment, then test both a fresh browser session and an already-installed PWA.
+
+## Data and privacy notes
+
+- Do not put private credentials, Firebase Admin SDK keys, or OAuth client secrets in this public repository.
+- Firestore rules are the server-side access control; hiding controls in the UI is not a security boundary.
+- Test changes to sign-in, profile merging and progress persistence carefully because these affect a child's saved learning history.
