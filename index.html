@@ -63,8 +63,6 @@ let st={kids:{me:{name:'Me',stars:0}},kid:'me',lang:'both',sound:1,ob:0,step:0},
 try{Object.assign(st,JSON.parse(localStorage.getItem('kl')||'{}'))}catch(e){}
 let deviceId='';
 try{deviceId=localStorage.getItem('kl_device_id')||'';if(!deviceId){deviceId=crypto.randomUUID?crypto.randomUUID():'d'+Date.now().toString(36)+Math.random().toString(36).slice(2);localStorage.setItem('kl_device_id',deviceId)}}catch(e){deviceId='device-local'}
-const normalizeKid=k=>{if(!k||typeof k!=='object')return{name:'Me',stars:0,starCounters:{}};const counters=k.starCounters&&typeof k.starCounters==='object'?{...k.starCounters}:{};if(!Object.keys(counters).length&&Number(k.stars)>0)counters[deviceId]=Math.max(0,Number(k.stars)||0);const stars=Object.values(counters).reduce((n,v)=>n+Math.max(0,Number(v)||0),0);return{...k,stars:Math.max(stars,Math.max(0,Number(k.stars)||0)),starCounters:counters}}
-Object.keys(st.kids||{}).forEach(id=>st.kids[id]=normalizeKid(st.kids[id]));
 const normalizeKid=k=>LLProgress.normalizeKid(k,deviceId);
 Object.keys(st.kids||{}).forEach(id=>st.kids[id]=normalizeKid(st.kids[id]));
 const saveLocal=()=>{try{localStorage.setItem('kl',JSON.stringify({...st,user:undefined,err:undefined}))}catch(e){}};
