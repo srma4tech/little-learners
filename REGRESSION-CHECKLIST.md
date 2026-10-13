@@ -15,6 +15,11 @@ Use this checklist after changes to authentication, child profiles, progress sto
 - [ ] Open each learning category, answer a question correctly and incorrectly, and verify feedback, next-question flow, and stars.
 - [ ] Open the parent corner; confirm the parent gate works and child switching, adding, renaming, and reset controls behave as intended.
 - [ ] Guest mode works without signing in, and its progress persists after a refresh on the same device.
+- [ ] With configured guest progress or earned stars, sign-in explicitly asks whether to merge or keep guest data separate.
+- [ ] Choose “keep separate”; verify guest progress is preserved locally and is not uploaded to the account.
+- [ ] Sign out / switch to guest; verify the saved guest profile returns and cloud account data remains untouched.
+- [ ] Switch from Google account A to account B; verify A’s cached child profiles/progress are not shown or merged into B.
+- [ ] Deny or interrupt the cloud profile read; verify the app reports the failure and does not silently upload guest data.
 
 ## Functional checks — Google sign-in and cloud persistence
 
@@ -22,7 +27,7 @@ Use this checklist after changes to authentication, child profiles, progress sto
 - [ ] Confirm the signed-in profile is visible and the expected `users/{uid}` document exists in Firestore.
 - [ ] Change the child profile and earn stars; refresh and verify the same child and progress are restored.
 - [ ] Open the app on a second browser/device, sign in with the same Google account, and verify the cloud-backed profile/progress is available.
-- [ ] Sign out; confirm the app returns to learning, keeps local child data as designed, and does not accidentally clear saved progress.
+- [ ] Sign out / switch to guest; confirm the app returns to the separately saved guest profile and does not clear cloud data.
 - [ ] Sign back in and confirm the correct cloud profile is restored without duplicate or lost child profiles.
 
 ## PWA and offline checks
