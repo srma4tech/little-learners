@@ -3,6 +3,8 @@ import fs from "node:fs";
 import path from "node:path";
 
 const baseUrl = "https://srma4tech.github.io/little-learners/";
+const expectedVersion = "2026.10.13.4";
+const expectedCache = "little-learners-v42";
 const out = "artifacts";
 fs.mkdirSync(out, { recursive: true });
 const errors = [];
@@ -19,6 +21,46 @@ async function checkOverflow(page, width, screen) {
   const passed = result.document <= result.viewport + 2 && result.body <= result.viewport + 2;
   viewportResults.push({ width, screen, passed, ...result });
   if (!passed) throw new Error(`Horizontal overflow at ${width}px on ${screen}: ${JSON.stringify(result)}`);
+}
+
+async function waitForExpectedDeployment(page, width) {
+  let lastVersion = "(footer version missing)";
+  let lastCache = "(service worker not readable)";
+  for (let attempt = 0; attempt < 12; attempt++) {
+    const url = baseUrl + "?ci-smoke=" + Date.now() + "-" + width + "-" + attempt;
+    const response = await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60000 });
+    if (!response || !response.ok()) throw new Error("Site returned HTTP " + (response?.status() ?? "no response"));
+    await page.locator("#app").waitFor({ state: "visible", timeout: 15000 });
+    await page.waitForFunction(() => !!document.querySelector("#app")?.innerText.trim(), { timeout: 15000 });
+    lastVersion = await page.locator(".footer-version").innerText().catch(() => "(footer version missing)");
+    lastCache = await page.evaluate(async () => {
+      try {
+        const response = await fetch("./sw.js?deployment-check=" + Date.now(), { cache: "no-store" });
+        return response.ok ? await response.text() : "HTTP " + response.status;
+      } catch (error) { return String(error); }
+    });
+    if (lastVersion.includes(expectedVersion) && lastCache.includes(expectedCache)) return;
+    if (attempt < 11) await new Promise(resolve => setTimeout(resolve, 10000));
+  }
+  throw new Error("GitHub Pages did not serve the expected release after 120 seconds. Expected footer " + expectedVersion + " and cache " + expectedCache + "; observed " + lastVersion + " / " + (lastCache.match(/little-learners-v\d+/)?.[0] || lastCache.slice(0, 80)));
+}
+
+async function checkInteractiveControls(page, width, screen) {
+  const result = await page.evaluate(() => [...document.querySelectorAll("#app button, header button, footer button, #app input, #app select, #app textarea")]
+    .filter(element => {
+      const rect = element.getBoundingClientRect();
+      const style = getComputedStyle(element);
+      return rect.width > 0 && rect.height > 0 && style.visibility !== "hidden" && style.display !== "none";
+    })
+    .map(element => ({
+      tag: element.tagName.toLowerCase(),
+      label: (element.getAttribute("aria-label") || element.getAttribute("title") || element.innerText || element.getAttribute("placeholder") || "").trim(),
+      height: Math.round(element.getBoundingClientRect().height)
+    })));
+  const unnamed = result.filter(control => !control.label);
+  const undersized = result.filter(control => ["button", "input", "select", "textarea"].includes(control.tag) && control.height < 40);
+  viewportResults.push({ width, screen, controlCount: result.length, unnamedControls: unnamed.length, undersizedControls: undersized.length, passed: !unnamed.length && !undersized.length });
+  if (unnamed.length || undersized.length) throw new Error("Accessibility/tap-target check failed at " + width + "px on " + screen + ": " + JSON.stringify({ unnamed, undersized }));
 }
 
 async function enterGuestFlow(page) {
@@ -47,17 +89,16 @@ try {
       }
     });
 
-    const url = baseUrl + "?ci-smoke=" + Date.now() + "-" + width;
-    const response = await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60000 });
-    if (!response || !response.ok()) throw new Error("Site returned HTTP " + (response?.status() ?? "no response"));
-    await page.locator("#app").waitFor({ state: "visible", timeout: 15000 });
-    await page.waitForFunction(() => !!document.querySelector("#app")?.innerText.trim(), { timeout: 15000 });
+    await waitForExpectedDeployment(page, width);
     const title = await page.title();
     if (!title.includes("Little Learners")) throw new Error("Unexpected page title: " + title);
     await checkOverflow(page, width, "welcome");
+    await checkInteractiveControls(page, width, "welcome");
+    await page.screenshot({ path: path.join(out, `ui-${width}-welcome.png`), fullPage: true });
 
     await enterGuestFlow(page);
     await checkOverflow(page, width, "home");
+    await checkInteractiveControls(page, width, "home");
     const tiles = page.locator("#app .tile");
     if (await tiles.count() < 7) throw new Error("Expected all learning categories on home");
     await page.screenshot({ path: path.join(out, `ui-${width}-home.png`), fullPage: true });
@@ -65,11 +106,15 @@ try {
     await page.getByRole("button", { name: /alphabets/i }).first().click();
     await page.locator("#app .card").first().waitFor({ state: "visible", timeout: 10000 });
     await checkOverflow(page, width, "category");
+    await checkInteractiveControls(page, width, "category");
+    await page.screenshot({ path: path.join(out, `ui-${width}-category.png`), fullPage: true });
     if (await page.locator("#app .card").count() < 20) throw new Error("Alphabet learning cards did not render");
     await page.getByRole("button", { name: /play/i }).click();
     await page.locator("#app .opt").first().waitFor({ state: "visible", timeout: 10000 });
     if (await page.locator("#app .opt").count() !== 3) throw new Error("Quiz did not render three answer choices");
     await checkOverflow(page, width, "quiz");
+    await checkInteractiveControls(page, width, "quiz");
+    await page.screenshot({ path: path.join(out, `ui-${width}-quiz.png`), fullPage: true });
     const correctIndex = await page.evaluate(() => {
       const target = q.t.e;
       return [...document.querySelectorAll("#app .opt")].findIndex(button => button.textContent === target);
@@ -84,10 +129,13 @@ try {
     if (!(await page.locator("#kid").innerText()).includes("QA Kid")) throw new Error("Guest profile did not persist after reload");
     if (!(await page.locator("#stars").innerText()).includes("1")) throw new Error("Guest progress did not persist after reload");
     await checkOverflow(page, width, "home-after-reload");
+    await checkInteractiveControls(page, width, "home-after-reload");
 
     await page.getByRole("button", { name: /open stickers/i }).click();
     await page.getByText(/my stickers/i).waitFor({ state: "visible", timeout: 10000 });
     await checkOverflow(page, width, "stickers");
+    await checkInteractiveControls(page, width, "stickers");
+    await page.screenshot({ path: path.join(out, `ui-${width}-stickers.png`), fullPage: true });
 
     await page.getByRole("button", { name: /open parent settings/i }).first().click();
     const equation = (await page.locator("#app .big").innerText()).match(/(\d+)\s*\+\s*(\d+)/);
@@ -97,6 +145,7 @@ try {
     await page.getByText(/parent corner/i).waitFor({ state: "visible", timeout: 10000 });
     await page.getByText(/who is playing/i).waitFor({ state: "visible", timeout: 10000 });
     await checkOverflow(page, width, "parent-settings");
+    await checkInteractiveControls(page, width, "parent-settings");
     await page.screenshot({ path: path.join(out, `ui-${width}-parent.png`), fullPage: true });
 
     await page.close();
