@@ -131,7 +131,7 @@ try {
     await checkOverflow(page, width, "home-after-reload");
     await checkInteractiveControls(page, width, "home-after-reload");
 
-    await page.getByRole("button", { name: /open stickers/i }).click();
+    await page.getByRole("button", { name: /stickers/i }).click();
     await page.getByText(/my stickers/i).waitFor({ state: "visible", timeout: 10000 });
     await checkOverflow(page, width, "stickers");
     await checkInteractiveControls(page, width, "stickers");
