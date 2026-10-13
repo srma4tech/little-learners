@@ -70,6 +70,20 @@ try {
     await page.locator("#app .opt").first().waitFor({ state: "visible", timeout: 10000 });
     if (await page.locator("#app .opt").count() !== 3) throw new Error("Quiz did not render three answer choices");
     await checkOverflow(page, width, "quiz");
+    const correctIndex = await page.evaluate(() => {
+      const target = q.t.e;
+      return [...document.querySelectorAll("#app .opt")].findIndex(button => button.textContent === target);
+    });
+    if (correctIndex < 0) throw new Error("Quiz answer matching the prompt was not found");
+    await page.locator("#app .opt").nth(correctIndex).click();
+    await page.getByText(/great job|new sticker/i).waitFor({ state: "visible", timeout: 5000 });
+    await page.waitForTimeout(150);
+    if (!(await page.locator("#stars").innerText()).includes("1")) throw new Error("Correct quiz answer did not award a star");
+    await page.reload({ waitUntil: "domcontentloaded", timeout: 60000 });
+    await page.locator("#app .tile").first().waitFor({ state: "visible", timeout: 15000 });
+    if (!(await page.locator("#kid").innerText()).includes("QA Kid")) throw new Error("Guest profile did not persist after reload");
+    if (!(await page.locator("#stars").innerText()).includes("1")) throw new Error("Guest progress did not persist after reload");
+    await checkOverflow(page, width, "home-after-reload");
 
     await page.getByRole("button", { name: /back/i }).click();
     await page.getByRole("button", { name: /open stickers/i }).click();
