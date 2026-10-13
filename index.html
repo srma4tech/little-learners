@@ -343,33 +343,22 @@ try {
     const appInstance = appSdk.initializeApp(config);
     window.authStep('S5a PASSED — Firebase app initialized', 'App name: ' + appInstance.name);
     window.authRuntimeSnapshot('before-getAuth');
-    window.authStep('S5b — Initializing Firebase Auth', 'Calling getAuth(app). This checkpoint is important for the getContext failure.');
-    const auth = authSdk.getAuth(appInstance);
-    window.authStep('S5b PASSED — Firebase Auth initialized', 'Auth object created successfully.');
-    window.authRuntimeSnapshot('after-getAuth');
+    window.authStep('S5b — Initializing Firebase Auth without eager popup/iframe resolver', 'Using initializeAuth with browser persistence only. The popup resolver will be initialized only from the sign-in click.');
+    const auth = authSdk.initializeAuth(appInstance, {
+      persistence: [
+        authSdk.indexedDBLocalPersistence,
+        authSdk.browserLocalPersistence,
+        authSdk.inMemoryPersistence
+      ]
+    });
+    window.authStep('S5b PASSED — Firebase Auth initialized without eager popup resolver', 'Auth object created successfully; popup/iframe resolver has not been initialized at startup.');
+    window.authRuntimeSnapshot('after-initializeAuth');
     window.authStep('S5c — Initializing Firestore', 'Calling getFirestore(app).');
     const db = dbSdk.getFirestore(appInstance);
     window.authStep('S5c PASSED — Firestore initialized', 'Firestore object created successfully.');
     window.authStep('S5d — Creating Google provider', 'Using the same GoogleAuthProvider configuration as the successful standalone sign-in test.');
     const provider = new authSdk.GoogleAuthProvider();
     window.authStep('S5d PASSED — Google provider configured', 'GoogleAuthProvider is ready; no custom prompt parameter is applied.');
-    // Match diagnostics.html: settle redirect-result processing (or cap the wait at 8s)
-    // before enabling sign-in. Do not let a pending redirect check race the popup flow.
-    const redirectResultCheck = Promise.race([
-      authSdk.getRedirectResult(auth),
-      new Promise(resolve => setTimeout(() => {
-        window.authStep('S5e INFO — Redirect-result check reached 8-second limit', 'Continuing with the user-initiated popup without waiting indefinitely.');
-        resolve(null);
-      }, 8000))
-    ]).then(redirectResult => {
-      if (redirectResult !== null) {
-        window.authStep('S5e PASSED — Redirect result processed', redirectResult?.user ? 'A redirect result returned a signed-in user.' : 'No pending redirect result.');
-      }
-      return redirectResult;
-    }).catch(error => {
-      window.authStep('S5e WARNING — Redirect result processing failed', window.authErrorDetails(error));
-      return null;
-    });
     let cloudWrite = Promise.resolve();
     const profileRef = uid => dbSdk.doc(db, 'users', uid);
     const localSnapshot = () => {
@@ -380,15 +369,8 @@ try {
       cloudWrite = cloudWrite.then(() => dbSdk.setDoc(profileRef(user.uid), data, { merge: true }));
       return cloudWrite;
     };
-    // Match the working diagnostic's ordering: finish the bounded redirect-result
-    // check BEFORE exposing the sign-in handler. Never await anything between the
-    // user's click and the call to signInWithPopup, or browser user activation may be lost.
-    window.authStep('S5e — Waiting for bounded redirect-result check before enabling sign-in',
-      'Sign-in setup waits at most 8 seconds here; the popup itself will be started directly from the user click.');
-    await redirectResultCheck;
-    window.authStep('S5e COMPLETE — Redirect-result check settled; sign-in handler can be exposed',
-      'Any pending redirect check has resolved or reached its 8-second limit.');
-
+    // This app uses popup sign-in only. Avoid eager redirect-result processing on startup.
+    // initializeAuth above defers Google's popup/iframe resolver until the actual sign-in click.
     window.fb = {
       ok: true,
       signIn: async () => {
@@ -397,7 +379,8 @@ try {
         window.authRuntimeSnapshot('before-signInWithPopup');
         window.authStep('AUTH POPUP — Calling Firebase signInWithPopup', 'Using the same plain GoogleAuthProvider popup call as the successful standalone diagnostic test.');
         try {
-          const result = await authSdk.signInWithPopup(auth, provider);
+          // Explicit resolver keeps popup/iframe setup lazy until this user-initiated call.
+          const result = await authSdk.signInWithPopup(auth, provider, authSdk.browserPopupRedirectResolver);
           window.authStep('AUTH POPUP SUCCESS', 'Firebase returned a sign-in result; the auth-state listener handles profile hydration.');
           return result;
         } catch (error) {
