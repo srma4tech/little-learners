@@ -15,6 +15,11 @@ Use this checklist after changes to authentication, child profiles, progress sto
 - [ ] Open each learning category, answer a question correctly and incorrectly, and verify feedback, next-question flow, and stars.
 - [ ] Open the parent corner; confirm the parent gate works and child switching, adding, renaming, and reset controls behave as intended.
 - [ ] Guest mode works without signing in, and its progress persists after a refresh on the same device.
+- [ ] Reset the selected child's progress; verify stars and sticker totals become zero while the child's profile and other children remain unchanged.
+- [ ] Reset while offline, reconnect, and verify the reset is eventually reflected in the cloud profile.
+- [ ] Reconnect a second device with pre-reset rewards; verify its stale snapshot cannot restore those rewards.
+- [ ] Earn new stars after a reset and verify they persist after refresh and cloud sync.
+- [ ] If cloud sync fails during reset, verify the UI says the reset is local/pending rather than claiming cloud completion.
 
 ## Functional checks — Google sign-in and cloud persistence
 
