@@ -205,26 +205,8 @@ let SIGN_WAIT=30000,wait=0,authInFlight=false;
 function gbtn(){const e=document.getElementById('gbtn');if(e&&window.fb&&fb.renderGoogle)fb.renderGoogle(e)}
 addEventListener('error',e=>{const m=e.message||'Unknown JavaScript error',where=e.filename?(' @ '+e.filename+':'+(e.lineno||0)+':'+(e.colno||0)):'';const stack=e.error&&e.error.stack?String(e.error.stack):'';if(m!=='Script error.'&&m!=='Script error')window.lastErr=(m+where+(stack?'\\n'+stack:'' )).slice(0,3000);else if(e.filename)window.lastErr=('Cross-origin script error @ '+e.filename+':'+(e.lineno||0)+':'+(e.colno||0)+(stack?'\\n'+stack:'' )).slice(0,3000);if(window.kl)kl.refresh()});addEventListener('unhandledrejection',e=>{const r=e.reason;const detail=r&&typeof r==='object'?[r.code,r.message,r.stack].filter(Boolean).join('\\n'):String(r);window.lastErr=(detail||String(r)||'Unhandled promise rejection').slice(0,3000);if(window.kl)kl.refresh()});
 function signInClick(){
-  if(authInFlight){window.authStep('AUTH TAP IGNORED','A redirect sign-in attempt is already active.');return}
-  if(!window.fb||!fb.signIn){window.msg='Google sign-in is still loading. Please wait a moment.';kl.refresh();return}
-  authInFlight=true;st.err='';window.msg='⏳ Redirecting to Google sign-in…';
-  window.authStep('AUTH CLICK — Starting redirect','Firebase redirect sign-in is invoked directly from the original user click.');
-  try{
-    // Invoke before re-rendering so the browser preserves the original user activation.
-    const authAttempt=fb.signIn();
-    kl.refresh();
-    Promise.resolve(authAttempt).then(()=>{
-      window.authStep('AUTH REDIRECT INITIATED','Waiting for the browser to return from Google; the auth-state listener will restore the signed-in session.');
-    },error=>{
-      authInFlight=false;window.msg='';kl.refresh();
-      window.authStep('AUTH FAILURE — redirect request rejected',window.authErrorDetails(error));
-      kl.err(error);
-    });
-  }catch(error){
-    authInFlight=false;window.msg='';kl.refresh();
-    window.authStep('AUTH FAILURE — redirect could not start',window.authErrorDetails(error));
-    kl.err(error);
-  }
+  if(window.fb&&fb.renderGoogle){gbtn();return}
+  window.msg='Google sign-in is still loading. Please wait a moment.';kl.refresh();
 }
 window.kl={authed(has){const ks=Object.keys(st.kids);if(!st.ob){if(has){if(st.kids.me&&!st.kids.me.stars&&st.kids.me.name=='Me'&&ks.length>1)delete st.kids.me;if(!st.kids[st.kid])st.kid=Object.keys(st.kids)[0];st.ob=1;st.step=3}else if(st.step<2)st.step=2}save();hdr();if(st.ob&&onbActive)home();else if(!st.ob&&onbActive)onb()},err(e){const c=e&&e.code||'';window.lastErr=c||(e&&e.message)||String(e);const m={'auth/operation-not-allowed':'Google sign-in is not enabled yet: Firebase > Authentication > Sign-in method > Google > Enable.','auth/unauthorized-domain':'Add srma4tech.github.io in Firebase > Authentication > Settings > Authorized domains.','auth/popup-blocked':'The browser blocked the sign-in popup. Allow popups for this site and try again.','auth/invalid-api-key':'The apiKey in firebase-config.js looks wrong.','auth/network-request-failed':'No internet connection.','auth/timeout':'Google sign-in did not complete within 45 seconds. Reload this page before retrying; if it repeats, open the site in a regular Chrome tab instead of the installed app.','auth/gapi-context-failure':'Google sign-in could not initialize its browser iframe (getContext error). Reload this page and try again; if it repeats, open the site in a regular Chrome tab instead of the installed app.','auth/iframe-failure':'Google sign-in hit a browser iframe initialization error. Reload this page before retrying.'};if(c=='auth/popup-closed-by-user'||c=='auth/cancelled-popup-request')return;st.err=m[c]||('Sign-in failed: '+(c||e&&e.message||e));kl.refresh()},st:()=>st,save,refresh:()=>{hdr();if(!st.ob&&onbActive)onb();else if(app.textContent.includes('Parent corner'))parent()}};
 if('serviceWorker' in navigator)addEventListener('load',()=>{
@@ -363,20 +345,65 @@ try {
       cloudWrite = cloudWrite.then(() => dbSdk.setDoc(profileRef(user.uid), data, { merge: true }));
       return cloudWrite;
     };
-    // Redirect-based sign-in avoids opening a separate popup window. The auth-state listener
-    // below remains responsible for loading/creating the user's Firestore profile after return.
+    // Use Google Identity Services for the ID token, then exchange it with Firebase.
+    // This avoids Firebase's popup/redirect iframe resolver that crashes in this browser.
+    let gisScriptPromise = null, gisInitialized = false, gisCredentialHandler = null;
+    const ensureGis = () => {
+      if (window.google?.accounts?.id) return Promise.resolve();
+      if (!gisScriptPromise) gisScriptPromise = new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'https://accounts.google.com/gsi/client';
+        script.async = true; script.defer = true;
+        script.onload = () => window.google?.accounts?.id ? resolve() : reject(new Error('Google Identity Services loaded without the ID API.'));
+        script.onerror = () => reject(new Error('Could not load Google Identity Services. Check network or content blockers.'));
+        document.head.appendChild(script);
+      });
+      return gisScriptPromise;
+    };
+    const handleGisCredential = async response => {
+      authInFlight = true; window.msg = '⏳ Signing in securely…'; kl.refresh();
+      try {
+        if (!response?.credential) throw new Error('Google did not return an ID credential.');
+        const credential = authSdk.GoogleAuthProvider.credential(response.credential);
+        await authSdk.signInWithCredential(auth, credential);
+        window.authStep('AUTH GIS SUCCESS', 'Google Identity Services credential exchanged with Firebase; auth-state listener handles profile loading.');
+        window.msg = ''; kl.st().err = '';
+      } catch (error) {
+        window.authStep('AUTH GIS FAILURE', window.authErrorDetails(error));
+        kl.err(error);
+      } finally {
+        authInFlight = false; window.msg = ''; kl.refresh();
+      }
+    };
     window.fb = {
       ok: true,
-      signIn: () => {
-        kl.st().err = '';
-        // No await before signInWithRedirect: invoke it within the original click activation.
-        window.authRuntimeSnapshot('before-signInWithRedirect');
-        window.authStep('AUTH REDIRECT — Calling Firebase signInWithRedirect', 'Navigating to Google sign-in in this tab; no popup window is opened.');
+      gis: true,
+      renderGoogle: async container => {
+        if (!container) return;
         try {
-          return authSdk.signInWithRedirect(auth, provider, authSdk.browserPopupRedirectResolver);
+          await ensureGis();
+          if (!gisInitialized) {
+            if (!config.googleClientId) throw new Error('googleClientId is missing from firebase-config.js.');
+            gisCredentialHandler = response => { void handleGisCredential(response); };
+            window.google.accounts.id.initialize({
+              client_id: config.googleClientId,
+              callback: gisCredentialHandler,
+              auto_select: false,
+              cancel_on_tap_outside: true
+            });
+            gisInitialized = true;
+          }
+          if (!container.isConnected) return;
+          container.replaceChildren();
+          window.google.accounts.id.renderButton(container, {
+            type: 'standard', theme: 'filled_blue', size: 'large',
+            text: 'signin_with', shape: 'pill', width: Math.min(280, Math.max(220, Math.floor(container.getBoundingClientRect().width || 280)))
+          });
+          window.authStep('AUTH GIS READY', 'Google Identity Services sign-in button rendered; Firebase popup/redirect resolver is not used.');
         } catch (error) {
-          window.authStep('AUTH REDIRECT ERROR', window.authErrorDetails(error));
-          throw error;
+          window.authStep('AUTH GIS INIT FAILURE', window.authErrorDetails(error));
+          window.msg = 'Google sign-in could not load. Check your connection and reload the page.';
+          kl.refresh();
         }
       },
       signOut: () => authSdk.signOut(auth),
@@ -394,7 +421,7 @@ try {
         }
       }
     };
-    window.authStep('S5 — Redirect-based sign-in ready', 'Google sign-in will navigate in the current tab and restore the session on return.');
+    window.authStep('S5 — Google Identity Services ready', 'Sign-in uses the configured Google client ID and Firebase credential exchange, without Firebase popup/redirect iframe resolution.');
     window.authStep('S5 — Registering auth state listener', 'Waiting for Firebase to report whether a user is signed in.');
     authSdk.onAuthStateChanged(auth, async user => {
       const state = kl.st();
@@ -436,15 +463,6 @@ try {
         state.err = 'Google sign-in succeeded, but cloud profile access failed. ' + window.lastErr;
         kl.refresh();
       }
-    });
-    // Process the OAuth result after returning from Google. Auth-state listener above hydrates
-    // the profile; this call surfaces redirect-specific errors without creating a popup.
-    authSdk.getRedirectResult(auth, authSdk.browserPopupRedirectResolver).then(result => {
-      if (result?.user) window.authStep('AUTH REDIRECT RESULT — success', 'Google returned a Firebase user; profile handling is delegated to the auth-state listener.');
-      else window.authStep('AUTH REDIRECT RESULT — no pending result', 'No redirect credential was pending on this page load.');
-    }).catch(error => {
-      window.authStep('AUTH REDIRECT RESULT — failed', window.authErrorDetails(error));
-      kl.err(error);
     });
     window.fbStatus = 'Firebase: ready'; kl.refresh();
   }
