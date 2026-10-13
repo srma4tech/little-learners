@@ -85,7 +85,6 @@ try {
     if (!(await page.locator("#stars").innerText()).includes("1")) throw new Error("Guest progress did not persist after reload");
     await checkOverflow(page, width, "home-after-reload");
 
-    await page.getByRole("button", { name: /back/i }).click();
     await page.getByRole("button", { name: /open stickers/i }).click();
     await page.getByText(/my stickers/i).waitFor({ state: "visible", timeout: 10000 });
     await checkOverflow(page, width, "stickers");
