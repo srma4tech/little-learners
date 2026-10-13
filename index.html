@@ -290,6 +290,9 @@ try {
         return;
       }
 
+      // Stop writes while the active identity is being resolved. This prevents
+      // a previous account's save queue from writing into the newly selected account.
+      profileReady = false;
       // Snapshot guest progress before switching the active profile. Account A's
       // cached data is never treated as guest data or merged into account B.
       let choice = 'account';
@@ -331,6 +334,7 @@ try {
           localStorage.setItem('kl_account_cache_' + previousUid, localStorage.getItem('kl') || '{}');
           state.kids = { me: { name: 'Me', stars: 0 } };
           state.kid = 'me'; state.lang = 'both'; state.sound = 1; state.ob = 0; state.step = 0;
+          kl.save(); // Replace the prior account's active local snapshot before any network wait.
           choice = 'account';
         } else {
           choice = 'merge'; // Same account: reconcile same-account offline work.
