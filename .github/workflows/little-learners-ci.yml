@@ -60,7 +60,6 @@ jobs:
           test -s manifest.webmanifest
           grep -q "little-learners-v" sw.js
           grep -q "onAuthStateChanged" index.html
-          grep -q "onAuthStateChanged" index.html
           grep -q "signInWithCredential" index.html
           grep -q "GoogleAuthProvider.credential" index.html
           grep -q "accounts.id.initialize" index.html
