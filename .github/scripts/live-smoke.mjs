@@ -3,8 +3,8 @@ import fs from "node:fs";
 import path from "node:path";
 
 const baseUrl = "https://srma4tech.github.io/little-learners/";
-const expectedVersion = "2026.10.13.4";
-const expectedCache = "little-learners-v42";
+const expectedVersion = "2026.10.13.5";
+const expectedCache = "little-learners-v43";
 const out = "artifacts";
 fs.mkdirSync(out, { recursive: true });
 const errors = [];
@@ -106,6 +106,8 @@ try {
     await page.getByRole("button", { name: /alphabets/i }).first().click();
     await page.locator("#app .card").first().waitFor({ state: "visible", timeout: 10000 });
     await checkOverflow(page, width, "category");
+    const categoryWrap = await page.locator(".category-title").evaluate(element => ({ overflowWrap: getComputedStyle(element).overflowWrap, wordBreak: getComputedStyle(element).wordBreak }));
+    if (categoryWrap.overflowWrap === "anywhere" || categoryWrap.wordBreak === "break-all") throw new Error("Category heading can split words on narrow screens: " + JSON.stringify(categoryWrap));
     await checkInteractiveControls(page, width, "category");
     await page.screenshot({ path: path.join(out, `ui-${width}-category.png`), fullPage: true });
     if (await page.locator("#app .card").count() < 20) throw new Error("Alphabet learning cards did not render");

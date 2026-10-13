@@ -94,11 +94,20 @@ button{overflow-wrap:anywhere}
 @media(min-width:601px){
   .footer-nav{display:none}
 }
+
+/* Category titles should wrap at spaces, not split words into fragments. */
+.bar h2{overflow-wrap:normal;word-break:normal;text-wrap:balance}
+@media(max-width:360px){
+  .category-bar{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}
+  .category-bar .category-title{grid-column:1/-1;grid-row:1;text-align:center}
+  .category-bar>.btn:first-child{grid-column:1;grid-row:2;justify-self:start}
+  .category-bar>.btn:last-child{grid-column:2;grid-row:2;justify-self:end}
+}
 </style></head><body>
 <a class="skip-link" href="#app">Skip to main content</a>
 <header aria-label="Little Learners header"><button class="pill" type="button" aria-label="Go to home" title="Home" onclick="home()">🏠</button><span class="pill" id="stars" aria-live="polite" aria-label="Stars earned"></span><span><button class="pill" id="inst" type="button" aria-label="Install Little Learners" title="Install app" style="display:none" onclick="doInstall()">📲 Install</button> <button class="pill" id="kid" type="button" aria-label="Open parent settings" onclick="gate()"></button> <button class="pill" type="button" aria-label="Open stickers" title="Stickers" onclick="stickers()">🎁</button> <button class="pill" type="button" aria-label="Open parent settings" title="Parent settings" onclick="gate()">⚙️</button></span></header>
 <main id="app" tabindex="-1"></main><div id="ll-toast" class="ll-toast" role="status" aria-live="polite" aria-atomic="true"></div>
-<footer class="site-footer" aria-label="Site footer"><nav class="footer-nav" aria-label="Primary navigation"><button type="button" onclick="home()">🏠 Home</button><button type="button" onclick="stickers()">🎁 Stickers</button><button type="button" onclick="gate()">⚙️ Parents</button></nav><p class="footer-version" aria-label="Application version">Version 2026.10.13.4</p><p class="footer-copy">Little Learners · Learn, play and grow 🌱<br>Alphabets · हिंदी वर्णमाला · Numbers · Animals · Good manners</p></footer>
+<footer class="site-footer" aria-label="Site footer"><nav class="footer-nav" aria-label="Primary navigation"><button type="button" onclick="home()">🏠 Home</button><button type="button" onclick="stickers()">🎁 Stickers</button><button type="button" onclick="gate()">⚙️ Parents</button></nav><p class="footer-version" aria-label="Application version">Version 2026.10.13.5</p><p class="footer-copy">Little Learners · Learn, play and grow 🌱<br>Alphabets · हिंदी वर्णमाला · Numbers · Animals · Good manners</p></footer>
 <script src="./progress-model.js"></script>
 <script>
 let llToastTimer;
@@ -165,7 +174,7 @@ function lbl(it){const a=[];if(st.lang!='hi'&&it.en)a.push(it.en);if(st.lang!='e
 const es=e=>e.length>8?'font-size:20px':'';
 const hdr=()=>{$('#stars').textContent='⭐ '+K().stars;$('#kid').textContent='👤 '+K().name};
 function home(){onbActive=0;document.body.classList.remove('ob');app.innerHTML=`${instBar()}<h1>${K().name=='Me'?'Hello, little learner!':'Hello, '+K().name+'!'} 👋<br><small style="font-size:.5em;opacity:.8">नमस्ते · Let's learn &amp; play! 🎈</small></h1><div class="grid">${S.map((s,i)=>`<button class="tile" style="--a:${s.c}" onclick="openS(${i})"><span>${s.i}</span>${s.n}<small>${s.h}</small></button>`).join('')}</div>`;app.style.setProperty('--a','#7c4dff')}
-function openS(i){cur=i;const s=S[i];app.style.setProperty('--a',s.c);app.innerHTML=`<div class="bar"><button class="btn o" onclick="home()">⬅ Home</button><h2>${s.i} ${s.n} ${s.h}</h2><button class="btn" onclick="play()">⭐ Play</button></div><div class="grid">${s.it.map((x,j)=>`<button class="card" onclick="say(S[cur].it[${j}])"><span class="e" style="${es(x.e)}">${x.e}</span>${x.big?`<span class="b">${x.big}</span>`:''}<span class="l">${lbl(x)}</span></button>`).join('')}</div>${cur==0?'<p class="kb">Tip: press any letter key on the keyboard! ⌨️</p>':''}`}
+function openS(i){cur=i;const s=S[i];app.style.setProperty('--a',s.c);app.innerHTML=`<div class="bar category-bar"><button class="btn o" onclick="home()">⬅ Home</button><h2 class="category-title">${s.i} ${s.n} ${s.h}</h2><button class="btn" onclick="play()">⭐ Play</button></div><div class="grid">${s.it.map((x,j)=>`<button class="card" onclick="say(S[cur].it[${j}])"><span class="e" style="${es(x.e)}">${x.e}</span>${x.big?`<span class="b">${x.big}</span>`:''}<span class="l">${lbl(x)}</span></button>`).join('')}</div>${cur==0?'<p class="kb">Tip: press any letter key on the keyboard! ⌨️</p>':''}`}
 function play(){q={n:0,ok:0};next()}
 function next(){const s=S[cur],sh=a=>a.sort(()=>Math.random()-.5),t=s.it[Math.random()*s.it.length|0],o=sh([t,...sh(s.it.filter(x=>x.e!=t.e)).slice(0,2)]);q.t=t;q.o=o;q.lock=0;app.innerHTML=`<div class="bar"><button class="btn o" onclick="openS(cur)">⬅ Back</button><h2>Round ${q.n+1}/5</h2></div><div class="q"><div class="big">${t.big||lbl(t)}</div><button class="btn" onclick="say(q.t)">🔊 Hear</button><div class="opts">${o.map((x,j)=>`<button class="opt" style="${es(x.e)}" onclick="ans(${j},this)">${x.e}</button>`).join('')}</div><div id="fb"></div></div>`;say(t)}
 function ans(j,b){if(q.lock)return;if(q.o[j]===q.t){q.lock=1;b.classList.add('good');const kid=K();kid.starCounters=kid.starCounters&&typeof kid.starCounters==='object'?kid.starCounters:{};kid.starCounters[deviceId]=(Number(kid.starCounters[deviceId])||0)+1;kid.stars=Object.values(kid.starCounters).reduce((n,v)=>n+Math.max(0,Number(v)||0),0);q.ok++;save();hdr();const ns=K().stars%5==0;$('#fb').textContent=ns?'🎉 New sticker!':'🌟 Great job!';sp(ns?'Wow! New sticker!':'Great job!','en-IN');q.n++;setTimeout(q.n>=5?done:next,1200)}else{b.classList.add('bad');sp('Try again','en-IN');setTimeout(()=>b.classList.remove('bad'),500)}}
