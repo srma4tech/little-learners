@@ -66,9 +66,11 @@
 
     const counters = { ...remote.starCounters };
     for (const [key, value] of Object.entries(local.starCounters)) counters[key] = Math.max(number(counters[key]), number(value));
+    const localIsNewer = number(local.updatedAt) > number(remote.updatedAt);
     const merged = {
       ...remote,
-      name: remote.name && remote.name !== 'Me' ? remote.name : local.name,
+      name: localIsNewer && local.name && local.name !== 'Me' ? local.name : (remote.name && remote.name !== 'Me' ? remote.name : local.name),
+      updatedAt: Math.max(number(local.updatedAt), number(remote.updatedAt)),
       resetGeneration: remote.resetGeneration,
       resetId: remote.resetId || local.resetId || null,
       starCounters: counters,
@@ -133,7 +135,8 @@
       ...remote,
       ...incoming,
       kids,
-      settings: incoming.settings && typeof incoming.settings === 'object' ? incoming.settings : (remote.settings || { lang: 'both', sound: 1 }),
+      settings: number(incoming.settingsUpdatedAt) >= number(remote.settingsUpdatedAt) && incoming.settings && typeof incoming.settings === 'object' ? incoming.settings : (remote.settings || incoming.settings || { lang: 'both', sound: 1 }),
+      settingsUpdatedAt: Math.max(number(incoming.settingsUpdatedAt), number(remote.settingsUpdatedAt)),
       schemaVersion: 2,
       createdAt: typeof remote.createdAt === 'number' ? remote.createdAt : (typeof incoming.createdAt === 'number' ? incoming.createdAt : Date.now()),
       updatedAt: Date.now()
