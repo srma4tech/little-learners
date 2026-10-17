@@ -131,7 +131,7 @@ test('parent gate protects settings and relocks after leaving', async ({ page })
   await page.locator('#kid').click();
   await expect(page.getByRole('heading', { name: /Parents only/i })).toBeVisible();
   const equation = await page.locator('.q .big').textContent();
-  const match = equation.match(/(\\d+)\\s*\\+\\s*(\\d+)/);
+  const match = equation.match(/(\d+)\s*\+\s*(\d+)/);
   const answer = Number(match[1]) + Number(match[2]);
   await page.locator('.opt').filter({ hasText: new RegExp('^' + answer + '$') }).click();
   await expect(page.getByRole('heading', { name: /Parent corner/i })).toBeVisible();
@@ -146,7 +146,7 @@ test('parent can add and safely remove a child profile', async ({ page }) => {
   await page.locator('#kid').click();
   await expect(page.getByRole('heading', { name: /Parents only/i })).toBeVisible();
   const equation = await page.locator('.q .big').textContent();
-  const match = equation.match(/(\\d+)\\s*\\+\\s*(\\d+)/);
+  const match = equation.match(/(\d+)\s*\+\s*(\d+)/);
   await page.locator('.opt').filter({ hasText: new RegExp('^' + (Number(match[1])+Number(match[2])) + '$') }).click();
   page.once('dialog', dialog => dialog.accept('Bea'));
   await page.getByRole('button', { name: /Add kid/i }).click();
@@ -176,7 +176,7 @@ test('Gemini key stays local and can be removed', async ({ page }) => {
   await page.locator('#kid').click();
   await expect(page.getByRole('heading', { name: /Parents only/i })).toBeVisible();
   const equation = await page.locator('.q .big').textContent();
-  const match = equation.match(/(\\d+)\\s*\\+\\s*(\\d+)/);
+  const match = equation.match(/(\d+)\s*\+\s*(\d+)/);
   await page.locator('.opt').filter({ hasText: new RegExp('^' + (Number(match[1])+Number(match[2])) + '$') }).click();
   await page.getByRole('button', { name: /Enable AI helpers/i }).click();
   await page.locator('#gemini-key').fill('test-gemini-key');
