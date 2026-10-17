@@ -150,7 +150,7 @@ test('parent can add and safely remove a child profile', async ({ page }) => {
   await page.locator('.opt').filter({ hasText: new RegExp('^' + (Number(match[1])+Number(match[2])) + '$') }).click();
   page.once('dialog', dialog => dialog.accept('Bea'));
   await page.getByRole('button', { name: /Add kid/i }).click();
-  await expect(page.getByRole('button', { name: /Bea/ })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Bea', exact: true })).toBeVisible();
   page.once('dialog', dialog => dialog.accept());
   await page.getByRole('button', { name: /Remove current kid/i }).click();
   await expect(page.locator('#app')).not.toContainText('Bea');
