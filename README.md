@@ -5,8 +5,8 @@ A child-friendly, installable learning PWA for children aged 4–5. It covers En
 - **Live app:** https://srma4tech.github.io/little-learners/
 - **Repository:** https://github.com/srma4tech/little-learners
 - **Deployment branch:** `master` (GitHub Pages serves the repository root)
-- **Current build:** `2026.10.17.1`
-- **Service-worker cache:** `little-learners-v44`
+- **Current build:** `2026.10.17.2`
+- **Service-worker cache:** `little-learners-v45`
 
 ## Use the app
 
@@ -77,7 +77,7 @@ Then open http://localhost:8000/. For browser automation, install Playwright and
 
 ## Updating the app and service-worker cache
 
-Whenever a release changes runtime files or behavior, increment the versioned cache name in `sw.js` (currently `little-learners-v44`) and update the build label in `index.html`. Ensure the cache list includes every required root-level runtime file, including the manifest, Firebase config, progress model, icons and privacy page. The worker intentionally does not intercept cross-origin Firebase or Google requests. After deployment, test online launch, offline reload, and the waiting-worker update prompt.
+Whenever a release changes runtime files or behavior, increment the versioned cache name in `sw.js` (currently `little-learners-v45`) and update the build label in `index.html`. Ensure the cache list includes every required root-level runtime file, including the manifest, Firebase config, progress model, icons and privacy page. The worker intentionally does not intercept cross-origin Firebase or Google requests. After deployment, test online launch, offline reload, and the waiting-worker update prompt.
 
 ## Known limitations
 
