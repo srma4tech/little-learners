@@ -1,5 +1,34 @@
-const C='little-learners-v43',F=['./','index.html','manifest.webmanifest','firebase-config.js','progress-model.js','icon-192.png','icon-512.png'];
-self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>Promise.all(F.map(u=>c.add(u).catch(()=>{})))));self.skipWaiting()});
-self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!=C).map(x=>caches.delete(x)))));self.clients.claim()});
-self.addEventListener('fetch',e=>{const r=e.request;if(r.method!='GET'||new URL(r.url).origin!=location.origin)return;
-e.respondWith(fetch(r).then(x=>{const cp=x.clone();caches.open(C).then(c=>c.put(r,cp));return x}).catch(()=>caches.match(r).then(m=>m||caches.match('index.html'))))});
+const C='little-learners-v44';
+const F=['./','index.html','manifest.webmanifest','firebase-config.js','progress-model.js','privacy.html','icon-192.png','icon-512.png'];
+
+self.addEventListener('install',event=>{
+  event.waitUntil(caches.open(C).then(cache=>cache.addAll(F)));
+  // Activate immediately only on first install; updates wait for the parent's choice.
+  if(!self.registration.active) self.skipWaiting();
+});
+self.addEventListener('activate',event=>{
+  event.waitUntil(
+    caches.keys().then(keys=>Promise.all(
+      keys.filter(key=>key.startsWith('little-learners-')&&key!==C).map(key=>caches.delete(key))
+    )).then(()=>self.clients.claim())
+  );
+});
+self.addEventListener('message',event=>{
+  if(event.data&&event.data.type==='SKIP_WAITING') self.skipWaiting();
+});
+self.addEventListener('fetch',event=>{
+  const request=event.request;
+  if(request.method!=='GET') return;
+  const url=new URL(request.url);
+  // Never intercept Firebase, Google Identity Services, or any other cross-origin request.
+  if(url.origin!==self.location.origin) return;
+  event.respondWith(
+    fetch(request).then(response=>{
+      if(response&&response.ok){
+        const copy=response.clone();
+        void caches.open(C).then(cache=>cache.put(request,copy));
+      }
+      return response;
+    }).catch(()=>caches.match(request).then(cached=>cached||caches.match('./index.html')))
+  );
+});
