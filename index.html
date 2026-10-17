@@ -230,7 +230,7 @@ document.addEventListener('keydown',()=>{if(app.textContent.includes('Parent cor
 async function rst(b){if(!b.dataset.c){b.dataset.c=1;b.textContent='Tap again to confirm';return}st.kids[st.kid]=LLProgress.resetKid(K());window.resetNotice=st.user?'Reset saved on this device; cloud reset is pending.':'Progress reset on this device.';window.showLLNotice?.(st.user?'Progress reset saved; syncing to cloud…':'Progress reset saved on this device.', 'info');saveLocal();if(!localStorage.getItem('kl_account_uid')&&!st.user){try{localStorage.setItem('kl_guest',JSON.stringify({kids:st.kids,kid:st.kid,settings:{lang:st.lang||'both',sound:typeof st.sound==='number'?(st.sound?1:0):1},schemaVersion:2,savedAt:Date.now()}))}catch(e){}}hdr();parent();if(window.fb&&fb.ok&&st.user){try{await fb.push();window.resetNotice='Progress reset synced to your account.';parent()}catch(e){window.resetNotice='Progress reset is saved locally; cloud sync is pending. Reconnect to finish.';parent()}}}
 addEventListener('keydown',e=>{const target=e.target;const typing=target instanceof Element&&(target.matches('input,textarea,select,[contenteditable="true"],[role="textbox"]')||target.closest('[contenteditable="true"]'));if(typing)return;if(e.key==='Escape'){if(onbActive||!st.ob)return;home();return}if(onbActive||!st.ob)return;if(cur===0&&/^[a-z]$/i.test(e.key)&&app.querySelector('.card'))say(AL[e.key.toUpperCase().charCodeAt(0)-65])});
 function kidsUI(){const a=window.fb&&fb.ok?(st.user?`<p>Signed in: ${st.user}</p><p><button class="btn o" onclick="fb.signOut()">Sign out · Switch to guest</button></p>`:`<p>${fb.gis?'<span id="gbtn"></span>':'<button class="btn o" onclick="signInClick()">Sign in with Google to save progress online</button>'}</p>`):`<p>Guest mode: progress is saved on this device.</p>`;const er=(window.msg?`<p style="font-weight:700">${esc(window.msg)}</p>`:'')+(st.err?`<p style="color:#e53935;font-weight:700">${esc(st.err)}</p>`:'')+(window.resetNotice?`<p role="status" aria-live="polite" style="font-weight:700">${esc(window.resetNotice)}</p>`:'');const sync=window.fb&&fb.ok&&st.user?fb.statusMarkup():'';return `<p>Who is playing?</p><div class="opts" style="margin:6px">${Object.keys(st.kids).filter(k=>!st.kids[k]?.deletedAt).map(k=>`<button class="btn ${k==st.kid?'':'o'}" onclick="st.kid='${k}';save();hdr();parent()">${esc(st.kids[k].name)}</button>`).join('')}<button class="btn o" onclick="addKid()">➕ Add kid</button></div><p><button class="btn o" onclick="renKid()">✏️ Rename ${esc(K().name)}</button> <button class="btn o" onclick="dashboard()">📊 Progress dashboard</button> <button class="btn o" onclick="exportProgress()">⬇ Export progress</button> <button class="btn o" onclick="removeCurrentKid()">✖ Remove current kid</button> <button class="btn o" onclick="st.ob=0;st.step=0;save();onb()">👋 Welcome tour</button></p>${dp?'<p><button class="btn" onclick="doInstall()">📲 Install app</button></p>':''}${a}${sync}${er}<p style="font-size:14px;opacity:.7">${isStd() ? "Installed app" : dp ? "Install ready" : "Install: browser menu ⋮ > Install app"}</p>`}
-function addKid(){const n=(prompt("Kid's name?")||'').replace(/[<>&\"']/g,'').trim().slice(0,12);if(!n)return;const id='k'+Date.now();st.kids[id]={name:n,stars:0};st.kid=id;save();hdr();parent()}
+function addKid(){if(Object.keys(st.kids).length>=10){window.showLLNotice?.('You can keep up to 10 child profiles on this account.','info');return}const n=(prompt("Kid's name?")||'').replace(/[<>&\"']/g,'').trim().slice(0,12);if(!n)return;const id='k'+Date.now();st.kids[id]={name:n,stars:0};st.kid=id;save();hdr();parent()}
 function onb(){onbActive=1;document.body.classList.add('ob');app.style.setProperty('--a','#7c4dff');
 const bt=(k,v,t)=>`<button class="btn ${st[k]===v?'':'o'}" onclick="pick('${k}',${typeof v=='string'?"'"+v+"'":v},this)">${t}</button>`,er=(window.msg?`<p style="font-weight:700">${window.msg}</p>`:'')+(st.err?`<p style="color:#e53935;font-weight:700">${st.err}</p>`:'');let h;
 if(st.step==0)h=`<div class="q"><div class="big" style="font-size:96px">🎈</div><h1>Welcome to Little Learners!</h1><h1 style="margin-top:0">स्वागत है!</h1><p>Letters, numbers, animals and more.<br>Learn, play and earn stars ⭐</p><button class="btn" onclick="st.step=1;save();onb()">Let's start ▶</button></div>`;
@@ -336,7 +336,7 @@ try {
     const kidRef = (uid, kidId) => dbSdk.doc(db, 'users', uid, 'kids', kidId);
     const localSnapshot = () => {
       const state = kl.st();
-      return { kids: state.kids, settings: { lang: state.lang, sound: state.sound }, settingsUpdatedAt: Number(state.settingsUpdatedAt)||Date.now(), schemaVersion: 3, updatedAt: Date.now() };
+      return { kids: state.kids, settings: { lang: state.lang, sound: state.sound }, settingsUpdatedAt: Number(state.settingsUpdatedAt)||0, schemaVersion: 3, updatedAt: Date.now() };
     };
     const writeProfile = (user, data) => {
       if (!profileReady) return Promise.resolve(null);
@@ -347,7 +347,7 @@ try {
           const localTime = Number(data.settingsUpdatedAt)||0, remoteTime = Number(remote.settingsUpdatedAt)||0;
           const useLocal = localTime >= remoteTime;
           const settings = useLocal ? data.settings : (remote.settings || data.settings || {lang:'both',sound:1});
-          const result = { settings, settingsUpdatedAt: Math.max(localTime,remoteTime), schemaVersion: 3, createdAt: typeof remote.createdAt === 'number' ? remote.createdAt : (typeof data.createdAt === 'number' ? data.createdAt : Date.now()), updatedAt: Date.now() };
+          const result = { settings, settingsUpdatedAt: Math.max(localTime,remoteTime), kidIds: Object.keys(data.kids||{}).slice(0,10), schemaVersion: 3, createdAt: typeof remote.createdAt === 'number' ? remote.createdAt : (typeof data.createdAt === 'number' ? data.createdAt : Date.now()), updatedAt: Date.now() };
           transaction.set(ref, result);
           return result;
         });
@@ -618,8 +618,11 @@ window.msg = '⏳ Signing in securely…'; kl.refresh();
               if (!childSnap.exists()) transaction.set(childRef, childData);
             });
           }
-          await dbSdk.updateDoc(ref, {kids: dbSdk.deleteField(), schemaVersion: 3, updatedAt: Date.now()});
+          await dbSdk.updateDoc(ref, {kids: dbSdk.deleteField(), kidIds: Object.keys(cloudKids).slice(0,10), schemaVersion: 3, updatedAt: Date.now()});
           window.cloudStatus = 'migrated legacy profile';
+        }
+        if (snapshot.exists() && !Array.isArray(cloud.kidIds)) {
+          await dbSdk.updateDoc(ref, {kidIds:Object.keys(cloudKids).slice(0,10), schemaVersion:3, updatedAt:Date.now()});
         }
         const localKids = choice === 'merge' && state.kids && typeof state.kids === 'object' ? state.kids : {};
         const mergedKids = window.LLProgress.mergeKids(validKids(localKids), validKids(cloudKids), deviceId);
