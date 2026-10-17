@@ -9,7 +9,8 @@ service cloud.firestore {
       return kid is map
         && kid.keys().hasOnly([
           'name', 'stars', 'starCounters', 'resetGeneration', 'resetId',
-          'pendingResetId', 'progressResetAt', 'updatedAt', 'deletedAt'
+          'pendingResetId', 'progressResetAt', 'updatedAt', 'deletedAt',
+          'mastery', 'badges', 'daily', 'timeByDay'
         ])
         && kid.keys().hasAll(['name', 'stars'])
         && kid.name is string
@@ -24,7 +25,11 @@ service cloud.firestore {
         && (!('deletedAt' in kid) || kid.deletedAt is number)
         && (!('resetId' in kid) || kid.resetId is string || kid.resetId == null)
         && (!('pendingResetId' in kid) || kid.pendingResetId is string || kid.pendingResetId == null)
-        && (!('starCounters' in kid) || kid.starCounters is map);
+        && (!('starCounters' in kid) || kid.starCounters is map)
+        && (!('mastery' in kid) || (kid.mastery is map && kid.mastery.size() <= 1000))
+        && (!('badges' in kid) || (kid.badges is map && kid.badges.size() <= 20))
+        && (!('daily' in kid) || (kid.daily is map && kid.daily.keys().hasOnly(['lastDate', 'streak']) && (!('lastDate' in kid.daily) || kid.daily.lastDate is string) && (!('streak' in kid.daily) || (kid.daily.streak is int && kid.daily.streak >= 0))))
+        && (!('timeByDay' in kid) || (kid.timeByDay is map && kid.timeByDay.size() <= 400));
     }
 
     function validLegacyKids(kids) {
