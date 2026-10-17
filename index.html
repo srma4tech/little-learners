@@ -562,8 +562,14 @@ window.msg = '⏳ Signing in securely…'; kl.refresh();
         window.cloudStatus = !state.ob ? 'needs child setup' : (snapshot.exists() ? 'profile loaded' : 'profile created');
         profileReady = true;
         kl.save();
-        // A brand-new cloud profile is written only after the parent selected a
-        // data path. "Keep separate" never uploads the guest snapshot.
+        // Do not create an empty cloud document before a first-time parent has
+        // completed child setup. finish() will schedule the first write.
+        if (!snapshot.exists() && !state.ob) {
+          window.cloudStatus = 'needs child setup';
+          kl.refresh();
+          return;
+        }
+        // "Keep account only" never uploads the guest snapshot.
         await writeProfile(user, {
           ...localSnapshot(),
           createdAt: typeof cloud.createdAt === 'number' ? cloud.createdAt : Date.now()
