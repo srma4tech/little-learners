@@ -13,6 +13,7 @@ service cloud.firestore {
         ])
         && kid.keys().hasAll(['name', 'stars'])
         && kid.name is string
+        && kid.name.size() > 0
         && kid.name.size() <= 12
         && kid.stars is int
         && kid.stars >= 0
@@ -26,28 +27,12 @@ service cloud.firestore {
         && (!('starCounters' in kid) || kid.starCounters is map);
     }
 
-    function validKids(kids) {
-      return kids is map
-        && kids.size() <= 10
-        && (kids.size() < 1 || validKid(kids[kids.keys().toList()[0]]))
-        && (kids.size() < 2 || validKid(kids[kids.keys().toList()[1]]))
-        && (kids.size() < 3 || validKid(kids[kids.keys().toList()[2]]))
-        && (kids.size() < 4 || validKid(kids[kids.keys().toList()[3]]))
-        && (kids.size() < 5 || validKid(kids[kids.keys().toList()[4]]))
-        && (kids.size() < 6 || validKid(kids[kids.keys().toList()[5]]))
-        && (kids.size() < 7 || validKid(kids[kids.keys().toList()[6]]))
-        && (kids.size() < 8 || validKid(kids[kids.keys().toList()[7]]))
-        && (kids.size() < 9 || validKid(kids[kids.keys().toList()[8]]))
-        && (kids.size() < 10 || validKid(kids[kids.keys().toList()[9]]));
-    }
-
     function validProfile() {
       return request.resource.data.keys().hasOnly([
-          'kids', 'settings', 'schemaVersion', 'createdAt', 'updatedAt',
+          'settings', 'schemaVersion', 'createdAt', 'updatedAt',
           'settingsUpdatedAt'
         ])
-        && request.resource.data.keys().hasAll(['kids', 'settings', 'updatedAt'])
-        && validKids(request.resource.data.kids)
+        && request.resource.data.keys().hasAll(['settings', 'updatedAt'])
         && request.resource.data.settings is map
         && request.resource.data.settings.keys().hasOnly(['lang', 'sound'])
         && request.resource.data.settings.keys().hasAll(['lang', 'sound'])
@@ -57,13 +42,19 @@ service cloud.firestore {
         && request.resource.data.updatedAt is number
         && (!('settingsUpdatedAt' in request.resource.data) || request.resource.data.settingsUpdatedAt is number)
         && (!('createdAt' in request.resource.data) || request.resource.data.createdAt is number)
-        && (!('schemaVersion' in request.resource.data) || request.resource.data.schemaVersion == 2);
+        && (!('schemaVersion' in request.resource.data) || request.resource.data.schemaVersion == 3);
     }
 
     match /users/{uid} {
       allow read: if signedInOwner(uid);
       allow create, update: if signedInOwner(uid) && validProfile();
       allow delete: if signedInOwner(uid);
+
+      match /kids/{kidId} {
+        allow read: if signedInOwner(uid);
+        allow create, update: if signedInOwner(uid) && validKid(request.resource.data);
+        allow delete: if signedInOwner(uid);
+      }
     }
   }
 }
