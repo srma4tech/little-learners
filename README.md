@@ -1,53 +1,87 @@
 # Little Learners
 
-A child-friendly, installable learning PWA for young children. Activities cover English alphabets, Hindi Varnamala, numbers, fruits, vegetables, animals, birds, body parts and good manners. The interface supports English, Hindi and bilingual learning.
+A child-friendly, installable learning PWA for children aged 4–5. It covers English alphabets, Hindi Varnamala, numbers, fruits, vegetables, animals, birds, body parts and good manners. The interface supports English, Hindi and bilingual learning.
 
 - **Live app:** https://srma4tech.github.io/little-learners/
 - **Repository:** https://github.com/srma4tech/little-learners
 - **Deployment branch:** `master` (GitHub Pages serves the repository root)
+- **Current build:** `2026.10.17.1`
+- **Service-worker cache:** `little-learners-v44`
 
 ## Use the app
 
-1. Open the live app in a supported browser.
-2. Follow the welcome flow and choose the child's name and language.
-3. Use the parent corner to switch children, language and voice settings, or reset progress.
-4. Sign in with Google from the parent corner to sync through Firebase. If this device already has a configured guest profile or earned stars, the app asks whether to merge that data into the Google account or keep it separate. Choosing separate keeps the guest snapshot on this device and loads the account profile without uploading guest data. Signing out returns to the saved guest profile; it does not delete cloud data.
-5. To install, use the app's Install prompt when available, or the browser menu's **Install app** / **Add to Home Screen** option.
+1. Open the live app in Chrome or another supported browser.
+2. Follow the welcome flow and configure the child's nickname, language and voice.
+3. Use the parent corner to switch children, change preferences, reset progress, or manage the account. The parent gate is a child-safety speed bump, not a substitute for adult supervision.
+4. Use guest mode to keep progress on this device. Parent Google sign-in is optional and enables cloud sync.
+5. If the device has guest progress, sign-in asks whether to **Add** this device's kids to the account or **Keep account only**. Guest progress is backed up locally and is not silently discarded.
+6. To install, use the app's Install prompt when available, or Chrome's menu → **Install app** / **Add to Home screen**.
 
-## Firebase setup
+## Firebase configuration and status
 
-The app uses Firebase Authentication, Google Identity Services (GIS), and Cloud Firestore.
+Firebase is configured for project `little-learners-fc471`. The app uses Firebase Authentication, Google Identity Services (GIS), and Cloud Firestore. The browser-side configuration in `firebase-config.js` includes the Firebase web config and the Google OAuth web client ID (`googleClientId`). These values are public client configuration; never add service-account keys or OAuth client secrets.
 
-1. In Firebase Console, create or select the project and register a **Web app**.
-2. Copy the Firebase web-app configuration into `firebase-config.js`. Set `googleClientId` to the OAuth 2.0 **Web application client ID** used by Google Identity Services. These are browser-side configuration values, not Firebase Admin credentials; never commit service-account keys or OAuth client secrets.
-3. In **Authentication → Sign-in method**, enable **Google**.
-4. In **Authentication → Settings → Authorized domains**, add `srma4tech.github.io`.
-5. In Google Cloud Console, verify the OAuth web client has the GitHub Pages origin `https://srma4tech.github.io` authorized where required by its configuration.
-6. Create a Cloud Firestore database and publish the rules from `firestore.rules`.
-7. Open the live app, sign in with Google, and verify that the child profile and progress persist after refresh.
+To reproduce or change the configuration:
 
-The Firestore rules allow an authenticated user to read and write only their own `users/{uid}` document. Review any future data-model changes against these rules before deployment.
+1. Firebase Console → Project settings → Your apps → Web app: verify the Firebase web config.
+2. Firebase Console → Authentication → Sign-in method: enable **Google**.
+3. Firebase Console → Authentication → Settings → Authorized domains: include `srma4tech.github.io`.
+4. Google Cloud Console → APIs & Services → Credentials: verify the OAuth web client allows the origin `https://srma4tech.github.io`.
+5. Firebase Console → Firestore Database → Rules: paste the complete contents of `firestore.rules`, then click **Publish**. Review the rules against any future schema change.
+6. Confirm the Firestore database exists and open the live app to test a new account, returning account, guest flow, and progress sync.
 
-If Firebase is not configured, the app can still be used in guest mode, with progress saved locally on that device. Guest progress is not automatically shared across devices.
+### Publishing Firestore rules
+
+1. Open https://console.firebase.google.com/ and select `little-learners-fc471`.
+2. Open **Build → Firestore Database → Rules**.
+3. Replace the editor contents with the entire `firestore.rules` file from this repository.
+4. Click **Publish** and wait for the success confirmation.
+5. Test both an authenticated owner's document and an attempted cross-user access in the Rules Playground or Emulator before considering a schema change complete.
+
+The rules restrict reads and writes to the signed-in owner of `users/{uid}`, validate allowed top-level fields, limit each account to ten kids, and validate child names and star counts. Do not rely on UI checks as a security boundary.
+
+## Privacy and deletion
+
+Read [the privacy policy](./privacy.html). Guest progress is stored locally. Signed-in progress is stored in the account's Firestore profile. Parent settings include **Delete my data and account**; Firebase may require a fresh sign-in before it will delete the Authentication user. If that happens, sign in again and retry. Clearing browser storage and deleting cloud data are separate operations.
+
+No ads or third-party analytics/tracking are included.
 
 ## GitHub Pages deployment
 
-The site is published from the repository root on `master`. A push to `master` triggers the Pages deployment workflow.
+The site is served from the repository root on branch `master`; there is no build step.
 
-## Continuous integration and browser smoke test
+1. Commit the static files to `master` (or merge a reviewed pull request into `master`).
+2. Wait for the GitHub Pages deployment to finish under **Actions**.
+3. Open the live site and verify the latest build label.
+4. Test both a fresh browser session and an existing installed PWA. A waiting service-worker update offers **New version available — Reload** rather than forcing a surprise reload during learning.
 
-The **Little Learners CI** workflow runs source checks on pushes and pull requests targeting `master`. It checks inline JavaScript syntax, scans tracked files for private credentials, and validates required app files and key authentication markers.
+Keep app files at the repository root unless the service-worker cache list and all relative paths are updated deliberately.
 
-A separate Playwright browser smoke test runs on the scheduled workflow and when manually started from **Actions → Little Learners CI → Run workflow**. It checks the deployed page, confirms expected learning/onboarding content renders, checks for horizontal overflow at a mobile viewport, and captures browser errors and a screenshot as workflow artifacts.
+## Tests and CI
 
-To inspect a run, open the repository's **Actions** tab and select the relevant workflow run. The smoke test is a deployment sanity check; it does not sign into a real Google account or replace manual checks of sign-in and cross-device persistence.
+The **Little Learners CI** workflow runs inline JavaScript syntax checks, progress-model tests, a private-credential scan, and required-file/auth-flow checks on pushes and pull requests targeting `master`. Its Playwright live smoke test checks the deployed page and responsive overflow; it does not perform real Google OAuth.
+
+Run the existing progress-model unit tests locally:
+
+```sh
+node --test tests/progress-model.test.cjs
+```
+
+To run the static app locally without a build step:
+
+```sh
+python -m http.server 8000
+```
+
+Then open http://localhost:8000/. For browser automation, install Playwright and Chromium in your development environment and run the repository's test workflow/scripts. A real Google login and cross-device sync still require manual verification with a test account.
 
 ## Updating the app and service-worker cache
 
-The service worker uses a versioned cache in `sw.js` (currently `little-learners-v37`). When changing app files that should refresh for existing installations, increment the cache name, for example from `little-learners-v36` to `little-learners-v37`. Commit the change to `master`, wait for GitHub Pages deployment, then test both a fresh browser session and an already-installed PWA. The reset-aware progress model lives in `progress-model.js` and is covered by `node --test tests/progress-model.test.cjs`.
+Whenever a release changes runtime files or behavior, increment the versioned cache name in `sw.js` (currently `little-learners-v44`) and update the build label in `index.html`. Ensure the cache list includes every required root-level runtime file, including the manifest, Firebase config, progress model, icons and privacy page. The worker intentionally does not intercept cross-origin Firebase or Google requests. After deployment, test online launch, offline reload, and the waiting-worker update prompt.
 
-## Data and privacy notes
+## Known limitations
 
-- Do not put private credentials, Firebase Admin SDK keys, or OAuth client secrets in this public repository.
-- Firestore rules are the server-side access control; hiding controls in the UI is not a security boundary.
-- Test changes to sign-in, profile merging and progress persistence carefully because these affect a child's saved learning history.
+- Offline changes are saved locally and sync when connectivity returns; concurrent devices still rely on the current single-profile Firestore merge model.
+- Google sign-in cannot be fully exercised by CI; test the configured OAuth flow manually.
+- Browser speech quality and Hindi voice availability depend on the operating system and installed voices.
+- The parent gate is a simple arithmetic check intended to discourage accidental child access, not provide strong authentication.
