@@ -1,5 +1,6 @@
 const { test, expect } = require('@playwright/test');
 const { spawn } = require('node:child_process');
+const fs = require('node:fs');
 
 let server;
 test.beforeAll(async () => {
@@ -185,4 +186,14 @@ test('Gemini key stays local and can be removed', async ({ page }) => {
   expect(cloudText).not.toContain('test-gemini-key');
   await page.getByRole('button', { name: /Remove key/i }).click();
   expect(await page.evaluate(() => localStorage.getItem('ll_gemini_api_key_v1'))).toBeNull();
+});
+
+test('capture desktop and mobile app screenshots for PWA metadata', async ({ page }) => {
+  await stubFirebase(page);
+  await startGuest(page);
+  fs.mkdirSync('artifacts/screenshots', { recursive: true });
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.screenshot({ path: 'artifacts/screenshots/little-learners-desktop.png', fullPage: true });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.screenshot({ path: 'artifacts/screenshots/little-learners-mobile.png', fullPage: true });
 });
