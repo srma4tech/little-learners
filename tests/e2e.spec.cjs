@@ -128,6 +128,7 @@ test('parent gate protects settings and relocks after leaving', async ({ page })
   await stubFirebase(page);
   await startGuest(page);
   await page.locator('#kid').click();
+  await expect(page.getByRole('heading', { name: /Parents only/i })).toBeVisible();
   const equation = await page.locator('.q .big').textContent();
   const match = equation.match(/(\\d+)\\s*\\+\\s*(\\d+)/);
   const answer = Number(match[1]) + Number(match[2]);
@@ -142,6 +143,7 @@ test('parent can add and safely remove a child profile', async ({ page }) => {
   await stubFirebase(page);
   await startGuest(page);
   await page.locator('#kid').click();
+  await expect(page.getByRole('heading', { name: /Parents only/i })).toBeVisible();
   const equation = await page.locator('.q .big').textContent();
   const match = equation.match(/(\\d+)\\s*\\+\\s*(\\d+)/);
   await page.locator('.opt').filter({ hasText: new RegExp('^' + (Number(match[1])+Number(match[2])) + '$') }).click();
