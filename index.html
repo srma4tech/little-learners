@@ -150,7 +150,8 @@ try{deviceId=localStorage.getItem('kl_device_id')||'';if(!deviceId){deviceId=cry
 const normalizeKid=k=>LLProgress.normalizeKid(k,deviceId);
 Object.keys(st.kids||{}).forEach(id=>st.kids[id]=normalizeKid(st.kids[id]));
 const saveLocal=()=>{try{localStorage.setItem('kl',JSON.stringify({...st,user:undefined,err:undefined}))}catch(e){}};
-const save=()=>{saveLocal();if(!localStorage.getItem('kl_account_uid')&&!st.user){try{localStorage.setItem('kl_guest',JSON.stringify({kids:st.kids,kid:st.kid,settings:{lang:st.lang||'both',sound:typeof st.sound==='number'?(st.sound?1:0):1},schemaVersion:2,savedAt:Date.now()}))}catch(e){}}try{window.fb&&fb.schedulePush?.()}catch(e){}};
+let savedSettingsSignature=JSON.stringify({lang:st.lang,sound:st.sound});
+const save=()=>{const settingsSignature=JSON.stringify({lang:st.lang,sound:st.sound});if(settingsSignature!==savedSettingsSignature){st.settingsUpdatedAt=Date.now();savedSettingsSignature=settingsSignature}if(K())K().updatedAt=Date.now();saveLocal();if(!localStorage.getItem('kl_account_uid')&&!st.user){try{localStorage.setItem('kl_guest',JSON.stringify({kids:st.kids,kid:st.kid,settings:{lang:st.lang||'both',sound:typeof st.sound==='number'?(st.sound?1:0):1},schemaVersion:2,savedAt:Date.now()}))}catch(e){}}try{window.fb&&fb.schedulePush?.()}catch(e){}};
 const K=()=>st.kids[st.kid]||(st.kid='me',st.kids.me=st.kids.me||{name:'Me',stars:0});
 const P=s=>s.split(';').map(x=>{const[e,en,hi]=x.split('|');return{e,en,hi:hi||''}});
 const AL=P("🍎|Apple;⚽|Ball;🐱|Cat;🐶|Dog;🐘|Elephant;🐟|Fish;🍇|Grapes;🐴|Horse;🍦|Ice cream;🧃|Juice;🪁|Kite;🦁|Lion;🌙|Moon;🪺|Nest;🍊|Orange;🦜|Parrot;👑|Queen;🐰|Rabbit;☀️|Sun;🐯|Tiger;☂️|Umbrella;🚐|Van;⌚|Watch;🎹|Xylophone;🪀|Yo-yo;🦓|Zebra").map((x,i)=>{const L=String.fromCharCode(65+i);return{e:x.e,big:L,en:L+' for '+x.en,hi:''}});
@@ -251,7 +252,7 @@ try {
     ;
     ;
     ;
-    const db = dbSdk.getFirestore(appInstance);
+    let db;try{db=dbSdk.initializeFirestore(appInstance,{localCache:dbSdk.persistentLocalCache({tabManager:dbSdk.persistentMultipleTabManager()})})}catch(cacheError){db=dbSdk.getFirestore(appInstance);window.cloudStatus='persistent cache unavailable';}
     ;
     ;
     const provider = new authSdk.GoogleAuthProvider();
@@ -275,7 +276,7 @@ try {
     const profileRef = uid => dbSdk.doc(db, 'users', uid);
     const localSnapshot = () => {
       const state = kl.st();
-      return { kids: state.kids, settings: { lang: state.lang, sound: state.sound }, schemaVersion: 2, updatedAt: Date.now() };
+      return { kids: state.kids, settings: { lang: state.lang, sound: state.sound }, settingsUpdatedAt: Number(state.settingsUpdatedAt)||Date.now(), schemaVersion: 2, updatedAt: Date.now() };
     };
     const writeProfile = (user, data) => {
       // Do not write until the initial reconciliation has completed.
@@ -427,8 +428,9 @@ try {
         } catch (error) {
           window.lastErr = error?.code || error?.message || String(error);
           window.cloudStatus = 'save failed'; syncPending = true;
-          state.err = 'Saved on this device; cloud sync is pending. ' + window.lastErr;
-          window.showLLNotice?.('Saved on this device; cloud sync is pending.', 'error');
+          state.err = '';
+          window.cloudStatus = !navigator.onLine ? 'offline - will sync' : 'sync pending';
+          window.showLLNotice?.(!navigator.onLine ? 'Offline — saved on this device; will sync when online.' : 'Saved on this device; cloud sync is pending.', 'info');
           kl.refresh(); throw error;
         } finally { syncInFlight = null; }
         })();
@@ -544,6 +546,7 @@ try {
         if (cloud.settings && typeof cloud.settings === 'object') {
           if (['en', 'hi', 'both'].includes(cloud.settings.lang)) state.lang = cloud.settings.lang;
           if (typeof cloud.settings.sound === 'number') state.sound = cloud.settings.sound ? 1 : 0;
+          state.settingsUpdatedAt=Math.max(Number(state.settingsUpdatedAt)||0,Number(cloud.settingsUpdatedAt)||0);savedSettingsSignature=JSON.stringify({lang:state.lang,sound:state.sound});
         } else if (choice !== 'merge') {
           state.lang = 'both'; state.sound = 1;
         }
