@@ -49,16 +49,18 @@
         starCounters: counters,
         stars: sum(counters)
       };
+      const deletedAt = Math.max(number(local.deletedAt), number(remote.deletedAt));
+      if (deletedAt) acknowledged.deletedAt = deletedAt;
       delete acknowledged.pendingResetId;
       return acknowledged;
     }
 
     // An unacknowledged local reset is an intent, not ordinary progress to merge.
     if (local.pendingResetId) {
-      return {
-        ...local,
-        name: remote.name && remote.name !== 'Me' ? remote.name : local.name
-      };
+      const pending = { ...local, name: remote.name && remote.name !== 'Me' ? remote.name : local.name };
+      const deletedAt = Math.max(number(local.deletedAt), number(remote.deletedAt));
+      if (deletedAt) pending.deletedAt = deletedAt;
+      return pending;
     }
 
     if (local.resetGeneration > remote.resetGeneration) return local;
@@ -77,6 +79,8 @@
       stars: sum(counters)
     };
     if (local.pendingResetId) merged.pendingResetId = local.pendingResetId;
+    const deletedAt = Math.max(number(local.deletedAt), number(remote.deletedAt));
+    if (deletedAt) merged.deletedAt = deletedAt;
     return merged;
   }
 
