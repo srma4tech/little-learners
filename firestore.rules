@@ -1,37 +1,103 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /users/{uid} {
-      function signedInOwner() {
-        return request.auth != null && request.auth.uid == uid;
-      }
-      function validProfile() {
-        return request.resource.data.keys().hasOnly([
-          'kids', 'settings', 'schemaVersion', 'createdAt', 'updatedAt',
-          'email', 'displayName'
+    function signedInOwner(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+
+    function validKid(kid) {
+      return kid is map
+        && kid.keys().hasOnly([
+          'name', 'stars', 'starCounters', 'resetGeneration', 'resetId',
+          'pendingResetId', 'progressResetAt', 'updatedAt', 'deletedAt',
+          'mastery', 'badges', 'daily', 'timeByDay'
         ])
-        && request.resource.data.kids is map
-        && request.resource.data.kids.size() <= 10
+        && kid.keys().hasAll(['name', 'stars'])
+        && kid.name is string
+        && kid.name.size() > 0
+        && kid.name.size() <= 12
+        && kid.stars is int
+        && kid.stars >= 0
+        && kid.stars <= 100000
+        && (!('resetGeneration' in kid) || (kid.resetGeneration is int && kid.resetGeneration >= 0))
+        && (!('updatedAt' in kid) || kid.updatedAt is number)
+        && (!('progressResetAt' in kid) || kid.progressResetAt is number)
+        && (!('deletedAt' in kid) || kid.deletedAt is number)
+        && (!('resetId' in kid) || kid.resetId is string || kid.resetId == null)
+        && (!('pendingResetId' in kid) || kid.pendingResetId is string || kid.pendingResetId == null)
+        && (!('starCounters' in kid) || kid.starCounters is map)
+        && (!('mastery' in kid) || (kid.mastery is map && kid.mastery.size() <= 1000))
+        && (!('badges' in kid) || (kid.badges is map && kid.badges.size() <= 20))
+        && (!('daily' in kid) || (kid.daily is map && kid.daily.keys().hasOnly(['lastDate', 'streak']) && (!('lastDate' in kid.daily) || kid.daily.lastDate is string) && (!('streak' in kid.daily) || (kid.daily.streak is int && kid.daily.streak >= 0))))
+        && (!('timeByDay' in kid) || (kid.timeByDay is map && kid.timeByDay.size() <= 400));
+    }
+
+    function validLegacyKids(kids) {
+      return kids is map
+        && kids.size() <= 10
+        && (kids.size() < 1 || validKid(kids[kids.keys().toList()[0]]))
+        && (kids.size() < 2 || validKid(kids[kids.keys().toList()[1]]))
+        && (kids.size() < 3 || validKid(kids[kids.keys().toList()[2]]))
+        && (kids.size() < 4 || validKid(kids[kids.keys().toList()[3]]))
+        && (kids.size() < 5 || validKid(kids[kids.keys().toList()[4]]))
+        && (kids.size() < 6 || validKid(kids[kids.keys().toList()[5]]))
+        && (kids.size() < 7 || validKid(kids[kids.keys().toList()[6]]))
+        && (kids.size() < 8 || validKid(kids[kids.keys().toList()[7]]))
+        && (kids.size() < 9 || validKid(kids[kids.keys().toList()[8]]))
+        && (kids.size() < 10 || validKid(kids[kids.keys().toList()[9]]));
+    }
+
+    function validKidIds(ids) {
+      return ids is list
+        && ids.size() <= 10
+        && ids.toSet().size() == ids.size()
+        && (ids.size() < 1 || (ids[0] is string && ids[0].matches('^[A-Za-z0-9_-]{1,64}$')))
+        && (ids.size() < 2 || (ids[1] is string && ids[1].matches('^[A-Za-z0-9_-]{1,64}$')))
+        && (ids.size() < 3 || (ids[2] is string && ids[2].matches('^[A-Za-z0-9_-]{1,64}$')))
+        && (ids.size() < 4 || (ids[3] is string && ids[3].matches('^[A-Za-z0-9_-]{1,64}$')))
+        && (ids.size() < 5 || (ids[4] is string && ids[4].matches('^[A-Za-z0-9_-]{1,64}$')))
+        && (ids.size() < 6 || (ids[5] is string && ids[5].matches('^[A-Za-z0-9_-]{1,64}$')))
+        && (ids.size() < 7 || (ids[6] is string && ids[6].matches('^[A-Za-z0-9_-]{1,64}$')))
+        && (ids.size() < 8 || (ids[7] is string && ids[7].matches('^[A-Za-z0-9_-]{1,64}$')))
+        && (ids.size() < 9 || (ids[8] is string && ids[8].matches('^[A-Za-z0-9_-]{1,64}$')))
+        && (ids.size() < 10 || (ids[9] is string && ids[9].matches('^[A-Za-z0-9_-]{1,64}$')));
+    }
+
+    function validProfile() {
+      return request.resource.data.keys().hasOnly([
+          'settings', 'schemaVersion', 'createdAt', 'updatedAt',
+          'settingsUpdatedAt', 'kidIds', 'kids', 'email', 'displayName'
+        ])
+        && request.resource.data.keys().hasAll(['settings', 'updatedAt', 'kidIds'])
+        && validKidIds(request.resource.data.kidIds)
+        && (!('kids' in request.resource.data) || validLegacyKids(request.resource.data.kids))
         && request.resource.data.settings is map
         && request.resource.data.settings.keys().hasOnly(['lang', 'sound'])
+        && request.resource.data.settings.keys().hasAll(['lang', 'sound'])
         && request.resource.data.settings.lang in ['en', 'hi', 'both']
-        && request.resource.data.settings.sound is number
+        && request.resource.data.settings.sound is int
         && request.resource.data.settings.sound in [0, 1]
         && request.resource.data.updatedAt is number
-        && (!('createdAt' in request.resource.data)
-          || request.resource.data.createdAt is number)
-        && (!('schemaVersion' in request.resource.data)
-          || request.resource.data.schemaVersion == 2)
-        && (!('email' in request.resource.data)
-          || request.resource.data.email is string
-          || request.resource.data.email == null)
-        && (!('displayName' in request.resource.data)
-          || request.resource.data.displayName is string
-          || request.resource.data.displayName == null);
+        && (!('settingsUpdatedAt' in request.resource.data) || request.resource.data.settingsUpdatedAt is number)
+        && (!('createdAt' in request.resource.data) || request.resource.data.createdAt is number)
+        && (!('schemaVersion' in request.resource.data) || request.resource.data.schemaVersion == 3)
+        && (!('email' in request.resource.data) || request.resource.data.email is string)
+        && (!('displayName' in request.resource.data) || request.resource.data.displayName is string);
+    }
+
+    match /users/{uid} {
+      allow read: if signedInOwner(uid);
+      allow create, update: if signedInOwner(uid) && validProfile();
+      allow delete: if signedInOwner(uid);
+
+      match /kids/{kidId} {
+        allow read: if signedInOwner(uid);
+        allow create, update: if signedInOwner(uid)
+          && validKid(request.resource.data)
+          && exists(/databases/$(database)/documents/users/$(uid))
+          && kidId in get(/databases/$(database)/documents/users/$(uid)).data.kidIds;
+        allow delete: if signedInOwner(uid);
       }
-      allow read: if signedInOwner();
-      allow create, update: if signedInOwner() && validProfile();
-      allow delete: if signedInOwner();
     }
   }
 }

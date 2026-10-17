@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Little Learners privacy policy for parents and guardians.">
+<meta name="theme-color" content="#7c4dff">
+<link rel="manifest" href="./manifest.webmanifest">
+<title>Privacy Policy — Little Learners</title>
+<style>
+:root{color-scheme:light;--ink:#28223d;--paper:#fff8e7;--accent:#7c4dff}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:18px/1.65 system-ui,sans-serif}main{max-width:800px;margin:0 auto;padding:24px 18px 48px}h1,h2{line-height:1.2}a{color:#4c2db8}a:focus-visible{outline:3px solid #ffbf47;outline-offset:3px}.back{display:inline-block;padding:10px 16px;border-radius:999px;background:var(--accent);color:#fff;text-decoration:none;font-weight:700}
+</style>
+</head>
+<body><main>
+<a class="back" href="./">← Back to Little Learners</a>
+<h1>Privacy Policy</h1>
+<p><strong>For parents and guardians · Last updated: 17 October 2026</strong></p>
+<p>Little Learners is a child-friendly learning app. A parent or guardian should supervise its use and decide whether to enable online sync.</p>
+<h2>Information stored on this device</h2>
+<p>Learning progress, child profile names, language and voice preferences, and app settings are stored in your browser's local storage. The app may cache its static files so it can work offline. Anyone with access to this browser profile or device may be able to view that local data.</p>
+<h2>Optional Google sign-in and cloud sync</h2>
+<p>If a parent chooses Google sign-in, Firebase Authentication is used to authenticate the parent and Cloud Firestore stores child profile names, learning progress, preferences and synchronization metadata under that parent's account. The app does not intentionally write the parent's email address or display name to the learning profile document. Google and Firebase process authentication and service data under their own terms and privacy notices.</p>
+<p>Guest mode keeps progress on the device and does not require an account. Choosing not to merge guest progress keeps that snapshot on the device; it does not upload it as part of the account merge.</p>
+<h2>Experimental Gemini helpers</h2>
+<p>AI helpers are off by default and require a parent to enable them behind the parent gate. When you use a story or quiz helper, the task instructions and prompt text are sent directly from this browser to Google Gemini. The child's first name is not sent in story prompts unless the parent explicitly turns on “Use child's first name in stories”; that option is off by default. The app does not send the Gemini API key to Little Learners' Firestore; it is stored in localStorage on this device. Anyone with access to this browser profile may be able to access local storage, so do not use a shared device. Google processes submitted prompts under its own terms and policies. Generated text may be inaccurate or unsuitable and must be reviewed by a parent before being shown to a child. Use “Remove key” to clear the locally stored key.</p>
+<h2>Children's privacy and consent</h2>
+<p>Parents and guardians are responsible for deciding whether to provide consent before using online account features. Do not enter a child's full legal name or other sensitive information; a short nickname is sufficient. Little Learners has no advertising or third-party analytics/tracking scripts.</p>
+<h2>Retention and deletion</h2>
+<p>You can clear local app data by clearing this site's storage in your browser. Signed-in parents can use <strong>Delete my data and account</strong> in Parent settings to request deletion of the app's Firestore profile and Firebase Authentication account. Recent authentication may be required before Firebase will delete the account. If that happens, sign in again and retry the deletion action. Deleting local browser storage is a separate action from deleting cloud data.</p>
+<h2>Security and contact</h2>
+<p>Cloud access is restricted by the Firestore security rules published for this app. No web application can guarantee absolute security. For questions or concerns, use the repository's issue tracker: <a href="https://github.com/srma4tech/little-learners/issues">Little Learners issues</a>.</p>
+<p><a href="./">Return to the app</a></p>
+</main></body></html>

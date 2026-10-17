@@ -49,16 +49,18 @@
         starCounters: counters,
         stars: sum(counters)
       };
+      const deletedAt = Math.max(number(local.deletedAt), number(remote.deletedAt));
+      if (deletedAt) acknowledged.deletedAt = deletedAt;
       delete acknowledged.pendingResetId;
       return acknowledged;
     }
 
     // An unacknowledged local reset is an intent, not ordinary progress to merge.
     if (local.pendingResetId) {
-      return {
-        ...local,
-        name: remote.name && remote.name !== 'Me' ? remote.name : local.name
-      };
+      const pending = { ...local, name: remote.name && remote.name !== 'Me' ? remote.name : local.name };
+      const deletedAt = Math.max(number(local.deletedAt), number(remote.deletedAt));
+      if (deletedAt) pending.deletedAt = deletedAt;
+      return pending;
     }
 
     if (local.resetGeneration > remote.resetGeneration) return local;
@@ -66,15 +68,30 @@
 
     const counters = { ...remote.starCounters };
     for (const [key, value] of Object.entries(local.starCounters)) counters[key] = Math.max(number(counters[key]), number(value));
+    const localIsNewer = number(local.updatedAt) > number(remote.updatedAt);
+    const mastery = { ...(remote.mastery || {}) };
+    for (const [itemId, value] of Object.entries(local.mastery || {})) {
+      const cloud = mastery[itemId] || {};
+      mastery[itemId] = { ok: Math.max(number(cloud.ok), number(value && value.ok)), miss: Math.max(number(cloud.miss), number(value && value.miss)), last: Math.max(number(cloud.last), number(value && value.last)) };
+    }
+    const badges = { ...(remote.badges || {}), ...(local.badges || {}) };
+    const timeByDay = { ...(remote.timeByDay || {}) };
+    for (const [date, seconds] of Object.entries(local.timeByDay || {})) timeByDay[date] = Math.max(number(timeByDay[date]), number(seconds));
+    const localDaily = local.daily || {}, remoteDaily = remote.daily || {};
+    const daily = String(localDaily.lastDate || '') > String(remoteDaily.lastDate || '') ? localDaily : (remoteDaily.lastDate ? remoteDaily : localDaily);
     const merged = {
       ...remote,
-      name: remote.name && remote.name !== 'Me' ? remote.name : local.name,
+      name: localIsNewer && local.name && local.name !== 'Me' ? local.name : (remote.name && remote.name !== 'Me' ? remote.name : local.name),
+      updatedAt: Math.max(number(local.updatedAt), number(remote.updatedAt)),
       resetGeneration: remote.resetGeneration,
       resetId: remote.resetId || local.resetId || null,
       starCounters: counters,
-      stars: sum(counters)
+      stars: sum(counters),
+      mastery, badges, timeByDay, daily
     };
     if (local.pendingResetId) merged.pendingResetId = local.pendingResetId;
+    const deletedAt = Math.max(number(local.deletedAt), number(remote.deletedAt));
+    if (deletedAt) merged.deletedAt = deletedAt;
     return merged;
   }
 
@@ -84,7 +101,11 @@
     const merged = {};
     for (const childId of new Set([...Object.keys(local), ...Object.keys(remote)])) {
       const kid = mergeKid(local[childId], remote[childId], deviceId);
-      if (kid) merged[childId] = kid;
+      if (kid) {
+        const deletedAt = Math.max(number(local[childId] && local[childId].deletedAt), number(remote[childId] && remote[childId].deletedAt));
+        if (deletedAt) kid.deletedAt = deletedAt;
+        merged[childId] = kid;
+      }
     }
     return merged;
   }
@@ -133,7 +154,8 @@
       ...remote,
       ...incoming,
       kids,
-      settings: incoming.settings && typeof incoming.settings === 'object' ? incoming.settings : (remote.settings || { lang: 'both', sound: 1 }),
+      settings: number(incoming.settingsUpdatedAt) >= number(remote.settingsUpdatedAt) && incoming.settings && typeof incoming.settings === 'object' ? incoming.settings : (remote.settings || incoming.settings || { lang: 'both', sound: 1 }),
+      settingsUpdatedAt: Math.max(number(incoming.settingsUpdatedAt), number(remote.settingsUpdatedAt)),
       schemaVersion: 2,
       createdAt: typeof remote.createdAt === 'number' ? remote.createdAt : (typeof incoming.createdAt === 'number' ? incoming.createdAt : Date.now()),
       updatedAt: Date.now()
