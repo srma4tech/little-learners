@@ -1,9 +1,8 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#7c4dff"><meta name="description" content="A playful, child-friendly learning app for alphabets, Hindi Varnamala, numbers, fruits, vegetables, animals, birds and good manners. Learn in English and Hindi."><meta name="robots" content="index,follow"><link rel="canonical" href="https://srma4tech.github.io/little-learners/"><meta property="og:type" content="website"><meta property="og:title" content="Little Learners — Learn & Play"><meta property="og:description" content="A playful, child-friendly learning app for alphabets, Hindi Varnamala, numbers and more. Learn in English and Hindi."><meta property="og:url" content="https://srma4tech.github.io/little-learners/"><meta property="og:image" content="https://srma4tech.github.io/little-learners/icon-512.png"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Little Learners"><title>Little Learners</title>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#7c4dff"><meta name="description" content="A playful, child-friendly learning app for alphabets, Hindi Varnamala, numbers, fruits, vegetables, animals, birds and good manners. Learn in English and Hindi."><meta name="robots" content="index,follow"><link rel="canonical" href="https://srma4tech.github.io/little-learners/"><meta property="og:type" content="website"><meta property="og:title" content="Little Learners — Learn & Play"><meta property="og:description" content="A playful, child-friendly learning app for alphabets, Hindi Varnamala, numbers and more. Learn in English and Hindi."><meta property="og:url" content="https://srma4tech.github.io/little-learners/"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Little Learners"><title>Little Learners</title>
 <style>
 :root{--bg:#fff8e7;--card:#fff;--ink:#2d2a4a;--sh:rgba(0,0,0,.14);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1c1b2e;--card:#2b2a45;--ink:#f4f1ff;--sh:rgba(0,0,0,.45)}}
 :root[data-theme="dark"]{--bg:#1c1b2e;--card:#2b2a45;--ink:#f4f1ff;--sh:rgba(0,0,0,.45)}
-.text-large body,.text-large button,.text-large .tile,.text-large .card,.text-large .pill{font-size:1.2em!important}.high-contrast{--bg:#fff;--card:#fff;--ink:#000;--sh:#333}.high-contrast button,.high-contrast a{border:2px solid #000!important}.high-contrast :focus-visible{outline:4px solid #000!important;outline-offset:3px}
 html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}.skip-link{position:fixed;left:12px;top:12px;z-index:10001;transform:translateY(-160%);background:var(--card);color:var(--ink);border:2px solid #7c4dff;border-radius:12px;padding:12px 16px;font-weight:700}.skip-link:focus{transform:translateY(0)}:focus-visible{outline:3px solid #ffbf47;outline-offset:3px}button{min-height:44px}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}#app{min-height:55vh}.site-footer{max-width:1000px;margin:0 auto;padding:18px 12px calc(18px + env(safe-area-inset-bottom,0px));border-top:1px solid #8884;display:grid;gap:12px;text-align:center}.footer-nav{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}.footer-nav button{background:var(--card);color:var(--ink);border-radius:999px;padding:10px 16px;box-shadow:0 3px 0 var(--sh);font-weight:700}.footer-version{font-size:12px;line-height:1.4;opacity:.65;margin:0;font-weight:700;letter-spacing:.04em}.footer-copy{font-size:14px;line-height:1.5;opacity:.78;margin:0}@media(max-width:600px){header{padding:8px;gap:8px}header .pill{padding:8px 12px;font-size:18px}#app{padding:8px 10px 28px}.grid{gap:10px}.tile{min-height:120px;padding:12px 6px;font-size:19px}.tile span{font-size:44px}.btn{min-height:44px;padding:10px 16px;font-size:18px}.bar{justify-content:flex-start}.bar h2{flex:1;min-width:0;overflow-wrap:anywhere}.footer-nav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}.footer-nav button{padding:10px 6px;font-size:14px}}@media(min-width:601px) and (max-width:900px){#app,header,.site-footer{max-width:760px}}html{box-sizing:border-box}*,*::before,*::after{box-sizing:inherit}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:'Comic Sans MS','Segoe UI','Noto Sans Devanagari',system-ui,sans-serif}
 button{font:inherit;color:inherit;cursor:pointer;border:0}
@@ -107,8 +106,8 @@ button{overflow-wrap:anywhere}
 </style></head><body>
 <a class="skip-link" href="#app">Skip to main content</a>
 <header aria-label="Little Learners header"><button class="pill" type="button" aria-label="Go to home" title="Home" onclick="home()">🏠</button><span class="pill" id="stars" aria-live="polite" aria-label="Stars earned"></span><span><button class="pill" id="inst" type="button" aria-label="Install Little Learners" title="Install app" style="display:none" onclick="doInstall()">📲 Install</button> <button class="pill" id="kid" type="button" aria-label="Open parent settings" onclick="gate()"></button> <button class="pill" type="button" aria-label="Open stickers" title="Stickers" onclick="stickers()">🎁</button> <button class="pill" type="button" aria-label="Open parent settings" title="Parent settings" onclick="gate()">⚙️</button></span></header>
-<main id="app" tabindex="-1"></main><div id="ll-toast" class="ll-toast" role="status" aria-live="polite" aria-atomic="true"></div><div id="offline-indicator" role="status" aria-live="polite" style="display:none;position:fixed;left:50%;bottom:calc(12px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:10001;background:#332b45;color:#fff;border-radius:14px;padding:12px 16px;max-width:92vw;text-align:center;box-shadow:0 4px 18px #0004">Offline — progress is saved on this device and will sync when online.</div>
-<footer class="site-footer" aria-label="Site footer"><nav class="footer-nav" aria-label="Primary navigation"><button type="button" onclick="home()">🏠 Home</button><button type="button" onclick="stickers()">🎁 Stickers</button><button type="button" onclick="gate()">⚙️ Parents</button></nav><p class="footer-version" aria-label="Application version">Version 2026.10.17.6</p><p class="footer-copy">Little Learners · Learn, play and grow 🌱<br>Alphabets · हिंदी वर्णमाला · Numbers · Animals · Good manners<br><a href="./privacy.html">Privacy policy</a></p></footer>
+<main id="app" tabindex="-1"></main><div id="ll-toast" class="ll-toast" role="status" aria-live="polite" aria-atomic="true"></div>
+<footer class="site-footer" aria-label="Site footer"><nav class="footer-nav" aria-label="Primary navigation"><button type="button" onclick="home()">🏠 Home</button><button type="button" onclick="stickers()">🎁 Stickers</button><button type="button" onclick="gate()">⚙️ Parents</button></nav><p class="footer-version" aria-label="Application version">Version 2026.10.13.5</p><p class="footer-copy">Little Learners · Learn, play and grow 🌱<br>Alphabets · हिंदी वर्णमाला · Numbers · Animals · Good manners</p></footer>
 <script src="./progress-model.js"></script>
 <script>
 let llToastTimer;
@@ -128,34 +127,36 @@ window.authErrorDetails = error => {
 
 // Google sign-in uses Google Identity Services and Firebase credentials.
 
+window.authErrorDetails = error => {
+  if (!error) return 'No error object was provided.';
+  return [
+    'name: ' + (error.name || '(none)'),
+    'code: ' + (error.code || '(none)'),
+    'message: ' + (error.message || String(error)),
+    'customData: ' + (error.customData ? JSON.stringify(error.customData) : '(none)'),
+    'stack: ' + (error.stack || '(no stack exposed by browser)')
+  ].join('\n');
+};
 const $=s=>document.querySelector(s),app=$('#app');
-const esc=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
-const focusObserver=new MutationObserver(()=>{if(document.activeElement===document.body||!app.contains(document.activeElement))app.focus({preventScroll:true})});focusObserver.observe(app,{childList:true});
-const LANGUAGE_PACKS={en:{speech:'en-IN'},hi:{speech:'hi-IN'}};
-function applyAccessibility(){document.documentElement.classList.toggle('text-large',st.textSize===1);document.documentElement.classList.toggle('high-contrast',st.highContrast===1)}
-function toggleTextSize(){st.textSize=st.textSize===1?0:1;applyAccessibility();save();parent()}
-function toggleContrast(){st.highContrast=st.highContrast===1?0:1;applyAccessibility();save();parent()}
-
 let dp=null;const isStd=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone,isIOS=()=>/iPhone|iPad|iPod/i.test(navigator.userAgent)||(navigator.platform=='MacIntel'&&navigator.maxTouchPoints>1);
 addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp=e;$('#inst').style.display='';if($('#app .tile'))home()});
 addEventListener('appinstalled',()=>{dp=null;$('#inst').style.display='none';if($('#app .tile'))home()});
 async function doInstall(){if(!dp)return;dp.prompt();try{await dp.userChoice}catch(e){}dp=null;$('#inst').style.display='none';if($('#app .tile'))home()}
 function instBar(){if(isStd()||st.noInst)return'';if(dp)return`<div class="ib">📲 Install Little Learners on this device <button class="btn" onclick="doInstall()">Install</button><button class="btn o" onclick="st.noInst=1;save();home()">✕</button></div>`;if(isIOS())return`<div class="ib">📲 To install: tap Share ⬆️ then Add to Home Screen <button class="btn o" onclick="st.noInst=1;save();home()">✕</button></div>`;return''}
-let st={kids:{me:{name:'Me',stars:0}},kid:'me',lang:'both',ob:0,step:0,textSize:0,highContrast:0},cur=0,q={},onbActive=0,unlock=0,gateIdleTimer=0;
+let st={kids:{me:{name:'Me',stars:0}},kid:'me',lang:'both',sound:1,ob:0,step:0},cur=0,q={},onbActive=0,unlock=0;
 try{Object.assign(st,JSON.parse(localStorage.getItem('kl')||'{}'))}catch(e){}
 let deviceId='';
 try{deviceId=localStorage.getItem('kl_device_id')||'';if(!deviceId){deviceId=crypto.randomUUID?crypto.randomUUID():'d'+Date.now().toString(36)+Math.random().toString(36).slice(2);localStorage.setItem('kl_device_id',deviceId)}}catch(e){deviceId='device-local'}
 const normalizeKid=k=>LLProgress.normalizeKid(k,deviceId);
-Object.keys(st.kids||{}).forEach(id=>st.kids[id]=normalizeKid(st.kids[id]));st.textSize=st.textSize===1?1:0;st.highContrast=st.highContrast===1?1:0;applyAccessibility();
+Object.keys(st.kids||{}).forEach(id=>st.kids[id]=normalizeKid(st.kids[id]));
 const saveLocal=()=>{try{localStorage.setItem('kl',JSON.stringify({...st,user:undefined,err:undefined}))}catch(e){}};
-window.savedSettingsSignature=JSON.stringify({lang:st.lang,sound:st.sound});
-const save=()=>{const settingsSignature=JSON.stringify({lang:st.lang,sound:st.sound});if(settingsSignature!==window.savedSettingsSignature){st.settingsUpdatedAt=Date.now();window.savedSettingsSignature=settingsSignature}if(K())K().updatedAt=Date.now();saveLocal();if(!localStorage.getItem('kl_account_uid')&&!st.user){try{localStorage.setItem('kl_guest',JSON.stringify({kids:st.kids,kid:st.kid,settings:{lang:st.lang||'both',sound:typeof st.sound==='number'?(st.sound?1:0):1},schemaVersion:2,savedAt:Date.now()}))}catch(e){}}try{window.fb&&fb.schedulePush?.()}catch(e){}};
-const K=()=>st.kids[st.kid]&&!st.kids[st.kid].deletedAt?st.kids[st.kid]:(st.kid=Object.keys(st.kids).find(id=>!st.kids[id]?.deletedAt)||'me',st.kids[st.kid]=st.kids[st.kid]&&!st.kids[st.kid].deletedAt?st.kids[st.kid]:{name:'Me',stars:0});
+const save=()=>{saveLocal();if(!localStorage.getItem('kl_account_uid')&&!st.user){try{localStorage.setItem('kl_guest',JSON.stringify({kids:st.kids,kid:st.kid,settings:{lang:st.lang||'both',sound:typeof st.sound==='number'?(st.sound?1:0):1},schemaVersion:2,savedAt:Date.now()}))}catch(e){}}try{window.fb&&fb.schedulePush?.()}catch(e){}};
+const K=()=>st.kids[st.kid]||(st.kid='me',st.kids.me=st.kids.me||{name:'Me',stars:0});
 const P=s=>s.split(';').map(x=>{const[e,en,hi]=x.split('|');return{e,en,hi:hi||''}});
-const AL=P("🍎|Apple;⚽|Ball;🐱|Cat;🐶|Dog;🐘|Elephant;🐟|Fish;🍇|Grapes;🐴|Horse;🍦|Ice cream;🧃|Juice;🪁|Kite;🦁|Lion;🌙|Moon;🪺|Nest;🍊|Orange;🦜|Parrot;👑|Queen;🐰|Rabbit;☀️|Sun;🐯|Tiger;☂️|Umbrella;🚐|Van;⌚|Watch;🎶|Xylophone;🪀|Yo-yo;🦓|Zebra").map((x,i)=>{const L=String.fromCharCode(65+i);return{e:x.e,big:L+' '+L.toLowerCase(),en:L+' for '+x.en,hi:''}});
-const VN=("अ|अमरूद|🍐;आ|आम|🥭;इ|इमली|🌰;ई|ईख|🎋;उ|उल्लू|🦉;ऊ|ऊँट|🐪;ए|एक|1️⃣;ऐ|ऐनक|👓;ओ|ओस|💧;औ|औरत|👩;अं|अंगूर|🍇;क|कमल|🪷;ख|खरगोश|🐰;ग|गमला|🪴;घ|घर|🏠;च|चम्मच|🥄;छ|छतरी|☂️;ज|जहाज|🚢;झ|झंडा|🚩;ट|टमाटर|🍅;ड|डमरू|🥁;त|तरबूज|🍉;थ|थाली|🍽️;द|दरवाज़ा|🚪;न|नल|🚰;प|पतंग|🪁;फ|फल|🍏;ब|बतख|🦆;भ|भालू|🐻;म|मछली|🐟;र|रथ|🛺;ल|लट्टू|🪀;श|शेर|🦁;स|सेब|🍎;ह|हाथी|🐘;क्ष|क्षत्रिय|🛡️;त्र|त्रिशूल|🔱;ज्ञ|ज्ञानी|📚;अः|अः से दुःख|😢;ा|आ की मात्रा|🧩;ि|इ की मात्रा|🧩;ी|ई की मात्रा|🧩;ु|उ की मात्रा|🧩;ू|ऊ की मात्रा|🧩;े|ए की मात्रा|🧩;ै|ऐ की मात्रा|🧩;ो|ओ की मात्रा|🧩;ौ|औ की मात्रा|🧩;ं|अनुस्वार|🧩;ः|विसर्ग|🧩;्|हलंत|🧩").split(';').map(x=>{const[l,w,e]=x.split('|');return{e,big:l,en:'',hi:l+' से '+w}});
-const EW="One,Two,Three,Four,Five,Six,Seven,Eight,Nine,Ten,Eleven,Twelve,Thirteen,Fourteen,Fifteen,Sixteen,Seventeen,Eighteen,Nineteen,Twenty,Twenty-one,Twenty-two,Twenty-three,Twenty-four,Twenty-five,Twenty-six,Twenty-seven,Twenty-eight,Twenty-nine,Thirty,Thirty-one,Thirty-two,Thirty-three,Thirty-four,Thirty-five,Thirty-six,Thirty-seven,Thirty-eight,Thirty-nine,Forty,Forty-one,Forty-two,Forty-three,Forty-four,Forty-five,Forty-six,Forty-seven,Forty-eight,Forty-nine,Fifty".split(','),HW="एक,दो,तीन,चार,पाँच,छह,सात,आठ,नौ,दस,ग्यारह,बारह,तेरह,चौदह,पंद्रह,सोलह,सत्रह,अठारह,उन्नीस,बीस,इक्कीस,बाईस,तेईस,चौबीस,पच्चीस,छब्बीस,सत्ताईस,अट्ठाईस,उनतीस,तीस,इकतीस,बत्तीस,तैंतीस,चौंतीस,पैंतीस,छत्तीस,सैंतीस,अड़तीस,उनतालीस,चालीस,इकतालीस,बयालीस,तैंतालीस,चवालीस,पैंतालीस,छियालीस,सैंतालीस,अड़तालीस,उनचास,पचास".split(',');
-const NU=EW.map((w,i)=>({e:i<10?'⭐'.repeat(i+1):'🔢',big:(i+1)+' '+String(i+1).replace(/\d/g,d=>'०१२३४५६७८९'[d]),en:w,hi:HW[i]}));
+const AL=P("🍎|Apple;⚽|Ball;🐱|Cat;🐶|Dog;🐘|Elephant;🐟|Fish;🍇|Grapes;🐴|Horse;🍦|Ice cream;🧃|Juice;🪁|Kite;🦁|Lion;🌙|Moon;🪺|Nest;🍊|Orange;🦜|Parrot;👑|Queen;🐰|Rabbit;☀️|Sun;🐯|Tiger;☂️|Umbrella;🚐|Van;⌚|Watch;🎹|Xylophone;🪀|Yo-yo;🦓|Zebra").map((x,i)=>{const L=String.fromCharCode(65+i);return{e:x.e,big:L,en:L+' for '+x.en,hi:''}});
+const VN=("अ|अमरूद|🍐;आ|आम|🥭;इ|इमली|🌰;ई|ईख|🎋;उ|उल्लू|🦉;ऊ|ऊँट|🐪;ए|एक|1️⃣;ऐ|ऐनक|👓;ओ|ओस|💧;औ|औरत|👩;अं|अंगूर|🍇;क|कमल|🪷;ख|खरगोश|🐰;ग|गमला|🪴;घ|घर|🏠;च|चम्मच|🥄;छ|छतरी|☂️;ज|जहाज|🚢;झ|झंडा|🚩;ट|टमाटर|🍅;ड|डमरू|🥁;त|तरबूज|🍉;थ|थाली|🍽️;द|दरवाज़ा|🚪;न|नल|🚰;प|पतंग|🪁;फ|फल|🍏;ब|बतख|🦆;भ|भालू|🐻;म|मछली|🐟;र|रथ|🛺;ल|लट्टू|🪀;श|शेर|🦁;स|सेब|🍎;ह|हाथी|🐘").split(';').map(x=>{const[l,w,e]=x.split('|');return{e,big:l,en:'',hi:l+' से '+w}});
+const EW="One,Two,Three,Four,Five,Six,Seven,Eight,Nine,Ten,Eleven,Twelve,Thirteen,Fourteen,Fifteen,Sixteen,Seventeen,Eighteen,Nineteen,Twenty".split(','),HW="एक,दो,तीन,चार,पाँच,छह,सात,आठ,नौ,दस,ग्यारह,बारह,तेरह,चौदह,पंद्रह,सोलह,सत्रह,अठारह,उन्नीस,बीस".split(',');
+const NU=EW.map((w,i)=>({e:'⭐'.repeat(i+1),big:(i+1)+' '+String(i+1).replace(/\d/g,d=>'०१२३४५६७८९'[d]),en:w,hi:HW[i]}));
 const S=[
 {n:'Alphabets',h:'ABC',i:'🔤',c:'#f4511e',it:AL},
 {n:'Varnamala',h:'वर्णमाला',i:'अ',c:'#8e24aa',it:VN},
@@ -165,137 +166,57 @@ const S=[
 {n:'Animals',h:'जानवर',i:'🐘',c:'#ef6c00',it:P("🐶|Dog|कुत्ता;🐱|Cat|बिल्ली;🐄|Cow|गाय;🐴|Horse|घोड़ा;🐘|Elephant|हाथी;🦁|Lion|शेर;🐯|Tiger|बाघ;🐒|Monkey|बंदर;🐰|Rabbit|खरगोश;🐐|Goat|बकरी;🐪|Camel|ऊँट;🦒|Giraffe|जिराफ़")},
 {n:'Birds',h:'पक्षी',i:'🦜',c:'#00838f',it:P("🦜|Parrot|तोता;🦚|Peacock|मोर;🐦‍⬛|Crow|कौआ;🐦|Sparrow|चिड़िया;🦉|Owl|उल्लू;🦆|Duck|बतख;🐔|Hen|मुर्गी;🦅|Eagle|गरुड़;🦢|Swan|हंस;🕊️|Pigeon|कबूतर")},
 {n:'Body Parts',h:'शरीर के अंग',i:'🖐️',c:'#d81b60',it:P("👀|Eyes|आँखें;👃|Nose|नाक;👂|Ears|कान;👄|Mouth|मुँह;👅|Tongue|जीभ;🦷|Teeth|दाँत;✋|Hand|हाथ;🦶|Foot|पैर;💪|Arm|बाँह;🦵|Leg|टाँग;🧠|Brain|दिमाग;❤️|Heart|दिल")},
-{n:'Manners',h:'अच्छी आदतें',i:'🙏',c:'#5e35b1',it:P("🙏|Please|कृपया;😊|Thank you|धन्यवाद;🙇|Sorry|माफ़ कीजिए;🌅|Good morning|सुप्रभात;👴|Respect elders|बड़ों का आदर करें;🤝|Share with friends|दोस्तों के साथ बाँटें;🧼|Wash your hands|हाथ धोएँ;⏳|Wait for your turn|अपनी बारी का इंतज़ार करें;🧸|Put toys back|खिलौने वापस रखें;🤫|Speak softly|धीरे बोलें")},
-{n:'Colours',h:'रंग',i:'🎨',c:'#e91e63',it:P("🔴|Red|लाल;🔵|Blue|नीला;🟡|Yellow|पीला;🟢|Green|हरा;🟠|Orange|नारंगी;🟣|Purple|बैंगनी;⚫|Black|काला;⚪|White|सफ़ेद;🟤|Brown|भूरा;🩷|Pink|गुलाबी;🩶|Grey|धूसर")},
-{n:'Shapes',h:'आकार',i:'🔷',c:'#3949ab',it:P("⭕|Circle|गोल;🟥|Square|वर्ग;🔺|Triangle|त्रिभुज;🟦|Rectangle|आयत;⭐|Star|तारा;❤️|Heart|दिल;💎|Diamond|हीरा;🥚|Oval|अंडाकार")},
-{n:'Days and Months',h:'दिन और महीने',i:'📅',c:'#00897b',it:P("📅|Monday|सोमवार;📅|Tuesday|मंगलवार;📅|Wednesday|बुधवार;📅|Thursday|गुरुवार;📅|Friday|शुक्रवार;📅|Saturday|शनिवार;📅|Sunday|रविवार;❄️|January|जनवरी;💝|February|फ़रवरी;🌱|March|मार्च;🌷|April|अप्रैल;🌞|May|मई;🌦️|June|जून;🌧️|July|जुलाई;🌻|August|अगस्त;🍂|September|सितंबर;🎃|October|अक्टूबर;🪔|November|नवंबर;🎄|December|दिसंबर")},
-{n:'Family',h:'परिवार',i:'👨‍👩‍👧‍👦',c:'#8e24aa',it:P("👩|Mother|माँ;👨|Father|पिता;👵|Grandmother|दादी;👴|Grandfather|दादा;👧|Sister|बहन;👦|Brother|भाई;👶|Baby|शिशु;👨‍👩‍👧‍👦|Family|परिवार;👩‍👧|Aunt|चाची;👨‍👦|Uncle|चाचा")},
-{n:'Vehicles',h:'वाहन',i:'🚗',c:'#546e7a',it:P("🚗|Car|कार;🚌|Bus|बस;🚲|Bicycle|साइकिल;🚂|Train|रेलगाड़ी;✈️|Aeroplane|हवाई जहाज़;🚁|Helicopter|हेलीकॉप्टर;🚢|Ship|जहाज़;🚜|Tractor|ट्रैक्टर;🛵|Scooter|स्कूटर;🚒|Fire engine|दमकल;🚑|Ambulance|एम्बुलेंस;🚓|Police car|पुलिस गाड़ी")}
-];
-S.find(s=>s.n==='Animals').it.forEach(item=>{const sounds={Dog:'woof woof',Cat:'meow',Cow:'moo',Horse:'neigh',Elephant:'trumpet',Lion:'roar',Tiger:'growl',Monkey:'oo oo aa aa',Rabbit:'sniff sniff',Goat:'baa',Camel:'grumble',Giraffe:'hum'};item.soundText=sounds[item.en]||''});
-S.find(s=>s.n==='Birds').it.forEach(item=>{const sounds={Parrot:'squawk',Peacock:'may-awe',Crow:'caw caw',Sparrow:'chirp chirp',Owl:'hoot',Duck:'quack quack',Hen:'cluck cluck',Eagle:'screech',Swan:'honk',Pigeon:'coo coo'};item.soundText=sounds[item.en]||''});
-S.forEach(section=>{section.id=section.n.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');section.it.forEach((item,index)=>{item.id=item.id||section.id+'-'+(index+1);item.sectionId=section.id;});});
-const SK=['🦄','🐯','🚀','🌈','🦋','🐬','🎈','🏆','🍭','🐼','🦖','🌟','🎨','🐳','🦜','🚒','🧸','🎠','🍦','👑','🐸','🐙','🐝','🐢','🦊','🐨','🦒','🦓','🐧','🦩','🐣','🦕','🐞','🌻','🌼','🍉','🍓','🍍','🍒','🍇','🍀','🌺','🌸','🌞','🌙','⭐','💎','🎁','🎵','🎯','🪁','🛴','🚂','🚁','🛸','🏅','🥇','🧩','🎪','🪄'];
-function accuracy(){const values=Object.values(K().mastery||{});const ok=values.reduce((n,x)=>n+(Number(x.ok)||0),0),miss=values.reduce((n,x)=>n+(Number(x.miss)||0),0);return ok+miss?ok/(ok+miss):0}
-function recordAnswer(item,correct){const kid=K();kid.mastery=kid.mastery&&typeof kid.mastery==='object'?kid.mastery:{};const m=kid.mastery[item.id]&&typeof kid.mastery[item.id]==='object'?kid.mastery[item.id]:{ok:0,miss:0,last:0};m.ok=Number(m.ok)||0;m.miss=Number(m.miss)||0;m[correct?'ok':'miss']++;m.last=Date.now();kid.mastery[item.id]=m;const section=S.find(s=>s.id===item.sectionId);if(section){const attempts=section.it.reduce((n,it)=>{const v=kid.mastery[it.id]||{};return n+(Number(v.ok)||0)+(Number(v.miss)||0)},0),wins=section.it.reduce((n,it)=>n+(Number(kid.mastery[it.id]?.ok)||0),0);kid.badges=kid.badges||{};if(attempts>=5&&wins/attempts>=.8)kid.badges[section.id]=true}save()}
-function playDaily(){q={n:0,ok:0,daily:1};cur=-1;next()}
-function finishDaily(){if(!q.daily)return;const kid=K(),today=new Date(),date=today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-'+String(today.getDate()).padStart(2,'0');kid.daily=kid.daily||{lastDate:'',streak:0};if(kid.daily.lastDate!==date){const yesterday=new Date(today);yesterday.setDate(yesterday.getDate()-1);const y=yesterday.getFullYear()+'-'+String(yesterday.getMonth()+1).padStart(2,'0')+'-'+String(yesterday.getDate()).padStart(2,'0');kid.daily.streak=kid.daily.lastDate===y?(Number(kid.daily.streak)||0)+1:1;kid.daily.lastDate=date}save()}
+{n:'Manners',h:'अच्छी आदतें',i:'🙏',c:'#5e35b1',it:P("🙏|Please|कृपया;😊|Thank you|धन्यवाद;🙇|Sorry|माफ़ कीजिए;🌅|Good morning|सुप्रभात;👴|Respect elders|बड़ों का आदर करें;🤝|Share with friends|दोस्तों के साथ बाँटें;🧼|Wash your hands|हाथ धोएँ;⏳|Wait for your turn|अपनी बारी का इंतज़ार करें;🧸|Put toys back|खिलौने वापस रखें;🤫|Speak softly|धीरे बोलें")}];
+const SK='🦄🐯🚀🌈🦋🐬🎈🏆🍭🐼🦖🌟🎨🐳🦜🚒🧸🎠🍦👑'.match(/./gu);
 function sp(t,l){try{if(!st.sound||!t)return;const u=new SpeechSynthesisUtterance(t);u.lang=l;u.rate=.8;u.pitch=1.2;speechSynthesis.speak(u)}catch(e){}}
-let recordedAudioIds=new Set();fetch('./audio/manifest.json').then(response=>response.ok?response.json():null).then(data=>{if(Array.isArray(data?.files))recordedAudioIds=new Set(data.files.filter(id=>typeof id==='string'&&/^[a-z0-9-]+$/.test(id)))}).catch(()=>{});
-function say(it){try{speechSynthesis.cancel()}catch(e){}if(recordedAudioIds.has(it.id)){const audio=new Audio('./audio/'+it.id+'.mp3');audio.play().catch(()=>speakItem(it));audio.onerror=()=>speakItem(it);return}speakItem(it)}
-function speakItem(it){const L=st.lang;let n=0;if(L!=='hi'&&it.en){sp(it.soundText?it.en+', says '+it.soundText:it.en,LANGUAGE_PACKS.en.speech);n++}if(L!=='en'&&it.hi){sp(it.soundText?it.hi+' की आवाज़ '+it.soundText:it.hi,LANGUAGE_PACKS.hi.speech);n++}if(!n)sp(it.en||it.hi,it.en?'en-IN':'hi-IN')}
+function say(it){try{speechSynthesis.cancel()}catch(e){}const L=st.lang;let n=0;if(L!='hi'&&it.en){sp(it.en,'en-IN');n++}if(L!='en'&&it.hi){sp(it.hi,'hi-IN');n++}if(!n)sp(it.en||it.hi,it.en?'en-IN':'hi-IN')}
 function lbl(it){const a=[];if(st.lang!='hi'&&it.en)a.push(it.en);if(st.lang!='en'&&it.hi)a.push(it.hi);return a.length?a.join(' · '):(it.en||it.hi)}
 const es=e=>e.length>8?'font-size:20px':'';
 const hdr=()=>{$('#stars').textContent='⭐ '+K().stars;$('#kid').textContent='👤 '+K().name};
-function home(){unlock=0;clearTimeout(gateIdleTimer);onbActive=0;document.body.classList.remove('ob');const daily=K().daily||{streak:0};app.innerHTML=`${instBar()}<h1>${K().name=='Me'?'Hello, little learner!':'Hello, '+esc(K().name)+'!'} 👋<br><small style="font-size:.5em;opacity:.8">नमस्ते · Let's learn &amp; play! 🎈</small></h1><div class="q"><div class="big" style="font-size:56px">🦊</div><p>Your learning buddy is cheering for you! 🌟</p><button class="btn" onclick="playDaily()">🌞 Daily challenge</button><div class="opts"><button class="btn o" onclick="matchGame()">🧩 Match</button><button class="btn o" onclick="memoryGame()">🃏 Memory</button><button class="btn o" onclick="traceGame()">✍️ Trace</button><button class="btn o" onclick="mannersStory()">💛 Manners story</button></div><p>🔥 Daily streak: ${Number(daily.streak)||0} day(s) · Overall accuracy: ${Math.round(accuracy()*100)}%</p></div><div class="grid">${S.map((s,i)=>`<button class="tile" aria-label="Open ${esc(s.n)} learning section" style="--a:${s.c}" onclick="openS(${i})"><span>${s.i}</span>${s.n}${K().badges?.[s.id]?' 🏅':''}<small>${s.h}</small></button>`).join('')}</div>`;app.style.setProperty('--a','#7c4dff')}
-function openS(i){cur=i;const s=S[i];app.style.setProperty('--a',s.c);app.innerHTML=`<div class="bar category-bar"><button class="btn o" onclick="home()">⬅ Home</button><h2 class="category-title">${s.i} ${s.n} ${s.h}</h2><button class="btn" onclick="play()">⭐ Play</button></div><div class="grid">${s.it.map((x,j)=>`<button class="card" aria-label="${esc(lbl(x))}, ${esc(x.e)}" onclick="say(S[cur].it[${j}])"><span class="e" style="${es(x.e)}">${x.e}</span>${x.big?`<span class="b">${x.big}</span>`:''}<span class="l">${lbl(x)}</span></button>`).join('')}</div>${cur==0?'<p class="kb">Tip: press any letter key on the keyboard! ⌨️</p>':''}`}
-function play(){q={n:0,ok:0,daily:0};next()}
-function next(){const sh=a=>a.sort(()=>Math.random()-.5),pool=q.daily?S.flatMap(s=>s.it):S[cur].it,missed=pool.filter(x=>Number(K().mastery?.[x.id]?.miss)>Number(K().mastery?.[x.id]?.ok)),weighted=missed.length&&Math.random()<.7?missed:pool,t=weighted[Math.random()*weighted.length|0],count=accuracy()>=.8?4:3,o=sh([t,...sh(pool.filter(x=>x.id!==t.id)).slice(0,count-1)]);q.t=t;q.o=o;q.lock=0;q.wrong=0;app.innerHTML=`<div class="bar"><button class="btn o" onclick="${q.daily?'home()':'openS(cur)'}">⬅ Back</button><h2>${q.daily?'Daily challenge':'Section quiz'} · Round ${q.n+1}/5</h2></div><div class="q"><div class="big">${t.big||esc(lbl(t))}</div><button class="btn" onclick="say(q.t)">🔊 Hear</button><div class="opts">${o.map((x,j)=>`<button class="opt" data-correct="${x===t}" aria-label="Answer option ${j+1}" style="${es(x.e)}" onclick="ans(${j},this)">${esc(x.e)}</button>`).join('')}</div><div id="fb" aria-live="polite"></div><div id="hint" aria-live="polite"></div></div>`;say(t)}
-function ans(j,b){if(q.lock)return;if(q.o[j]===q.t){q.lock=1;b.classList.add('good');const kid=K();recordAnswer(q.t,true);kid.starCounters=kid.starCounters&&typeof kid.starCounters==='object'?kid.starCounters:{};kid.starCounters[deviceId]=(Number(kid.starCounters[deviceId])||0)+1;kid.stars=Object.values(kid.starCounters).reduce((n,v)=>n+Math.max(0,Number(v)||0),0);q.ok++;save();hdr();const ns=K().stars%5==0;$('#fb').textContent=ns?'🎉 New sticker!':'🌟 Great job!';sp(ns?'Wow! New sticker!':'Great job!','en-IN');q.n++;setTimeout(q.n>=5?done:next,1200)}else{q.wrong++;recordAnswer(q.t,false);if(q.wrong>=2)$('#hint').textContent='💡 Hint: '+lbl(q.t);b.classList.add('bad');sp('Try again','en-IN');setTimeout(()=>b.classList.remove('bad'),500)}}
-function done(){finishDaily();const daily=K().daily||{streak:0};app.innerHTML=`<div class="q"><div class="big">🏆</div><h1>Wonderful learning!</h1><p>You earned 5 stars and completed the challenge! 🌟</p><p>🔥 Daily streak: ${Number(daily.streak)||0} day(s)</p><button class="btn" onclick="${q.daily?'playDaily()':'play()'}">Play again</button> <button class="btn o" onclick="home()">Home</button></div>`}
-function stickers(){const n=K().stars/5|0;app.innerHTML=`<div class="bar"><button class="btn o" onclick="home()">⬅ Home</button><h2>🎁 My Stickers (${Math.min(n,60)}/60)</h2></div><div class="grid">${SK.map((s,i)=>`<div class="st">${i<n?s:'❓'}</div>`).join('')}</div><p>Earn 1 sticker for every 5 stars! You can collect 60 stickers.</p>`}
-function matchGame(){
- const items=[...S.find(s=>s.n==='Fruits').it.slice(0,5),...S.find(s=>s.n==='Animals').it.slice(0,0)];
- const left=items.slice().sort(()=>Math.random()-.5),right=items.slice().sort(()=>Math.random()-.5);
- app.innerHTML=`<div class="bar"><button class="btn o" onclick="home()">⬅ Home</button><h2>🧩 Drag or tap to match</h2></div><p>Match each picture with its name.</p><div class="grid" id="match-left">${left.map(item=>`<button class="tile" draggable="true" data-match-source="${esc(item.id)}"><span>${item.e}</span><small>${esc(lbl(item))}</small></button>`).join('')}</div><div class="grid" id="match-right">${right.map(item=>`<button class="tile" data-match-target="${esc(item.id)}">${esc(lbl(item))}</button>`).join('')}</div><p id="match-status" aria-live="polite">Choose a picture, then its name.</p>`;
- let selected='',done=0;
- const resolve=(source,target,button)=>{if(!source)return;if(source===target){const a=app.querySelector('[data-match-source="'+source+'"]');if(a){a.disabled=true;a.style.opacity='.45'}button.disabled=true;button.textContent='✅ '+button.textContent;done++;$('#match-status').textContent=done===items.length?'Amazing! All pairs matched! 🌟':'Correct match! '+done+'/'+items.length;selected='';if(done===items.length)window.showLLNotice?.('Match game completed!','success')}else{$('#match-status').textContent='Not quite — try another pair!';window.showLLNotice?.('Try another pair!','info')}};
- app.querySelectorAll('[data-match-source]').forEach(button=>{button.addEventListener('dragstart',event=>event.dataTransfer.setData('text/plain',button.dataset.matchSource));button.addEventListener('click',()=>{selected=button.dataset.matchSource;$('#match-status').textContent='Now tap the matching name.'})});
- app.querySelectorAll('[data-match-target]').forEach(button=>{button.addEventListener('dragover',event=>event.preventDefault());button.addEventListener('drop',event=>{event.preventDefault();resolve(event.dataTransfer.getData('text/plain'),button.dataset.matchTarget,button)});button.addEventListener('click',()=>{if(selected)resolve(selected,button.dataset.matchTarget,button)})});
-}
-function memoryGame(){
- const items=[...S.find(s=>s.n==='Fruits').it.slice(0,6)],deck=items.flatMap(item=>[{id:item.id,face:item.e},{id:item.id,face:lbl(item)}]).sort(()=>Math.random()-.5);
- app.innerHTML=`<div class="bar"><button class="btn o" onclick="home()">⬅ Home</button><h2>🃏 Memory match</h2></div><p>Find the matching picture and word.</p><div class="grid">${deck.map((card,index)=>`<button class="tile" data-memory="${index}" aria-label="Hidden memory card ${index+1}"><span>❓</span></button>`).join('')}</div><p id="memory-status" aria-live="polite">Find all 6 pairs.</p>`;
- let first=null,locked=false,matches=0;
- app.querySelectorAll('[data-memory]').forEach(button=>button.addEventListener('click',()=>{if(locked||button.dataset.done==='1'||button===first)return;const card=deck[Number(button.dataset.memory)];button.innerHTML='<span>'+esc(card.face)+'</span>';button.dataset.revealed='1';if(!first){first=button;return}const a=deck[Number(first.dataset.memory)];if(a.id===card.id){first.dataset.done='1';button.dataset.done='1';matches++;first=null;$('#memory-status').textContent='Nice match! '+matches+'/6';if(matches===6)window.showLLNotice?.('Memory game completed!','success')}else{locked=true;const previous=first;first=null;setTimeout(()=>{previous.innerHTML='<span>❓</span>';button.innerHTML='<span>❓</span>';previous.dataset.revealed='';button.dataset.revealed='';locked=false},750)}}));
-}
-function traceGame(){
- app.innerHTML='<div class="bar"><button class="btn o" onclick="home()">⬅ Home</button><h2>✍️ Letter tracing</h2></div><p>Trace over the letter with your finger or mouse.</p><canvas id="trace-canvas" aria-label="Canvas for tracing the letter A" style="width:100%;max-width:640px;height:280px;background:#fff;border:3px dashed #7c4dff;border-radius:18px;touch-action:none"></canvas><p><button class="btn o" id="trace-clear">Clear</button> <button class="btn" onclick="home()">Done</button></p>';
- const canvas=$('#trace-canvas'),ctx=canvas.getContext('2d'),rect=canvas.getBoundingClientRect();canvas.width=Math.max(320,Math.floor(rect.width*devicePixelRatio));canvas.height=Math.floor(280*devicePixelRatio);ctx.scale(devicePixelRatio,devicePixelRatio);ctx.font='220px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#d6d6d6';ctx.fillText('A a',canvas.width/(2*devicePixelRatio),140);ctx.strokeStyle='#7c4dff';ctx.lineWidth=8;ctx.lineCap='round';ctx.lineJoin='round';
- let drawing=false;const point=e=>{const r=canvas.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}};canvas.addEventListener('pointerdown',e=>{drawing=true;canvas.setPointerCapture(e.pointerId);const p=point(e);ctx.beginPath();ctx.moveTo(p.x,p.y)});canvas.addEventListener('pointermove',e=>{if(!drawing)return;const p=point(e);ctx.lineTo(p.x,p.y);ctx.stroke()});canvas.addEventListener('pointerup',()=>drawing=false);canvas.addEventListener('pointercancel',()=>drawing=false);$('#trace-clear').addEventListener('click',()=>{ctx.clearRect(0,0,canvas.width,canvas.height);ctx.fillStyle='#d6d6d6';ctx.fillText('A a',canvas.width/(2*devicePixelRatio),140)});
-}
-function mannersStory(){
- const stories=[
-  {scene:'A friend drops their crayons. आपका दोस्त रंग गिरा देता है।',question:'What should you do? हमें क्या करना चाहिए?',choices:[['Help pick them up','उन्हें उठाने में मदद करें',true],['Laugh at them','उन पर हँसें',false]]},
-  {scene:'Someone gives you a gift. कोई आपको उपहार देता है।',question:'What should you say? क्या कहना चाहिए?',choices:[['Thank you','धन्यवाद',true],['Go away','चले जाओ',false]]},
-  {scene:'You bump into someone. आपसे किसी को धक्का लग जाता है।',question:'What should you say? क्या कहना चाहिए?',choices:[['Sorry','माफ़ कीजिए',true],['Nothing','कुछ नहीं',false]]},
-  {scene:'You want a toy your friend is using. आपको दोस्त का खिलौना चाहिए।',question:'What should you do? क्या करना चाहिए?',choices:[['Ask politely and wait','प्यार से पूछें और इंतज़ार करें',true],['Grab it','छीन लें',false]]}
- ];
- let index=0;
- const render=message=>{const story=stories[index];app.innerHTML=`<div class="bar"><button class="btn o" onclick="home()">⬅ Home</button><h2>💛 Manners story ${index+1}/${stories.length}</h2></div><div class="q"><div class="big">📖</div><p>${esc(story.scene)}</p><h2>${esc(story.question)}</h2><div class="opts">${story.choices.map((choice,i)=>`<button class="btn" data-story-choice="${i}">${esc(choice[0])}<br>${esc(choice[1])}</button>`).join('')}</div><p id="story-feedback" aria-live="polite">${esc(message||'Choose the kind and safe action.')}</p><button class="btn o" id="story-next" ${message?'':'hidden'}>${index===stories.length-1?'Finish':'Next story'} ▶</button></div>`;app.querySelectorAll('[data-story-choice]').forEach(button=>button.addEventListener('click',()=>{const choice=story.choices[Number(button.dataset.storyChoice)];$('#story-feedback').textContent=choice[2]?'That is kind and thoughtful! 🌟':'Try again. Think about being kind and safe.';if(choice[2])$('#story-next').hidden=false}));$('#story-next').addEventListener('click',()=>{if(index===stories.length-1)home();else{index++;render('')}})};
- render('');
-}
-function dayKey(date){return date.getFullYear()+'-'+String(date.getMonth()+1).padStart(2,'0')+'-'+String(date.getDate()).padStart(2,'0')}
-let lastEngaged=Date.now();['pointerdown','keydown','touchstart'].forEach(type=>document.addEventListener(type,()=>{lastEngaged=Date.now()},{passive:true}));
-setInterval(()=>{if(document.visibilityState!=='visible'||Date.now()-lastEngaged>300000)return;const kid=K();kid.timeByDay=kid.timeByDay&&typeof kid.timeByDay==='object'?kid.timeByDay:{};const today=dayKey(new Date());kid.timeByDay[today]=(Number(kid.timeByDay[today])||0)+60;save()},60000);
-function dashboard(){const kid=K(),mastery=kid.mastery||{},mastered=Object.entries(mastery).filter(([,m])=>(Number(m.ok)||0)>=3&&(Number(m.ok)||0)>(Number(m.miss)||0)),tricky=Object.entries(mastery).filter(([,m])=>(Number(m.miss)||0)>(Number(m.ok)||0)).sort((a,b)=>(Number(b[1].miss)||0)-(Number(a[1].miss)||0)).slice(0,8),tried=S.filter(section=>section.it.some(item=>mastery[item.id]&&(Number(mastery[item.id].ok)||0)+(Number(mastery[item.id].miss)||0)>0)),today=new Date(),week=Object.entries(kid.timeByDay||{}).filter(([date])=>{const d=new Date(date+'T12:00:00');return (today-d)/86400000<7&&(today-d)/86400000>=0}).reduce((n,[,seconds])=>n+(Number(seconds)||0),0);app.innerHTML=`<div class="bar"><button class="btn o" onclick="parent()">⬅ Parent settings</button><h2>📊 Progress dashboard</h2></div><div class="q"><p><strong>${esc(kid.name)}</strong></p><p>⭐ Stars: ${Number(kid.stars)||0} · Mastered items: ${mastered.length} · Sections tried: ${tried.length}/${S.length}</p><p>Today: ${Math.round((Number(kid.timeByDay?.[dayKey(today)])||0)/60)} min · Last 7 days: ${Math.round(week/60)} min</p><p>Weekly summary: ${week?'Learning time recorded this week.':'No recent learning time recorded yet.'} Daily streak: ${Number(kid.daily?.streak)||0}</p><h3>Sections tried</h3><p>${tried.map(s=>esc(s.n)).join(' · ')||'No sections tried yet.'}</p><h3>Tricky items</h3><ul>${tricky.map(([id,m])=>{const item=S.flatMap(s=>s.it).find(x=>x.id===id);return '<li>'+esc(item?lbl(item):id)+' — '+(Number(m.miss)||0)+' misses</li>'}).join('')||'<li>No tricky items yet — keep learning!</li>'}</ul><h3>Mastered items</h3><p>${mastered.length?mastered.map(([id])=>{const item=S.flatMap(s=>s.it).find(x=>x.id===id);return esc(item?lbl(item):id)}).join(', '):'An item is mastered after at least 3 correct answers and more correct than missed.'}</p><button class="btn" onclick="exportProgress()">⬇ Export progress as JSON</button></div>`; }
-function exportProgress(){const data={app:'Little Learners',exportedAt:new Date().toISOString(),kids:st.kids,kid:st.kid,settings:{lang:st.lang,sound:st.sound}};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download='little-learners-progress.json';link.click();URL.revokeObjectURL(url);window.showLLNotice?.('Progress export prepared.','success')}
-async function removeCurrentKid(){const active=Object.keys(st.kids).filter(id=>!st.kids[id]?.deletedAt);if(active.length<=1){window.showLLNotice?.('Keep at least one child profile.','info');return}const id=st.kid,kid=K();if(!confirm('Remove '+kid.name+' from this device and sync the removal to your account?'))return;kid.deletedAt=Date.now();st.kid=active.find(key=>key!==id);save();hdr();parent();if(window.fb?.ok&&st.user){try{await fb.push();window.showLLNotice?.('Child profile removal synced.','success')}catch(e){window.showLLNotice?.('Removal saved locally; cloud sync is pending.','info')}}}
-const GEMINI_MODEL='gemini-2.5-flash',GEMINI_KEY_STORAGE='ll_gemini_api_key_v1',AI_FEATURE_FLAG=true;
-function toggleAI(){if(!AI_FEATURE_FLAG)return;const enabled=localStorage.getItem('ll_ai_enabled')==='1';if(enabled)localStorage.removeItem('ll_ai_enabled');else localStorage.setItem('ll_ai_enabled','1');parent()}
-function saveGeminiKey(){const input=document.getElementById('gemini-key'),key=(input?.value||'').trim();if(!key||key.length>300){window.showLLNotice?.('Paste a valid Gemini API key first.','info');return}localStorage.setItem(GEMINI_KEY_STORAGE,key);input.value='';window.showLLNotice?.('Gemini key saved on this device only.','success')}
-function removeGeminiKey(){localStorage.removeItem(GEMINI_KEY_STORAGE);const input=document.getElementById('gemini-key');if(input)input.value='';window.showLLNotice?.('Gemini key removed from this device.','info')}
-function aiText(value,max=1600){const text=String(value||'').replace(/<[^>]*>/g,'').replace(/https?:\/\/\S+/gi,'').trim().slice(0,max);if(/\b(kill|blood|weapon|sexual|porn|suicide|self-harm|drug dealer)\b/i.test(text))throw new Error('The response did not pass the child-safety filter. Try a different prompt.');return text}
-async function callGemini(prompt){if(!AI_FEATURE_FLAG||localStorage.getItem('ll_ai_enabled')!=='1')throw new Error('Enable AI helpers in Parent settings first.');const key=localStorage.getItem(GEMINI_KEY_STORAGE);if(!key)throw new Error('Paste and save your Gemini API key in Parent settings first.');const response=await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+GEMINI_MODEL+':generateContent',{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':key},body:JSON.stringify({contents:[{role:'user',parts:[{text:'You are a careful, child-safe learning helper for a child aged 4–5. Keep language simple, kind, positive, and age appropriate. Never include violence, frightening content, adult topics, personal data requests, medical advice, or requests for secrets. Return only valid JSON matching the requested shape. Task: '+prompt}]}],safetySettings:[{category:'HARM_CATEGORY_HARASSMENT',threshold:'BLOCK_MEDIUM_AND_ABOVE'},{category:'HARM_CATEGORY_HATE_SPEECH',threshold:'BLOCK_MEDIUM_AND_ABOVE'},{category:'HARM_CATEGORY_SEXUALLY_EXPLICIT',threshold:'BLOCK_MEDIUM_AND_ABOVE'},{category:'HARM_CATEGORY_DANGEROUS_CONTENT',threshold:'BLOCK_MEDIUM_AND_ABOVE'}],generationConfig:{temperature:.7,responseMimeType:'application/json'}})});if(!response.ok)throw new Error('Gemini request failed ('+response.status+'). Check the key, API access and quota.');const payload=await response.json(),text=payload.candidates?.[0]?.content?.parts?.map(part=>part.text||'').join('');if(!text)throw new Error('Gemini returned no usable content. Try again.');return JSON.parse(text.replace(/^\s*```(?:json)?/i,'').replace(/```\s*$/,'').trim())}
-async function generateStory(){const output=document.getElementById('ai-output');if(!output)return;output.textContent='Creating a short bilingual story…';try{const useName=localStorage.getItem('ll_ai_use_child_name')==='1';const name=useName?String(K().name||'friend').slice(0,12):'';const result=await callGemini('Write a gentle story of 80 words or fewer about learning and kindness'+(useName?', using the child first name '+JSON.stringify(name):', without using the child name')+'. Return JSON with string fields story_en and story_hi.');output.textContent='English\n'+aiText(result.story_en,1000)+'\n\nहिन्दी\n'+aiText(result.story_hi,1000)}catch(error){output.textContent=error.message||'Could not create the story.'}}
-async function generateCustomQuiz(){const output=document.getElementById('ai-output');if(!output)return;output.textContent='Creating a short bilingual quiz…';try{const result=await callGemini('Create 5 very simple bilingual questions for a child aged 4–5 about letters, numbers, animals, colours or manners. Return JSON with array questions; each entry has question_en, question_hi, options_en (exactly 3 short strings), options_hi (exactly 3 short strings), and answer_index (integer 0–2).');if(!Array.isArray(result.questions)||result.questions.length!==5)throw new Error('The quiz did not match the expected format. Try again.');const questions=result.questions.map(q=>({en:aiText(q.question_en,160),hi:aiText(q.question_hi,160),enOptions:q.options_en,hiOptions:q.options_hi,answer:Number(q.answer_index)}));if(questions.some(q=>!Array.isArray(q.enOptions)||!Array.isArray(q.hiOptions)||q.enOptions.length!==3||q.hiOptions.length!==3||!Number.isInteger(q.answer)||q.answer<0||q.answer>2))throw new Error('The quiz options were invalid. Try again.');let index=0,score=0;const render=message=>{const q=questions[index];output.innerHTML='<p><strong>Question '+(index+1)+'/5</strong></p><p>'+esc(q.en)+'<br>'+esc(q.hi)+'</p><div class="opts">'+q.enOptions.map((option,i)=>'<button class="btn o" data-ai-answer="'+i+'">'+esc(aiText(option,80))+'<br>'+esc(aiText(q.hiOptions[i],80))+'</button>').join('')+'</div><p aria-live="polite">'+esc(message||'Choose an answer.')+'</p>';output.querySelectorAll('[data-ai-answer]').forEach(button=>button.addEventListener('click',()=>{const correct=Number(button.dataset.aiAnswer)===q.answer;if(correct)score++;index++;if(index===questions.length){output.textContent='Quiz finished! Score: '+score+'/5. Ask a parent to review the questions before another round.'}else render(correct?'Correct! 🌟':'Good try! Let’s learn together.')}))};render('')}catch(error){output.textContent=error.message||'Could not create the quiz.'}}
-function parent(){const b=(k,v,t)=>`<button class="btn ${st[k]===v?'':'o'}" onclick="st.${k}=${typeof v=='string'?"'"+v+"'":v};save();parent()">${t}</button>`;app.innerHTML=`<div class="bar"><button class="btn o" onclick="home()">⬅ Home</button><h2>⚙️ Parent corner</h2></div><div class="sync-status" role="status"><strong>Diagnostics</strong>Build: 2026.10.17.6<br>Service worker: ${esc(window.swS||"pending")}<br>Firebase: ${esc(window.fbStatus||"pending")}<br>Cloud: ${esc(window.cloudStatus||"unknown")}<br>Last error: ${esc(window.lastErr||"none")}</div>${kidsUI()}<p>Language</p><div class="opts" style="margin:6px">${b('lang','en','English')}${b('lang','hi','हिन्दी')}${b('lang','both','Both')}</div><p>Voice</p><div class="opts" style="margin:6px">${b('sound',1,'🔊 On')}${b('sound',0,'🔇 Off')}</div><p>Hindi speech needs a Hindi voice installed in your browser or computer.</p><p>Accessibility</p><div class="opts"><button class="btn o" onclick="toggleTextSize()">Aa Toggle larger text</button><button class="btn o" onclick="toggleContrast()">◐ Toggle high contrast</button></div><p><button class="btn o" onclick="rst(this)">Reset progress</button> <button class="btn o" onclick="deleteMyData()">Delete my data and account</button></p><p><a href="./privacy.html">Privacy policy</a></p>
-<div class="sync-status"><strong>✨ AI learning helpers (experimental)</strong><p>OFF by default. When enabled, only the story/quiz prompt and task instructions are sent directly to Google Gemini. Your API key stays in this device's localStorage and is not sent to Little Learners' Firestore. A child's first name is excluded unless you explicitly enable the option below. AI output can be wrong or unsuitable; review all generated text before sharing it with a child.</p><label><input type="checkbox" id="ai-use-child-name" ${localStorage.getItem('ll_ai_use_child_name')==='1'?'checked':''} onchange="localStorage.setItem('ll_ai_use_child_name',this.checked?'1':'0')"> Use child's first name in stories (optional; off by default)</label><p><button class="btn o" onclick="toggleAI()">${localStorage.getItem('ll_ai_enabled')==='1'?'Disable':'Enable'} AI helpers</button></p><input id="gemini-key" type="password" autocomplete="off" placeholder="Paste your own Gemini API key" style="width:min(100%,420px);padding:12px;border-radius:12px;border:2px solid var(--a);background:var(--card);color:var(--ink)"><p><button class="btn o" onclick="saveGeminiKey()">Save key on this device</button> <button class="btn o" onclick="removeGeminiKey()">Remove key</button></p><p><button class="btn" onclick="generateStory()">📖 Make a bilingual story</button> <button class="btn" onclick="generateCustomQuiz()">🧠 Make a custom quiz</button></p><div id="ai-output" role="status" aria-live="polite"></div></div>`;app.querySelectorAll("[data-select-kid]").forEach(button=>button.addEventListener("click",()=>{const id=button.dataset.selectKid;if(st.kids[id]&&!st.kids[id].deletedAt){st.kid=id;save();hdr();parent()}}));setTimeout(()=>{gbtn();clearTimeout(gateIdleTimer);gateIdleTimer=setTimeout(()=>{unlock=0;if(app.textContent.includes('Parent corner')||app.textContent.includes('Progress dashboard'))home()},60000)},0)}
-document.addEventListener('pointerdown',()=>{if((app.textContent.includes('Parent corner')||app.textContent.includes('Progress dashboard'))&&unlock){clearTimeout(gateIdleTimer);gateIdleTimer=setTimeout(()=>{unlock=0;if(app.textContent.includes('Parent corner')||app.textContent.includes('Progress dashboard'))home()},60000)}});
-document.addEventListener('keydown',()=>{if((app.textContent.includes('Parent corner')||app.textContent.includes('Progress dashboard'))&&unlock){clearTimeout(gateIdleTimer);gateIdleTimer=setTimeout(()=>{unlock=0;if(app.textContent.includes('Parent corner')||app.textContent.includes('Progress dashboard'))home()},60000)}});
+function home(){onbActive=0;document.body.classList.remove('ob');app.innerHTML=`${instBar()}<h1>${K().name=='Me'?'Hello, little learner!':'Hello, '+K().name+'!'} 👋<br><small style="font-size:.5em;opacity:.8">नमस्ते · Let's learn &amp; play! 🎈</small></h1><div class="grid">${S.map((s,i)=>`<button class="tile" style="--a:${s.c}" onclick="openS(${i})"><span>${s.i}</span>${s.n}<small>${s.h}</small></button>`).join('')}</div>`;app.style.setProperty('--a','#7c4dff')}
+function openS(i){cur=i;const s=S[i];app.style.setProperty('--a',s.c);app.innerHTML=`<div class="bar category-bar"><button class="btn o" onclick="home()">⬅ Home</button><h2 class="category-title">${s.i} ${s.n} ${s.h}</h2><button class="btn" onclick="play()">⭐ Play</button></div><div class="grid">${s.it.map((x,j)=>`<button class="card" onclick="say(S[cur].it[${j}])"><span class="e" style="${es(x.e)}">${x.e}</span>${x.big?`<span class="b">${x.big}</span>`:''}<span class="l">${lbl(x)}</span></button>`).join('')}</div>${cur==0?'<p class="kb">Tip: press any letter key on the keyboard! ⌨️</p>':''}`}
+function play(){q={n:0,ok:0};next()}
+function next(){const s=S[cur],sh=a=>a.sort(()=>Math.random()-.5),t=s.it[Math.random()*s.it.length|0],o=sh([t,...sh(s.it.filter(x=>x.e!=t.e)).slice(0,2)]);q.t=t;q.o=o;q.lock=0;app.innerHTML=`<div class="bar"><button class="btn o" onclick="openS(cur)">⬅ Back</button><h2>Round ${q.n+1}/5</h2></div><div class="q"><div class="big">${t.big||lbl(t)}</div><button class="btn" onclick="say(q.t)">🔊 Hear</button><div class="opts">${o.map((x,j)=>`<button class="opt" style="${es(x.e)}" onclick="ans(${j},this)">${x.e}</button>`).join('')}</div><div id="fb"></div></div>`;say(t)}
+function ans(j,b){if(q.lock)return;if(q.o[j]===q.t){q.lock=1;b.classList.add('good');const kid=K();kid.starCounters=kid.starCounters&&typeof kid.starCounters==='object'?kid.starCounters:{};kid.starCounters[deviceId]=(Number(kid.starCounters[deviceId])||0)+1;kid.stars=Object.values(kid.starCounters).reduce((n,v)=>n+Math.max(0,Number(v)||0),0);q.ok++;save();hdr();const ns=K().stars%5==0;$('#fb').textContent=ns?'🎉 New sticker!':'🌟 Great job!';sp(ns?'Wow! New sticker!':'Great job!','en-IN');q.n++;setTimeout(q.n>=5?done:next,1200)}else{b.classList.add('bad');sp('Try again','en-IN');setTimeout(()=>b.classList.remove('bad'),500)}}
+function done(){app.innerHTML=`<div class="q"><div class="big">🏆</div><h1>You earned 5 stars!</h1><button class="btn" onclick="play()">Play again</button> <button class="btn o" onclick="openS(cur)">Back</button></div>`}
+function stickers(){const n=K().stars/5|0;app.innerHTML=`<div class="bar"><button class="btn o" onclick="home()">⬅ Home</button><h2>🎁 My Stickers (${Math.min(n,20)}/20)</h2></div><div class="grid">${SK.map((s,i)=>`<div class="st">${i<n?s:'❓'}</div>`).join('')}</div><p>Earn 1 sticker for every 5 stars!</p>`}
+function parent(){const b=(k,v,t)=>`<button class="btn ${st[k]===v?'':'o'}" onclick="st.${k}=${typeof v=='string'?"'"+v+"'":v};save();parent()">${t}</button>`;app.innerHTML=`<div class="bar"><button class="btn o" onclick="home()">⬅ Home</button><h2>⚙️ Parent corner</h2></div>${kidsUI()}<p>Language</p><div class="opts" style="margin:6px">${b('lang','en','English')}${b('lang','hi','हिन्दी')}${b('lang','both','Both')}</div><p>Voice</p><div class="opts" style="margin:6px">${b('sound',1,'🔊 On')}${b('sound',0,'🔇 Off')}</div><p>Hindi speech needs a Hindi voice installed in your browser or computer.</p><p><button class="btn o" onclick="rst(this)">Reset progress</button></p>`;setTimeout(gbtn,0)}
 async function rst(b){if(!b.dataset.c){b.dataset.c=1;b.textContent='Tap again to confirm';return}st.kids[st.kid]=LLProgress.resetKid(K());window.resetNotice=st.user?'Reset saved on this device; cloud reset is pending.':'Progress reset on this device.';window.showLLNotice?.(st.user?'Progress reset saved; syncing to cloud…':'Progress reset saved on this device.', 'info');saveLocal();if(!localStorage.getItem('kl_account_uid')&&!st.user){try{localStorage.setItem('kl_guest',JSON.stringify({kids:st.kids,kid:st.kid,settings:{lang:st.lang||'both',sound:typeof st.sound==='number'?(st.sound?1:0):1},schemaVersion:2,savedAt:Date.now()}))}catch(e){}}hdr();parent();if(window.fb&&fb.ok&&st.user){try{await fb.push();window.resetNotice='Progress reset synced to your account.';parent()}catch(e){window.resetNotice='Progress reset is saved locally; cloud sync is pending. Reconnect to finish.';parent()}}}
-addEventListener('keydown',e=>{const target=e.target;const typing=target instanceof Element&&(target.matches('input,textarea,select,[contenteditable="true"],[role="textbox"]')||target.closest('[contenteditable="true"]'));if(typing)return;if(e.key==='Escape'){if(onbActive||!st.ob)return;home();return}if(onbActive||!st.ob)return;if(cur===0&&/^[a-z]$/i.test(e.key)&&app.querySelector('.card'))say(AL[e.key.toUpperCase().charCodeAt(0)-65])});
-function kidsUI(){const a=window.fb&&fb.ok?(st.user?`<p>Signed in: ${st.user}</p><p><button class="btn o" onclick="fb.signOut()">Sign out · Switch to guest</button></p>`:`<p>${fb.gis?'<span id="gbtn"></span>':'<button class="btn o" onclick="signInClick()">Sign in with Google to save progress online</button>'}</p>`):`<p>Guest mode: progress is saved on this device.</p>`;const er=(window.msg?`<p style="font-weight:700">${esc(window.msg)}</p>`:'')+(st.err?`<p style="color:#e53935;font-weight:700">${esc(st.err)}</p>`:'')+(window.resetNotice?`<p role="status" aria-live="polite" style="font-weight:700">${esc(window.resetNotice)}</p>`:'');const sync=window.fb&&fb.ok&&st.user?fb.statusMarkup():'';return `<p>Who is playing?</p><div class="opts" style="margin:6px">${Object.keys(st.kids).filter(k=>!st.kids[k]?.deletedAt).map(k=>`<button class="btn ${k==st.kid?'':'o'}" data-select-kid="${esc(k)}">${esc(st.kids[k].name)}</button>`).join('')}<button class="btn o" onclick="addKid()">➕ Add kid</button></div><p><button class="btn o" onclick="renKid()">✏️ Rename ${esc(K().name)}</button> <button class="btn o" onclick="dashboard()">📊 Progress dashboard</button> <button class="btn o" onclick="exportProgress()">⬇ Export progress</button> <button class="btn o" onclick="removeCurrentKid()">✖ Remove current kid</button> <button class="btn o" onclick="st.ob=0;st.step=0;save();onb()">👋 Welcome tour</button></p>${dp?'<p><button class="btn" onclick="doInstall()">📲 Install app</button></p>':''}${a}${sync}${er}<p style="font-size:14px;opacity:.7">${isStd() ? "Installed app" : dp ? "Install ready" : "Install: browser menu ⋮ > Install app"}</p>`}
-function addKid(){if(Object.keys(st.kids).length>=10){window.showLLNotice?.('You can keep up to 10 child profiles on this account.','info');return}const n=(prompt("Kid's name?")||'').replace(/[<>&\"']/g,'').trim().slice(0,12);if(!n)return;const id='k'+Date.now();st.kids[id]={name:n,stars:0};st.kid=id;save();hdr();parent()}
+addEventListener('keydown',e=>{if(e.key=='Escape')home();else if(cur==0&&/^[a-z]$/i.test(e.key)&&app.querySelector('.card'))say(AL[e.key.toUpperCase().charCodeAt(0)-65])});
+function kidsUI(){const a=window.fb&&fb.ok?(st.user?`<p>Signed in: ${st.user}</p><p><button class="btn o" onclick="fb.signOut()">Sign out · Switch to guest</button></p>`:`<p>${fb.gis?'<span id="gbtn"></span>':'<button class="btn o" onclick="signInClick()">Sign in with Google to save progress online</button>'}</p>`):`<p>Guest mode: progress is saved on this device.</p>`;const er=(window.msg?`<p style="font-weight:700">${window.msg}</p>`:'')+(st.err?`<p style="color:#e53935;font-weight:700">${st.err}</p>`:'')+(window.resetNotice?`<p role="status" aria-live="polite" style="font-weight:700">${window.resetNotice}</p>`:'');const sync=window.fb&&fb.ok&&st.user?fb.statusMarkup():'';return `<p>Who is playing?</p><div class="opts" style="margin:6px">${Object.keys(st.kids).map(k=>`<button class="btn ${k==st.kid?'':'o'}" onclick="st.kid='${k}';save();hdr();parent()">${st.kids[k].name}</button>`).join('')}<button class="btn o" onclick="addKid()">➕ Add kid</button></div><p><button class="btn o" onclick="renKid()">✏️ Rename ${K().name}</button> <button class="btn o" onclick="st.ob=0;st.step=0;save();onb()">👋 Welcome tour</button></p>${dp?'<p><button class="btn" onclick="doInstall()">📲 Install app</button></p>':''}${a}${sync}${er}<p style="font-size:14px;opacity:.7">${isStd() ? "Installed app" : dp ? "Install ready" : "Install: browser menu ⋮ > Install app"}</p>`}
+function addKid(){const n=(prompt("Kid's name?")||'').replace(/[<>&\"']/g,'').trim().slice(0,12);if(!n)return;const id='k'+Date.now();st.kids[id]={name:n,stars:0};st.kid=id;save();hdr();parent()}
 function onb(){onbActive=1;document.body.classList.add('ob');app.style.setProperty('--a','#7c4dff');
 const bt=(k,v,t)=>`<button class="btn ${st[k]===v?'':'o'}" onclick="pick('${k}',${typeof v=='string'?"'"+v+"'":v},this)">${t}</button>`,er=(window.msg?`<p style="font-weight:700">${window.msg}</p>`:'')+(st.err?`<p style="color:#e53935;font-weight:700">${st.err}</p>`:'');let h;
 if(st.step==0)h=`<div class="q"><div class="big" style="font-size:96px">🎈</div><h1>Welcome to Little Learners!</h1><h1 style="margin-top:0">स्वागत है!</h1><p>Letters, numbers, animals and more.<br>Learn, play and earn stars ⭐</p><button class="btn" onclick="st.step=1;save();onb()">Let's start ▶</button></div>`;
-else if(st.step==1){const a=window.fb&&fb.ok?(st.user?`<p>Signed in as ${esc(st.user)}</p><button class="btn" onclick="st.step=2;save();onb()">Continue ▶</button>`:(fb.gis?'<div id="gbtn" style="display:flex;justify-content:center;margin:8px"></div>':'<button class="btn" onclick="signInClick()">Sign in with Google</button>')):`<p style="opacity:.7">${window.fbStatus||'Connecting…'}</p>`;h=`<div class="q"><div class="big" style="font-size:80px">🔐</div><h1>Parents, sign in</h1><p>Save your child's stars online and use them on any device.</p><p style="font-size:14px;opacity:.75">A parent or guardian should sign in only with appropriate consent. Child progress is stored on this device and, if you sign in, in your account. <a href="./privacy.html">Privacy policy</a>.</p>${a}${er}<p><button class="btn o" onclick="st.step=2;save();onb()">Skip, continue as guest</button></p></div>`}
-else h=`<div class="q"><div class="big" style="font-size:80px">👶</div><h1>Who is learning?</h1><input id="nm" maxlength="12" placeholder="Child's name" value="${K().name=='Me'?'':esc(K().name)}" style="font:inherit;font-size:28px;text-align:center;padding:10px;border-radius:16px;border:3px solid var(--a);width:min(320px,80%);background:var(--card);color:var(--ink)"><p>Language</p><div class="opts" style="margin:6px">${bt('lang','en','English')}${bt('lang','hi','हिन्दी')}${bt('lang','both','Both')}</div><p>Voice</p><div class="opts" style="margin:6px">${bt('sound',1,'🔊 On')}${bt('sound',0,'🔇 Off')}</div><p>Parents can change all of this later in ⚙️.</p><button class="btn" onclick="finish()">Start learning 🚀</button></div>`;
+else if(st.step==1){const a=window.fb&&fb.ok?(st.user?`<p>Signed in as ${st.user}</p><button class="btn" onclick="st.step=2;save();onb()">Continue ▶</button>`:(fb.gis?'<div id="gbtn" style="display:flex;justify-content:center;margin:8px"></div>':'<button class="btn" onclick="signInClick()">Sign in with Google</button>')):`<p style="opacity:.7">${window.fbStatus||'Connecting…'}</p>`;h=`<div class="q"><div class="big" style="font-size:80px">🔐</div><h1>Parents, sign in</h1><p>Save your child's stars online and use them on any device.</p>${a}${er}<p><button class="btn o" onclick="st.step=2;save();onb()">Skip, continue as guest</button></p></div>`}
+else h=`<div class="q"><div class="big" style="font-size:80px">👶</div><h1>Who is learning?</h1><input id="nm" maxlength="12" placeholder="Child's name" value="${K().name=='Me'?'':K().name}" style="font:inherit;font-size:28px;text-align:center;padding:10px;border-radius:16px;border:3px solid var(--a);width:min(320px,80%);background:var(--card);color:var(--ink)"><p>Language</p><div class="opts" style="margin:6px">${bt('lang','en','English')}${bt('lang','hi','हिन्दी')}${bt('lang','both','Both')}</div><p>Voice</p><div class="opts" style="margin:6px">${bt('sound',1,'🔊 On')}${bt('sound',0,'🔇 Off')}</div><p>Parents can change all of this later in ⚙️.</p><button class="btn" onclick="finish()">Start learning 🚀</button></div>`;
 app.innerHTML=h;setTimeout(gbtn,0)}
 function pick(k,v,b){st[k]=v;save();[...b.parentNode.children].forEach(x=>x.classList.add('o'));b.classList.remove('o')}
 function finish(){const n=($('#nm').value||'').replace(/[<>&"']/g,'').trim().slice(0,12);if(n)K().name=n;st.ob=1;st.step=3;save();hdr();home();const nm=K().name=='Me'?'':' '+K().name;if(st.lang!='hi')sp('Hello'+nm+'! Let us learn and play!','en-IN');if(st.lang!='en')sp('नमस्ते'+nm+'!','hi-IN')}
-function gate(){if(Date.now()<unlock&&app.textContent.includes('Parent corner'))return parent();unlock=0;clearTimeout(gateIdleTimer);const a=2+Math.random()*7|0,b=2+Math.random()*7|0,r=a+b,o=[r];while(o.length<3){const x=r+(Math.random()*7|0)-3;if(x>1&&!o.includes(x))o.push(x)}o.sort(()=>Math.random()-.5);app.innerHTML=`<div class="bar"><button class="btn o" onclick="home()">⬅ Home</button><h2>👨‍👩‍👧 Parents only</h2></div><div class="q"><p>Solve to open settings:</p><div class="big">${a} + ${b} = ?</div><div class="opts">${o.map(n=>`<button class="opt" style="font-size:48px" onclick="${n==r?'unlock=Date.now()+60000;parent()':"this.classList.add('bad')"}">${n}</button>`).join('')}</div></div>`}
+function gate(){if(Date.now()<unlock)return parent();const a=2+Math.random()*7|0,b=2+Math.random()*7|0,r=a+b,o=[r];while(o.length<3){const x=r+(Math.random()*7|0)-3;if(x>1&&!o.includes(x))o.push(x)}o.sort(()=>Math.random()-.5);app.innerHTML=`<div class="bar"><button class="btn o" onclick="home()">⬅ Home</button><h2>👨‍👩‍👧 Parents only</h2></div><div class="q"><p>Solve to open settings:</p><div class="big">${a} + ${b} = ?</div><div class="opts">${o.map(n=>`<button class="opt" style="font-size:48px" onclick="${n==r?'unlock=Date.now()+3e5;parent()':"this.classList.add('bad')"}">${n}</button>`).join('')}</div></div>`}
 async function renKid(){const n=(prompt('New name',K().name)||'').replace(/[<>&"']/g,'').trim().slice(0,12);if(!n||n===K().name)return;const kidId=st.kid;K().name=n;saveLocal();if(!localStorage.getItem('kl_account_uid')&&!st.user){try{localStorage.setItem('kl_guest',JSON.stringify({kids:st.kids,kid:st.kid,settings:{lang:st.lang||'both',sound:typeof st.sound==='number'?(st.sound?1:0):1},schemaVersion:2,savedAt:Date.now()}))}catch(e){}}hdr();parent();if(window.fb&&fb.ok&&st.user){try{await fb.renameKid(kidId,n);window.msg='Child name updated and synced.';hdr();parent()}catch(e){window.msg='Name updated on this device; cloud sync is pending. Reconnect and try again.';window.showLLNotice?.('Name saved on this device; cloud sync is pending.','error');hdr();parent()}}else{window.showLLNotice?.('Child name saved on this device.','info')}}
-
+let SIGN_WAIT=30000,wait=0,authInFlight=false;
 function gbtn(){const e=document.getElementById('gbtn');if(e&&window.fb&&fb.renderGoogle)fb.renderGoogle(e)}
-async function deleteMyData(){if(!window.fb?.deleteAccount){window.showLLNotice?.('Account deletion is available after signing in.','error');return}if(!confirm('Delete your cloud learning data and Little Learners Firebase account? This cannot be undone.'))return;try{await fb.deleteAccount()}catch(error){const message=error?.message||'Account deletion failed. Please try again.';window.showLLNotice?.(message,'error');window.msg=message;kl.refresh()}}
 addEventListener('error',e=>{const m=e.message||'Unknown JavaScript error',where=e.filename?(' @ '+e.filename+':'+(e.lineno||0)+':'+(e.colno||0)):'';const stack=e.error&&e.error.stack?String(e.error.stack):'';if(m!=='Script error.'&&m!=='Script error')window.lastErr=(m+where+(stack?'\\n'+stack:'' )).slice(0,3000);else if(e.filename)window.lastErr=('Cross-origin script error @ '+e.filename+':'+(e.lineno||0)+':'+(e.colno||0)+(stack?'\\n'+stack:'' )).slice(0,3000);if(window.kl)kl.refresh()});addEventListener('unhandledrejection',e=>{const r=e.reason;const detail=r&&typeof r==='object'?[r.code,r.message,r.stack].filter(Boolean).join('\\n'):String(r);window.lastErr=(detail||String(r)||'Unhandled promise rejection').slice(0,3000);if(window.kl)kl.refresh()});
 function signInClick(){
   if(window.fb&&fb.renderGoogle){gbtn();return}
   window.msg='Google sign-in is still loading. Please wait a moment.';kl.refresh();
 }
-window.kl={authed(isAuthenticated){if(!st.ob&&st.step<2)st.step=2;save();hdr();if(st.ob&&onbActive)home();else if(!st.ob&&onbActive)onb()},err(e){const c=e&&e.code||'';window.lastErr=c||(e&&e.message)||String(e);const m={'auth/operation-not-allowed':'Google sign-in is not enabled yet: Firebase > Authentication > Sign-in method > Google > Enable.','auth/unauthorized-domain':'Add srma4tech.github.io in Firebase > Authentication > Settings > Authorized domains.','auth/popup-blocked':'The browser blocked the sign-in popup. Allow popups for this site and try again.','auth/invalid-api-key':'The apiKey in firebase-config.js looks wrong.','auth/network-request-failed':'No internet connection.','auth/timeout':'Google sign-in did not complete within 45 seconds. Reload this page before retrying; if it repeats, open the site in a regular Chrome tab instead of the installed app.','auth/gapi-context-failure':'Google sign-in could not initialize its browser iframe (getContext error). Reload this page and try again; if it repeats, open the site in a regular Chrome tab instead of the installed app.','auth/iframe-failure':'Google sign-in hit a browser iframe initialization error. Reload this page before retrying.'};if(c=='auth/popup-closed-by-user'||c=='auth/cancelled-popup-request')return;st.err=m[c]||('Sign-in failed: '+(c||e&&e.message||e));kl.refresh()},st:()=>st,save,refresh:()=>{hdr();if(!st.ob&&onbActive)onb();else if(app.textContent.includes('Parent corner')||app.textContent.includes('Progress dashboard'))parent()}};
+window.kl={authed(isAuthenticated,childCount=Object.keys(st.kids).length){if(!st.ob&&st.step<2)st.step=2;save();hdr();if(st.ob&&onbActive)home();else if(!st.ob&&onbActive)onb()},err(e){const c=e&&e.code||'';window.lastErr=c||(e&&e.message)||String(e);const m={'auth/operation-not-allowed':'Google sign-in is not enabled yet: Firebase > Authentication > Sign-in method > Google > Enable.','auth/unauthorized-domain':'Add srma4tech.github.io in Firebase > Authentication > Settings > Authorized domains.','auth/popup-blocked':'The browser blocked the sign-in popup. Allow popups for this site and try again.','auth/invalid-api-key':'The apiKey in firebase-config.js looks wrong.','auth/network-request-failed':'No internet connection.','auth/timeout':'Google sign-in did not complete within 45 seconds. Reload this page before retrying; if it repeats, open the site in a regular Chrome tab instead of the installed app.','auth/gapi-context-failure':'Google sign-in could not initialize its browser iframe (getContext error). Reload this page and try again; if it repeats, open the site in a regular Chrome tab instead of the installed app.','auth/iframe-failure':'Google sign-in hit a browser iframe initialization error. Reload this page before retrying.'};if(c=='auth/popup-closed-by-user'||c=='auth/cancelled-popup-request')return;st.err=m[c]||('Sign-in failed: '+(c||e&&e.message||e));kl.refresh()},st:()=>st,save,refresh:()=>{hdr();if(!st.ob&&onbActive)onb();else if(app.textContent.includes('Parent corner'))parent()}};
 if('serviceWorker' in navigator)addEventListener('load',()=>{
   navigator.serviceWorker.register('./sw.js')
-    .then(registration=>{
-      window.swS='active';
-      const offerUpdate=worker=>{
-        if(!worker)return;
-        const toast=document.getElementById('ll-toast');if(!toast)return;
-        toast.replaceChildren();
-        const label=document.createElement('span');label.textContent='New version available.';
-        const button=document.createElement('button');button.type='button';button.textContent='Reload';button.setAttribute('aria-label','Reload to install the new Little Learners version');
-        button.style.cssText='margin-left:10px;padding:6px 12px;border:0;border-radius:999px;font-weight:800;cursor:pointer;min-height:36px';
-        button.addEventListener('click',()=>{navigator.serviceWorker.addEventListener('controllerchange',()=>location.reload(),{once:true});worker.postMessage({type:'SKIP_WAITING'});});
-        toast.append(label,button);toast.style.display='flex';toast.style.alignItems='center';toast.style.justifyContent='center';toast.classList.add('visible');toast.dataset.kind='info';
-      };
-      if(registration.waiting&&navigator.serviceWorker.controller)offerUpdate(registration.waiting);
-      registration.addEventListener('updatefound',()=>{
-        const worker=registration.installing;if(!worker)return;
-        worker.addEventListener('statechange',()=>{if(worker.state==='installed'&&navigator.serviceWorker.controller)offerUpdate(registration.waiting||worker)});
-      });
-    })
+    .then(()=>navigator.serviceWorker.ready)
+    .then(()=>{window.swS='active'})
     .catch(()=>{window.swS='unavailable'});
 });
-const updateOfflineIndicator=()=>{const indicator=document.getElementById('offline-indicator');if(indicator)indicator.style.display=navigator.onLine?'none':'block'};addEventListener('online',updateOfflineIndicator);addEventListener('offline',updateOfflineIndicator);updateOfflineIndicator();hdr();if(st.ob){home();const shortcut=new URLSearchParams(location.search).get('section');const shortcutIndex=S.findIndex(section=>section.id===shortcut);if(shortcutIndex>=0)openS(shortcutIndex)}else onb();
+hdr();st.ob?home():onb();
 </script>
 
 <script type="module">
 try {
-
-
-
+  ;
+  ;
+  ;
   const [configModule, appSdk, authSdk, dbSdk] = await Promise.all([
     import('./firebase-config.js'),
     import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js'),
@@ -303,20 +224,20 @@ try {
     import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js')
   ]);
   const { firebaseConfig: config } = configModule;
-
-
-
-
-
+  ;
+  ;
+  ;
+  ;
+  ;
   if (!config?.apiKey || config.apiKey.startsWith('YOUR')) {
     window.fbStatus = 'Firebase: config not filled in (guest mode)';
     kl.refresh();
   } else {
-
+    ;
     const appInstance = appSdk.initializeApp(config);
-
-
-
+    ;
+    ;
+    ;
     const auth = authSdk.initializeAuth(appInstance, {
       persistence: [
         authSdk.indexedDBLocalPersistence,
@@ -324,13 +245,14 @@ try {
         authSdk.inMemoryPersistence
       ]
     });
-
-
-
-    let db;try{db=dbSdk.initializeFirestore(appInstance,{localCache:dbSdk.persistentLocalCache({tabManager:dbSdk.persistentMultipleTabManager()})})}catch(cacheError){db=dbSdk.getFirestore(appInstance);window.cloudStatus='persistent cache unavailable';}
-
-
-
+    ;
+    ;
+    ;
+    const db = dbSdk.getFirestore(appInstance);
+    ;
+    ;
+    const provider = new authSdk.GoogleAuthProvider();
+    ;
     let cloudWrite = Promise.resolve();
     let profileReady = false;
     let lastSyncedSignature = '';
@@ -348,37 +270,23 @@ try {
     addEventListener('online', () => { if (isDirty()) { syncPending = true; void window.fb?.push?.().catch?.(() => {}); } });
     document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && isDirty()) { syncPending = true; void window.fb?.push?.().catch?.(() => {}); } });
     const profileRef = uid => dbSdk.doc(db, 'users', uid);
-    const kidCollectionRef = uid => dbSdk.collection(db, 'users', uid, 'kids');
-    const kidRef = (uid, kidId) => dbSdk.doc(db, 'users', uid, 'kids', kidId);
     const localSnapshot = () => {
       const state = kl.st();
-      return { kids: state.kids, settings: { lang: state.lang, sound: state.sound }, settingsUpdatedAt: Number(state.settingsUpdatedAt)||0, schemaVersion: 3, updatedAt: Date.now() };
+      return { kids: state.kids, settings: { lang: state.lang, sound: state.sound }, schemaVersion: 2, updatedAt: Date.now() };
     };
     const writeProfile = (user, data) => {
+      // Do not write until the initial reconciliation has completed.
       if (!profileReady) return Promise.resolve(null);
-      cloudWrite = cloudWrite.catch(() => {}).then(async () => {
-        const profile = await dbSdk.runTransaction(db, async transaction => {
-          const ref = profileRef(user.uid), snapshot = await transaction.get(ref);
-          const remote = snapshot.exists() ? snapshot.data() : {};
-          const localTime = Number(data.settingsUpdatedAt)||0, remoteTime = Number(remote.settingsUpdatedAt)||0;
-          const useLocal = localTime >= remoteTime;
-          const settings = useLocal ? data.settings : (remote.settings || data.settings || {lang:'both',sound:1});
-          const result = { settings, settingsUpdatedAt: Math.max(localTime,remoteTime), kidIds: Object.keys(data.kids||{}).slice(0,10), schemaVersion: 3, createdAt: typeof remote.createdAt === 'number' ? remote.createdAt : (typeof data.createdAt === 'number' ? data.createdAt : Date.now()), updatedAt: Date.now() };
-          transaction.set(ref, result);
-          return result;
-        });
-        const kids = {};
-        for (const [childId, localKid] of Object.entries(data.kids || {})) {
-          kids[childId] = await dbSdk.runTransaction(db, async transaction => {
-            const ref = kidRef(user.uid, childId), snapshot = await transaction.get(ref);
-            const remoteKid = snapshot.exists() ? snapshot.data() : null;
-            const merged = window.LLProgress.mergeKid(localKid, remoteKid, deviceId) || localKid;
-            transaction.set(ref, merged);
-            return merged;
-          });
-        }
-        return {...profile, kids};
-      });
+      // Serialize transactions. Every write merges against the latest server
+      // profile so delayed/offline snapshots cannot overwrite a newer reset.
+      cloudWrite = cloudWrite.catch(() => {}).then(() => dbSdk.runTransaction(db, async transaction => {
+        const ref = profileRef(user.uid);
+        const snapshot = await transaction.get(ref);
+        const remote = snapshot.exists() ? snapshot.data() : {};
+        const merged = window.LLProgress.mergeProfile(data, remote, deviceId);
+        transaction.set(ref, merged);
+        return merged;
+      }));
       return cloudWrite;
     };
     // Use Google Identity Services for the ID token, then exchange it with Firebase.
@@ -397,18 +305,18 @@ try {
       return gisScriptPromise;
     };
     const handleGisCredential = async response => {
-window.msg = '⏳ Signing in securely…'; kl.refresh();
+      authInFlight = true; window.msg = '⏳ Signing in securely…'; kl.refresh();
       try {
         if (!response?.credential) throw new Error('Google did not return an ID credential.');
         const credential = authSdk.GoogleAuthProvider.credential(response.credential);
         await authSdk.signInWithCredential(auth, credential);
-
+        ;
         window.msg = ''; kl.st().err = '';
       } catch (error) {
-
+        ;
         kl.err(error);
       } finally {
-        window.msg = ''; kl.refresh();
+        authInFlight = false; window.msg = ''; kl.refresh();
       }
     };
     window.fb = {
@@ -435,55 +343,33 @@ window.msg = '⏳ Signing in securely…'; kl.refresh();
             type: 'standard', theme: 'filled_blue', size: 'large',
             text: 'signin_with', shape: 'pill', width: Math.min(280, Math.max(220, Math.floor(container.getBoundingClientRect().width || 280)))
           });
-
+          ;
         } catch (error) {
-
+          ;
           window.msg = 'Google sign-in could not load. Check your connection and reload the page.';
           kl.refresh();
         }
       },
       signOut: () => authSdk.signOut(auth),
-      deleteAccount: async () => {
-        const user = auth.currentUser;
-        if (!user) throw new Error('Sign in to the account you want to delete.');
-        const children = await dbSdk.getDocs(kidCollectionRef(user.uid));
-        for (const child of children.docs) await dbSdk.deleteDoc(child.ref);
-        await dbSdk.deleteDoc(profileRef(user.uid));
-        try {
-          await authSdk.deleteUser(user);
-        } catch (error) {
-          if (error?.code === 'auth/requires-recent-login') {
-            throw new Error('Your cloud learning data was deleted, but Google requires a fresh sign-in before it can delete this account. Sign out, sign in again, then retry Delete my data and account.');
-          }
-          throw error;
-        }
-        for (const key of ['kl','kl_guest','kl_guest_backup_v1','kl_account_uid','kl_last_account_uid','kl_account_cache_'+user.uid,'kl_last_sync_'+user.uid]) {
-          try { localStorage.removeItem(key); } catch (_) {}
-        }
-        state.kids={me:{name:'Me',stars:0}};state.kid='me';state.lang='both';state.sound=1;state.ob=0;state.step=0;state.user=null;
-        window.cloudStatus='account deleted';profileReady=false;
-        await authSdk.signOut(auth);
-        location.reload();
-      },
       renameKid: async (childId, name) => {
         const user = auth.currentUser, state = kl.st();
         if (!user || !profileReady) throw new Error('Cloud profile is not ready.');
         if (!state.kids[childId]) throw new Error('Child profile was not found.');
         // Rename is an explicit profile edit: persist it after the normal progress merge,
         // otherwise mergeKid may restore the old non-default remote name.
-        const safeName = String(name || '').replace(/[<>&"']/g, '').trim().slice(0, 12);
-        if (!safeName || !state.kids[childId]) throw new Error('Child profile could not be renamed.');
         cloudWrite = cloudWrite.catch(() => {}).then(() => dbSdk.runTransaction(db, async transaction => {
-          const ref = kidRef(user.uid, childId), snapshot = await transaction.get(ref);
-          const remoteKid = snapshot.exists() ? snapshot.data() : null;
-          const merged = window.LLProgress.mergeKid(state.kids[childId], remoteKid, deviceId);
-          if (!merged) throw new Error('Child profile could not be renamed.');
-          merged.name = safeName; merged.updatedAt = Date.now();
+          const ref = profileRef(user.uid);
+          const snapshot = await transaction.get(ref);
+          const remote = snapshot.exists() ? snapshot.data() : {};
+          const merged = window.LLProgress.mergeProfile(localSnapshot(), remote, deviceId);
+          const safeName = String(name || '').replace(/[<>&"']/g, '').trim().slice(0, 12);
+          if (!safeName || !merged.kids?.[childId]) throw new Error('Child profile could not be renamed.');
+          merged.kids[childId] = { ...merged.kids[childId], name: safeName };
           transaction.set(ref, merged);
           return merged;
         }));
-        const savedKid = await cloudWrite;
-        if (savedKid) state.kids[childId] = savedKid;
+        const savedProfile = await cloudWrite;
+        if (savedProfile?.kids) state.kids = window.LLProgress.mergeKids(state.kids, savedProfile.kids, deviceId);
         try { localStorage.setItem('kl', JSON.stringify({ ...state, user: undefined, err: undefined })); } catch (_) {}
         window.cloudStatus = 'saved'; state.err = ''; markSynced(); window.showLLNotice?.('Child name saved and synced to cloud.');
       },
@@ -516,17 +402,16 @@ window.msg = '⏳ Signing in securely…'; kl.refresh();
         } catch (error) {
           window.lastErr = error?.code || error?.message || String(error);
           window.cloudStatus = 'save failed'; syncPending = true;
-          state.err = '';
-          window.cloudStatus = !navigator.onLine ? 'offline - will sync' : 'sync pending';
-          window.showLLNotice?.(!navigator.onLine ? 'Offline — saved on this device; will sync when online.' : 'Saved on this device; cloud sync is pending.', 'info');
+          state.err = 'Saved on this device; cloud sync is pending. ' + window.lastErr;
+          window.showLLNotice?.('Saved on this device; cloud sync is pending.', 'error');
           kl.refresh(); throw error;
         } finally { syncInFlight = null; }
         })();
         return syncInFlight;
       }
     };
-
-
+    ;
+    ;
     authSdk.onAuthStateChanged(auth, async user => {
       const state = kl.st();
       let previousUid = '', lastUid = '';
@@ -543,7 +428,7 @@ window.msg = '⏳ Signing in securely…'; kl.refresh();
         try { localStorage.setItem('kl_account_cache_' + previousUid, localStorage.getItem('kl') || '{}'); localStorage.setItem('kl_last_account_uid', previousUid); } catch (_) {}
         // Never expose an account's cached profile as guest progress.
         let guest = null;
-        try { guest = JSON.parse(localStorage.getItem('kl_guest') || localStorage.getItem('kl_guest_backup_v1') || 'null'); } catch (_) {}
+        try { guest = JSON.parse(localStorage.getItem('kl_guest') || 'null'); } catch (_) {}
         try { localStorage.removeItem('kl_account_uid'); } catch (_) {}
         state.kids = guest?.kids && typeof guest.kids === 'object' ? guest.kids : { me: { name: 'Me', stars: 0 } };
         state.kid = state.kids[state.kid] ? state.kid : Object.keys(state.kids)[0] || 'me';
@@ -588,11 +473,11 @@ window.msg = '⏳ Signing in securely…'; kl.refresh();
               savedAt: Date.now()
             };
             localStorage.setItem('kl_guest', JSON.stringify(guestSnapshot));
-            localStorage.setItem('kl_guest_backup_v1', JSON.stringify(guestSnapshot));
-            const meaningful = Object.entries(guestSnapshot.kids||{}).some(([id,k]) => k && (id !== 'me' || (k.name && k.name !== 'Me') || Number(k.stars) > 0 || Object.keys(k.mastery||{}).length > 0 || Object.keys(k.badges||{}).length > 0 || Object.keys(k.timeByDay||{}).length > 0 || !!k.daily?.lastDate || !!k.deletedAt)) || guestSnapshot.lang !== 'both' || guestSnapshot.sound !== 1;
+            const meaningful = Object.values(guestSnapshot.kids).some(k => k && ((k.name && k.name !== 'Me') || Number(k.stars) > 0));
             if (meaningful && !lastUid) {
               choice = window.confirm(
-                'Add this device’s kids to your account?\n\nOK: Add\nCancel: Keep account only (guest data stays on this device).') ? 'merge' : 'account';
+                'You have learning data saved on this device.\n\nOK: explicitly merge this device’s progress into the Google account.\nCancel: use the Google account’s progress and keep guest data separate on this device.'
+              ) ? 'merge' : 'account';
             } else {
               choice = 'account';
             }
@@ -619,29 +504,12 @@ window.msg = '⏳ Signing in securely…'; kl.refresh();
       try {
         const ref = profileRef(user.uid), snapshot = await dbSdk.getDoc(ref);
         const cloud = snapshot.exists() ? snapshot.data() : {};
-        const validKids = source => Object.fromEntries(Object.entries(source).filter(([id, kid]) =>
-          /^[A-Za-z0-9_-]{1,64}$/.test(id) && kid && typeof kid === 'object' && typeof kid.name === 'string' && kid.name.trim().length > 0 && kid.name.trim().length <= 12 &&
-          Number.isFinite(kid.stars) && Number.isInteger(kid.stars) && kid.stars >= 0 && kid.stars <= 100000
-        ).slice(0,10));
-        const childDocs = await dbSdk.getDocs(kidCollectionRef(user.uid));
-        let cloudKids = Object.fromEntries(childDocs.docs.map(child => [child.id, child.data()]));
-        if (childDocs.empty && cloud.kids && typeof cloud.kids === 'object') {
-          // Publish the allowed child IDs first, then migrate each child, then remove legacy fields.
-          cloudKids = validKids(cloud.kids);
-          await dbSdk.updateDoc(ref, {email:dbSdk.deleteField(), displayName:dbSdk.deleteField(), kidIds:Object.keys(cloudKids).slice(0,10), schemaVersion:3, updatedAt:Date.now()});
-          for (const [childId, childData] of Object.entries(cloudKids)) {
-            await dbSdk.runTransaction(db, async transaction => {
-              const childRef = kidRef(user.uid, childId), childSnap = await transaction.get(childRef);
-              if (!childSnap.exists()) transaction.set(childRef, childData);
-            });
-          }
-          await dbSdk.updateDoc(ref, {kids:dbSdk.deleteField(), updatedAt:Date.now()});
-          window.cloudStatus = 'migrated legacy profile';
-        }
-        if (snapshot.exists() && !Array.isArray(cloud.kidIds) && !(cloud.kids && typeof cloud.kids === 'object')) {
-          await dbSdk.updateDoc(ref, {kids:dbSdk.deleteField(), email:dbSdk.deleteField(), displayName:dbSdk.deleteField(), kidIds:Object.keys(cloudKids).slice(0,10), schemaVersion:3, updatedAt:Date.now()});
-        }
+        const cloudKids = cloud.kids && typeof cloud.kids === 'object' ? cloud.kids : {};
         const localKids = choice === 'merge' && state.kids && typeof state.kids === 'object' ? state.kids : {};
+        const validKids = source => Object.fromEntries(Object.entries(source).filter(([, kid]) =>
+          kid && typeof kid === 'object' && typeof kid.name === 'string' &&
+          Number.isFinite(Number(kid.stars)) && Number(kid.stars) >= 0
+        ));
         const mergedKids = window.LLProgress.mergeKids(validKids(localKids), validKids(cloudKids), deviceId);
         for (const kid of Object.values(mergedKids)) {
           kid.name = String(kid.name || 'Me').replace(/[<>&"']/g, '').trim().slice(0, 12) || 'Me';
@@ -649,38 +517,25 @@ window.msg = '⏳ Signing in securely…'; kl.refresh();
         state.kids = Object.keys(mergedKids).length ? mergedKids : { me: { name: 'Me', stars: 0, starCounters: {}, resetGeneration: 0 } };
         if (!state.kids[state.kid]) state.kid = Object.keys(state.kids)[0];
         if (cloud.settings && typeof cloud.settings === 'object') {
-          const localSettingsTimestamp=Number(state.settingsUpdatedAt)||0;
-          const remoteSettingsTimestamp=Number(cloud.settingsUpdatedAt)||0;
-          if (choice !== 'merge' || remoteSettingsTimestamp > localSettingsTimestamp) {
-            state.lang = ['en', 'hi', 'both'].includes(cloud.settings.lang) ? cloud.settings.lang : 'both';
-            state.sound = cloud.settings.sound === 0 || cloud.settings.sound === 1 ? cloud.settings.sound : 1;
-            state.settingsUpdatedAt=remoteSettingsTimestamp;
-          }
-          window.savedSettingsSignature=JSON.stringify({lang:state.lang,sound:state.sound});
+          if (['en', 'hi', 'both'].includes(cloud.settings.lang)) state.lang = cloud.settings.lang;
+          if (typeof cloud.settings.sound === 'number') state.sound = cloud.settings.sound ? 1 : 0;
         } else if (choice !== 'merge') {
-          state.lang = 'both'; state.sound = 1; state.settingsUpdatedAt=0;
-          window.savedSettingsSignature=JSON.stringify({lang:state.lang,sound:state.sound});
+          state.lang = 'both'; state.sound = 1;
         }
-        const hasConfiguredChild = Object.values(state.kids).some(kid => kid.name && kid.name !== 'Me' && !kid.deletedAt);
+        const hasConfiguredChild = Object.values(state.kids).some(kid => kid.name && kid.name !== 'Me');
         state.ob = hasConfiguredChild ? 1 : 0;
         state.step = state.ob ? 3 : 2;
         window.cloudStatus = !state.ob ? 'needs child setup' : (snapshot.exists() ? 'profile loaded' : 'profile created');
         profileReady = true;
         kl.save();
-        // Do not create an empty cloud document before a first-time parent has
-        // completed child setup. finish() will schedule the first write.
-        if (!snapshot.exists() && !state.ob) {
-          window.cloudStatus = 'needs child setup';
-          kl.refresh();
-          return;
-        }
-        // "Keep account only" never uploads the guest snapshot.
+        // A brand-new cloud profile is written only after the parent selected a
+        // data path. "Keep separate" never uploads the guest snapshot.
         await writeProfile(user, {
           ...localSnapshot(),
           createdAt: typeof cloud.createdAt === 'number' ? cloud.createdAt : Date.now()
         });
         markSynced();
-        kl.save(); kl.authed(true);
+        kl.save(); kl.authed(true, Object.keys(state.kids).length);
       } catch (error) {
         // Fail closed: never leave guest progress visible under a signed-in
         // account when the account's cloud profile could not be loaded.
@@ -701,7 +556,7 @@ window.msg = '⏳ Signing in securely…'; kl.refresh();
     window.fbStatus = 'Firebase: ready'; kl.refresh();
   }
 } catch (error) {
-
+  ;
   window.fbStatus = 'Firebase: failed to load';
   window.lastErr = error?.code || error?.message || String(error);
   console.error('Firebase initialization failed:', error);
