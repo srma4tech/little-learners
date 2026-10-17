@@ -9,7 +9,7 @@ service cloud.firestore {
       return kid is map
         && kid.keys().hasOnly([
           'name', 'stars', 'starCounters', 'resetGeneration', 'resetId',
-          'pendingResetId', 'progressResetAt', 'updatedAt'
+          'pendingResetId', 'progressResetAt', 'updatedAt', 'deletedAt'
         ])
         && kid.keys().hasAll(['name', 'stars'])
         && kid.name is string
@@ -20,6 +20,7 @@ service cloud.firestore {
         && (!('resetGeneration' in kid) || (kid.resetGeneration is int && kid.resetGeneration >= 0))
         && (!('updatedAt' in kid) || kid.updatedAt is number)
         && (!('progressResetAt' in kid) || kid.progressResetAt is number)
+        && (!('deletedAt' in kid) || kid.deletedAt is number)
         && (!('resetId' in kid) || kid.resetId is string || kid.resetId == null)
         && (!('pendingResetId' in kid) || kid.pendingResetId is string || kid.pendingResetId == null)
         && (!('starCounters' in kid) || kid.starCounters is map);
