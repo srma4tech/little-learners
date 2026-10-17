@@ -86,7 +86,11 @@
     const merged = {};
     for (const childId of new Set([...Object.keys(local), ...Object.keys(remote)])) {
       const kid = mergeKid(local[childId], remote[childId], deviceId);
-      if (kid) merged[childId] = kid;
+      if (kid) {
+        const deletedAt = Math.max(number(local[childId] && local[childId].deletedAt), number(remote[childId] && remote[childId].deletedAt));
+        if (deletedAt) kid.deletedAt = deletedAt;
+        merged[childId] = kid;
+      }
     }
     return merged;
   }
