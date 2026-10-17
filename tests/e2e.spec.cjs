@@ -20,13 +20,13 @@ async function stubFirebase(page) {
   await page.route('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js', route => route.fulfill({
     contentType: 'application/javascript',
     body: `
-      const state=globalThis.__llAuth||(globalThis.__llAuth={user:null,callback:null});
+      const state=globalThis.__llAuth||(globalThis.__llAuth={user:null,currentUser:null,callback:null});
       export const indexedDBLocalPersistence={},browserLocalPersistence={},inMemoryPersistence={};
       export class GoogleAuthProvider { static credential(token){return {token}} }
       export function initializeAuth(){return state}
       export function onAuthStateChanged(auth,callback){state.callback=callback;setTimeout(()=>callback(state.user),0);return ()=>{}}
-      export async function signInWithCredential(auth,credential){state.user={uid:'test-parent',displayName:'Parent Name',email:'parent@example.test'};if(state.callback)await state.callback(state.user);return {user:state.user}}
-      export async function signOut(){state.user=null;if(state.callback)await state.callback(null)}
+      export async function signInWithCredential(auth,credential){state.user={uid:'test-parent',displayName:'Parent Name',email:'parent@example.test'};state.currentUser=state.user;if(state.callback)await state.callback(state.user);return {user:state.user}}
+      export async function signOut(){state.user=null;state.currentUser=null;if(state.callback)await state.callback(null)}
       export async function deleteUser(){state.user=null;if(state.callback)await state.callback(null)}
     `
   }));
@@ -133,7 +133,7 @@ test('parent gate protects settings and relocks after leaving', async ({ page })
   const answer = Number(match[1]) + Number(match[2]);
   await page.locator('.opt').filter({ hasText: new RegExp('^' + answer + '$') }).click();
   await expect(page.getByRole('heading', { name: /Parent corner/i })).toBeVisible();
-  await page.getByRole('button', { name: /Home/i }).click();
+  await page.locator('#app .bar button').first().click();
   await page.locator('#kid').click();
   await expect(page.getByRole('heading', { name: /Parents only/i })).toBeVisible();
 });
