@@ -27,15 +27,31 @@ service cloud.firestore {
         && (!('starCounters' in kid) || kid.starCounters is map);
     }
 
+    function validLegacyKids(kids) {
+      return kids is map
+        && kids.size() <= 10
+        && (kids.size() < 1 || validKid(kids[kids.keys().toList()[0]]))
+        && (kids.size() < 2 || validKid(kids[kids.keys().toList()[1]]))
+        && (kids.size() < 3 || validKid(kids[kids.keys().toList()[2]]))
+        && (kids.size() < 4 || validKid(kids[kids.keys().toList()[3]]))
+        && (kids.size() < 5 || validKid(kids[kids.keys().toList()[4]]))
+        && (kids.size() < 6 || validKid(kids[kids.keys().toList()[5]]))
+        && (kids.size() < 7 || validKid(kids[kids.keys().toList()[6]]))
+        && (kids.size() < 8 || validKid(kids[kids.keys().toList()[7]]))
+        && (kids.size() < 9 || validKid(kids[kids.keys().toList()[8]]))
+        && (kids.size() < 10 || validKid(kids[kids.keys().toList()[9]]));
+    }
+
     function validProfile() {
       return request.resource.data.keys().hasOnly([
           'settings', 'schemaVersion', 'createdAt', 'updatedAt',
-          'settingsUpdatedAt', 'kidIds'
+          'settingsUpdatedAt', 'kidIds', 'kids'
         ])
         && request.resource.data.keys().hasAll(['settings', 'updatedAt', 'kidIds'])
         && request.resource.data.kidIds is list
         && request.resource.data.kidIds.size() <= 10
         && request.resource.data.kidIds.toSet().size() == request.resource.data.kidIds.size()
+        && (!('kids' in request.resource.data) || validLegacyKids(request.resource.data.kids))
         && request.resource.data.settings is map
         && request.resource.data.settings.keys().hasOnly(['lang', 'sound'])
         && request.resource.data.settings.keys().hasAll(['lang', 'sound'])
