@@ -30,9 +30,12 @@ service cloud.firestore {
     function validProfile() {
       return request.resource.data.keys().hasOnly([
           'settings', 'schemaVersion', 'createdAt', 'updatedAt',
-          'settingsUpdatedAt'
+          'settingsUpdatedAt', 'kidIds'
         ])
-        && request.resource.data.keys().hasAll(['settings', 'updatedAt'])
+        && request.resource.data.keys().hasAll(['settings', 'updatedAt', 'kidIds'])
+        && request.resource.data.kidIds is list
+        && request.resource.data.kidIds.size() <= 10
+        && request.resource.data.kidIds.toSet().size() == request.resource.data.kidIds.size()
         && request.resource.data.settings is map
         && request.resource.data.settings.keys().hasOnly(['lang', 'sound'])
         && request.resource.data.settings.keys().hasAll(['lang', 'sound'])
@@ -52,7 +55,9 @@ service cloud.firestore {
 
       match /kids/{kidId} {
         allow read: if signedInOwner(uid);
-        allow create, update: if signedInOwner(uid) && validKid(request.resource.data);
+        allow create, update: if signedInOwner(uid) && validKid(request.resource.data)
+          && exists(/databases/$(database)/documents/users/$(uid))
+          && kidId in get(/databases/$(database)/documents/users/$(uid)).data.kidIds;
         allow delete: if signedInOwner(uid);
       }
     }
