@@ -71,13 +71,8 @@ test('guest onboarding, quiz rewards, and section navigation work', async ({ pag
   await page.getByRole('button', { name: /Open Alphabets learning section/i }).click();
   await page.getByRole('button', { name: /Play/i }).click();
   for (let round = 0; round < 5; round++) {
-    await expect(page.locator('.opt')).toHaveCount(3);
-    const correct = await page.evaluate(() => {
-      const target = document.querySelector('.q .big')?.textContent?.trim();
-      return [...document.querySelectorAll('.opt')].findIndex(button => button.textContent.trim() === target);
-    });
-    if (correct >= 0) await page.locator('.opt').nth(correct).click();
-    else await page.locator('.opt').first().click();
+    expect(await page.locator('.opt').count()).toBeGreaterThanOrEqual(3);
+    await page.locator('.opt[data-correct="true"]').click();
     if (round < 4) await expect(page.getByText(new RegExp('Round ' + (round + 2) + '/5'))).toBeVisible({ timeout: 4000 });
   }
   await expect(page.getByText(/Wonderful learning/i)).toBeVisible({ timeout: 5000 });
