@@ -80,5 +80,21 @@
         }
       ]
     }
+  ],
+  "screenshots": [
+    {
+      "src": "screenshots/little-learners-desktop.png",
+      "sizes": "1440x1000",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Little Learners learning home on desktop"
+    },
+    {
+      "src": "screenshots/little-learners-mobile.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Little Learners learning home on a phone"
+    }
   ]
 }
