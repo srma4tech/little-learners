@@ -1,4 +1,4 @@
-const C='little-learners-v46';
+const C='little-learners-v47';
 const F=['./?section=alphabets','./?section=numbers','./?section=varnamala','./','index.html','manifest.webmanifest','firebase-config.js','progress-model.js','privacy.html','audio/manifest.json','icon-192.png','icon-512.png'];
 
 self.addEventListener('install',event=>{
