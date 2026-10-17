@@ -332,24 +332,37 @@ try {
     addEventListener('online', () => { if (isDirty()) { syncPending = true; void window.fb?.push?.().catch?.(() => {}); } });
     document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && isDirty()) { syncPending = true; void window.fb?.push?.().catch?.(() => {}); } });
     const profileRef = uid => dbSdk.doc(db, 'users', uid);
+    const kidCollectionRef = uid => dbSdk.collection(db, 'users', uid, 'kids');
+    const kidRef = (uid, kidId) => dbSdk.doc(db, 'users', uid, 'kids', kidId);
     const localSnapshot = () => {
       const state = kl.st();
-      return { kids: state.kids, settings: { lang: state.lang, sound: state.sound }, settingsUpdatedAt: Number(state.settingsUpdatedAt)||Date.now(), schemaVersion: 2, updatedAt: Date.now() };
+      return { kids: state.kids, settings: { lang: state.lang, sound: state.sound }, settingsUpdatedAt: Number(state.settingsUpdatedAt)||Date.now(), schemaVersion: 3, updatedAt: Date.now() };
     };
     const writeProfile = (user, data) => {
-      // Do not write until the initial reconciliation has completed.
       if (!profileReady) return Promise.resolve(null);
-      // Serialize transactions. Every write merges against the latest server
-      // profile so delayed/offline snapshots cannot overwrite a newer reset.
-      cloudWrite = cloudWrite.catch(() => {}).then(() => dbSdk.runTransaction(db, async transaction => {
-        const ref = profileRef(user.uid);
-        const snapshot = await transaction.get(ref);
-        const remote = snapshot.exists() ? snapshot.data() : {};
-        const merged = window.LLProgress.mergeProfile(data, remote, deviceId);
-        delete merged.email; delete merged.displayName;
-        transaction.set(ref, merged);
-        return merged;
-      }));
+      cloudWrite = cloudWrite.catch(() => {}).then(async () => {
+        const profile = await dbSdk.runTransaction(db, async transaction => {
+          const ref = profileRef(user.uid), snapshot = await transaction.get(ref);
+          const remote = snapshot.exists() ? snapshot.data() : {};
+          const localTime = Number(data.settingsUpdatedAt)||0, remoteTime = Number(remote.settingsUpdatedAt)||0;
+          const useLocal = localTime >= remoteTime;
+          const settings = useLocal ? data.settings : (remote.settings || data.settings || {lang:'both',sound:1});
+          const result = { settings, settingsUpdatedAt: Math.max(localTime,remoteTime), schemaVersion: 3, createdAt: typeof remote.createdAt === 'number' ? remote.createdAt : (typeof data.createdAt === 'number' ? data.createdAt : Date.now()), updatedAt: Date.now() };
+          transaction.set(ref, result);
+          return result;
+        });
+        const kids = {};
+        for (const [childId, localKid] of Object.entries(data.kids || {})) {
+          kids[childId] = await dbSdk.runTransaction(db, async transaction => {
+            const ref = kidRef(user.uid, childId), snapshot = await transaction.get(ref);
+            const remoteKid = snapshot.exists() ? snapshot.data() : null;
+            const merged = window.LLProgress.mergeKid(localKid, remoteKid, deviceId) || localKid;
+            transaction.set(ref, merged);
+            return merged;
+          });
+        }
+        return {...profile, kids};
+      });
       return cloudWrite;
     };
     // Use Google Identity Services for the ID token, then exchange it with Firebase.
@@ -417,6 +430,8 @@ window.msg = '⏳ Signing in securely…'; kl.refresh();
       deleteAccount: async () => {
         const user = auth.currentUser;
         if (!user) throw new Error('Sign in to the account you want to delete.');
+        const children = await dbSdk.getDocs(kidCollectionRef(user.uid));
+        for (const child of children.docs) await dbSdk.deleteDoc(child.ref);
         await dbSdk.deleteDoc(profileRef(user.uid));
         try {
           await authSdk.deleteUser(user);
@@ -440,20 +455,19 @@ window.msg = '⏳ Signing in securely…'; kl.refresh();
         if (!state.kids[childId]) throw new Error('Child profile was not found.');
         // Rename is an explicit profile edit: persist it after the normal progress merge,
         // otherwise mergeKid may restore the old non-default remote name.
+        const safeName = String(name || '').replace(/[<>&"']/g, '').trim().slice(0, 12);
+        if (!safeName || !state.kids[childId]) throw new Error('Child profile could not be renamed.');
         cloudWrite = cloudWrite.catch(() => {}).then(() => dbSdk.runTransaction(db, async transaction => {
-          const ref = profileRef(user.uid);
-          const snapshot = await transaction.get(ref);
-          const remote = snapshot.exists() ? snapshot.data() : {};
-          const merged = window.LLProgress.mergeProfile(localSnapshot(), remote, deviceId);
-          delete merged.email; delete merged.displayName;
-          const safeName = String(name || '').replace(/[<>&"']/g, '').trim().slice(0, 12);
-          if (!safeName || !merged.kids?.[childId]) throw new Error('Child profile could not be renamed.');
-          merged.kids[childId] = { ...merged.kids[childId], name: safeName };
+          const ref = kidRef(user.uid, childId), snapshot = await transaction.get(ref);
+          const remoteKid = snapshot.exists() ? snapshot.data() : null;
+          const merged = window.LLProgress.mergeKid(state.kids[childId], remoteKid, deviceId);
+          if (!merged) throw new Error('Child profile could not be renamed.');
+          merged.name = safeName; merged.updatedAt = Date.now();
           transaction.set(ref, merged);
           return merged;
         }));
-        const savedProfile = await cloudWrite;
-        if (savedProfile?.kids) state.kids = window.LLProgress.mergeKids(state.kids, savedProfile.kids, deviceId);
+        const savedKid = await cloudWrite;
+        if (savedKid) state.kids[childId] = savedKid;
         try { localStorage.setItem('kl', JSON.stringify({ ...state, user: undefined, err: undefined })); } catch (_) {}
         window.cloudStatus = 'saved'; state.err = ''; markSynced(); window.showLLNotice?.('Child name saved and synced to cloud.');
       },
@@ -589,12 +603,25 @@ window.msg = '⏳ Signing in securely…'; kl.refresh();
       try {
         const ref = profileRef(user.uid), snapshot = await dbSdk.getDoc(ref);
         const cloud = snapshot.exists() ? snapshot.data() : {};
-        const cloudKids = cloud.kids && typeof cloud.kids === 'object' ? cloud.kids : {};
-        const localKids = choice === 'merge' && state.kids && typeof state.kids === 'object' ? state.kids : {};
-        const validKids = source => Object.fromEntries(Object.entries(source).filter(([, kid]) =>
-          kid && typeof kid === 'object' && typeof kid.name === 'string' && kid.name.trim().length > 0 && kid.name.trim().length <= 12 &&
+        const validKids = source => Object.fromEntries(Object.entries(source).filter(([id, kid]) =>
+          /^[A-Za-z0-9_-]{1,64}$/.test(id) && kid && typeof kid === 'object' && typeof kid.name === 'string' && kid.name.trim().length > 0 && kid.name.trim().length <= 12 &&
           Number.isFinite(kid.stars) && Number.isInteger(kid.stars) && kid.stars >= 0 && kid.stars <= 100000
         ).slice(0,10));
+        const childDocs = await dbSdk.getDocs(kidCollectionRef(user.uid));
+        let cloudKids = Object.fromEntries(childDocs.docs.map(child => [child.id, child.data()]));
+        if (childDocs.empty && cloud.kids && typeof cloud.kids === 'object') {
+          // One-time migration from users/{uid}.kids to users/{uid}/kids/{kidId}.
+          cloudKids = validKids(cloud.kids);
+          for (const [childId, childData] of Object.entries(cloudKids)) {
+            await dbSdk.runTransaction(db, async transaction => {
+              const childRef = kidRef(user.uid, childId), childSnap = await transaction.get(childRef);
+              if (!childSnap.exists()) transaction.set(childRef, childData);
+            });
+          }
+          await dbSdk.updateDoc(ref, {kids: dbSdk.deleteField(), schemaVersion: 3, updatedAt: Date.now()});
+          window.cloudStatus = 'migrated legacy profile';
+        }
+        const localKids = choice === 'merge' && state.kids && typeof state.kids === 'object' ? state.kids : {};
         const mergedKids = window.LLProgress.mergeKids(validKids(localKids), validKids(cloudKids), deviceId);
         for (const kid of Object.values(mergedKids)) {
           kid.name = String(kid.name || 'Me').replace(/[<>&"']/g, '').trim().slice(0, 12) || 'Me';
@@ -614,7 +641,7 @@ window.msg = '⏳ Signing in securely…'; kl.refresh();
           state.lang = 'both'; state.sound = 1; state.settingsUpdatedAt=0;
           window.savedSettingsSignature=JSON.stringify({lang:state.lang,sound:state.sound});
         }
-        const hasConfiguredChild = Object.values(state.kids).some(kid => kid.name && kid.name !== 'Me');
+        const hasConfiguredChild = Object.values(state.kids).some(kid => kid.name && kid.name !== 'Me' && !kid.deletedAt);
         state.ob = hasConfiguredChild ? 1 : 0;
         state.step = state.ob ? 3 : 2;
         window.cloudStatus = !state.ob ? 'needs child setup' : (snapshot.exists() ? 'profile loaded' : 'profile created');
