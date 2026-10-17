@@ -1,5 +1,5 @@
-const C='little-learners-v44';
-const F=['./','index.html','manifest.webmanifest','firebase-config.js','progress-model.js','privacy.html','icon-192.png','icon-512.png'];
+const C='little-learners-v45';
+const F=['./','index.html','manifest.webmanifest','firebase-config.js','progress-model.js','privacy.html','audio/manifest.json','icon-192.png','icon-512.png'];
 
 self.addEventListener('install',event=>{
   event.waitUntil(caches.open(C).then(cache=>cache.addAll(F)));
