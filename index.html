@@ -141,8 +141,8 @@ try{deviceId=localStorage.getItem('kl_device_id')||'';if(!deviceId){deviceId=cry
 const normalizeKid=k=>LLProgress.normalizeKid(k,deviceId);
 Object.keys(st.kids||{}).forEach(id=>st.kids[id]=normalizeKid(st.kids[id]));
 const saveLocal=()=>{try{localStorage.setItem('kl',JSON.stringify({...st,user:undefined,err:undefined}))}catch(e){}};
-let savedSettingsSignature=JSON.stringify({lang:st.lang,sound:st.sound});
-const save=()=>{const settingsSignature=JSON.stringify({lang:st.lang,sound:st.sound});if(settingsSignature!==savedSettingsSignature){st.settingsUpdatedAt=Date.now();savedSettingsSignature=settingsSignature}if(K())K().updatedAt=Date.now();saveLocal();if(!localStorage.getItem('kl_account_uid')&&!st.user){try{localStorage.setItem('kl_guest',JSON.stringify({kids:st.kids,kid:st.kid,settings:{lang:st.lang||'both',sound:typeof st.sound==='number'?(st.sound?1:0):1},schemaVersion:2,savedAt:Date.now()}))}catch(e){}}try{window.fb&&fb.schedulePush?.()}catch(e){}};
+window.savedSettingsSignature=JSON.stringify({lang:st.lang,sound:st.sound});
+const save=()=>{const settingsSignature=JSON.stringify({lang:st.lang,sound:st.sound});if(settingsSignature!==window.savedSettingsSignature){st.settingsUpdatedAt=Date.now();window.savedSettingsSignature=settingsSignature}if(K())K().updatedAt=Date.now();saveLocal();if(!localStorage.getItem('kl_account_uid')&&!st.user){try{localStorage.setItem('kl_guest',JSON.stringify({kids:st.kids,kid:st.kid,settings:{lang:st.lang||'both',sound:typeof st.sound==='number'?(st.sound?1:0):1},schemaVersion:2,savedAt:Date.now()}))}catch(e){}}try{window.fb&&fb.schedulePush?.()}catch(e){}};
 const K=()=>st.kids[st.kid]||(st.kid='me',st.kids.me=st.kids.me||{name:'Me',stars:0});
 const P=s=>s.split(';').map(x=>{const[e,en,hi]=x.split('|');return{e,en,hi:hi||''}});
 const AL=P("🍎|Apple;⚽|Ball;🐱|Cat;🐶|Dog;🐘|Elephant;🐟|Fish;🍇|Grapes;🐴|Horse;🍦|Ice cream;🧃|Juice;🪁|Kite;🦁|Lion;🌙|Moon;🪺|Nest;🍊|Orange;🦜|Parrot;👑|Queen;🐰|Rabbit;☀️|Sun;🐯|Tiger;☂️|Umbrella;🚐|Van;⌚|Watch;🎹|Xylophone;🪀|Yo-yo;🦓|Zebra").map((x,i)=>{const L=String.fromCharCode(65+i);return{e:x.e,big:L,en:L+' for '+x.en,hi:''}});
@@ -550,9 +550,14 @@ window.msg = '⏳ Signing in securely…'; kl.refresh();
         state.kids = Object.keys(mergedKids).length ? mergedKids : { me: { name: 'Me', stars: 0, starCounters: {}, resetGeneration: 0 } };
         if (!state.kids[state.kid]) state.kid = Object.keys(state.kids)[0];
         if (cloud.settings && typeof cloud.settings === 'object') {
-          if (['en', 'hi', 'both'].includes(cloud.settings.lang)) state.lang = cloud.settings.lang;
-          if (cloud.settings.sound === 0 || cloud.settings.sound === 1) state.sound = cloud.settings.sound;
-          state.settingsUpdatedAt=Math.max(Number(state.settingsUpdatedAt)||0,Number(cloud.settingsUpdatedAt)||0);savedSettingsSignature=JSON.stringify({lang:state.lang,sound:state.sound});
+          const localSettingsTimestamp=Number(state.settingsUpdatedAt)||0;
+          const remoteSettingsTimestamp=Number(cloud.settingsUpdatedAt)||0;
+          if (choice !== 'merge' || remoteSettingsTimestamp > localSettingsTimestamp) {
+            if (['en', 'hi', 'both'].includes(cloud.settings.lang)) state.lang = cloud.settings.lang;
+            if (cloud.settings.sound === 0 || cloud.settings.sound === 1) state.sound = cloud.settings.sound;
+            state.settingsUpdatedAt=remoteSettingsTimestamp;
+          }
+          window.savedSettingsSignature=JSON.stringify({lang:state.lang,sound:state.sound});
         } else if (choice !== 'merge') {
           state.lang = 'both'; state.sound = 1;
         }
