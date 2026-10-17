@@ -123,3 +123,63 @@ test('offline indicator appears and manifest/icons are reachable', async ({ page
   expect((await page.request.get('http://127.0.0.1:4173/icon-192.png')).ok()).toBeTruthy();
   expect((await page.request.get('http://127.0.0.1:4173/icon-512.png')).ok()).toBeTruthy();
 });
+
+test('parent gate protects settings and relocks after leaving', async ({ page }) => {
+  await stubFirebase(page);
+  await startGuest(page);
+  await page.locator('#kid').click();
+  const equation = await page.locator('.q .big').textContent();
+  const match = equation.match(/(\\d+)\\s*\\+\\s*(\\d+)/);
+  const answer = Number(match[1]) + Number(match[2]);
+  await page.locator('.opt').filter({ hasText: new RegExp('^' + answer + '$') }).click();
+  await expect(page.getByRole('heading', { name: /Parent corner/i })).toBeVisible();
+  await page.getByRole('button', { name: /Home/i }).click();
+  await page.locator('#kid').click();
+  await expect(page.getByRole('heading', { name: /Parents only/i })).toBeVisible();
+});
+
+test('parent can add and safely remove a child profile', async ({ page }) => {
+  await stubFirebase(page);
+  await startGuest(page);
+  await page.locator('#kid').click();
+  const equation = await page.locator('.q .big').textContent();
+  const match = equation.match(/(\\d+)\\s*\\+\\s*(\\d+)/);
+  await page.locator('.opt').filter({ hasText: new RegExp('^' + (Number(match[1])+Number(match[2])) + '$') }).click();
+  page.once('dialog', dialog => dialog.accept('Bea'));
+  await page.getByRole('button', { name: /Add kid/i }).click();
+  await expect(page.getByRole('button', { name: /Bea/ })).toBeVisible();
+  page.once('dialog', dialog => dialog.accept());
+  await page.getByRole('button', { name: /Remove current kid/i }).click();
+  await expect(page.locator('#app')).not.toContainText('Bea');
+});
+
+test('install prompt is shown and invoked when the browser provides it', async ({ page }) => {
+  await stubFirebase(page);
+  await startGuest(page);
+  await page.evaluate(() => {
+    const event = new Event('beforeinstallprompt');
+    event.prompt = () => { window.__installPrompted = true; };
+    event.userChoice = Promise.resolve({outcome:'accepted'});
+    window.dispatchEvent(event);
+  });
+  await expect(page.locator('#inst')).toBeVisible();
+  await page.locator('#inst').click();
+  await expect.poll(() => page.evaluate(() => window.__installPrompted)).toBeTruthy();
+});
+
+test('Gemini key stays local and can be removed', async ({ page }) => {
+  await stubFirebase(page);
+  await startGuest(page);
+  await page.locator('#kid').click();
+  const equation = await page.locator('.q .big').textContent();
+  const match = equation.match(/(\\d+)\\s*\\+\\s*(\\d+)/);
+  await page.locator('.opt').filter({ hasText: new RegExp('^' + (Number(match[1])+Number(match[2])) + '$') }).click();
+  await page.getByRole('button', { name: /Enable AI helpers/i }).click();
+  await page.locator('#gemini-key').fill('test-gemini-key');
+  await page.getByRole('button', { name: /Save key on this device/i }).click();
+  expect(await page.evaluate(() => localStorage.getItem('ll_gemini_api_key_v1'))).toBe('test-gemini-key');
+  const cloudText = await page.evaluate(() => JSON.stringify(JSON.parse(localStorage.getItem('__ll_firestore_mock')||'{}')));
+  expect(cloudText).not.toContain('test-gemini-key');
+  await page.getByRole('button', { name: /Remove key/i }).click();
+  expect(await page.evaluate(() => localStorage.getItem('ll_gemini_api_key_v1'))).toBeNull();
+});
