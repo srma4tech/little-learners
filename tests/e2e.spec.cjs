@@ -199,7 +199,7 @@ test('capture desktop and mobile app screenshots for PWA metadata', async ({ pag
   await startGuest(page);
   fs.mkdirSync('artifacts/screenshots', { recursive: true });
   await page.setViewportSize({ width: 1440, height: 1000 });
-  await page.screenshot({ path: 'artifacts/screenshots/little-learners-desktop.png', fullPage: true });
+  await page.screenshot({ path: 'artifacts/screenshots/little-learners-desktop.png', fullPage: false });
   await page.setViewportSize({ width: 390, height: 844 });
   await page.screenshot({ path: 'artifacts/screenshots/little-learners-mobile.png', fullPage: true });
 });
