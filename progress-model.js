@@ -69,6 +69,16 @@
     const counters = { ...remote.starCounters };
     for (const [key, value] of Object.entries(local.starCounters)) counters[key] = Math.max(number(counters[key]), number(value));
     const localIsNewer = number(local.updatedAt) > number(remote.updatedAt);
+    const mastery = { ...(remote.mastery || {}) };
+    for (const [itemId, value] of Object.entries(local.mastery || {})) {
+      const cloud = mastery[itemId] || {};
+      mastery[itemId] = { ok: Math.max(number(cloud.ok), number(value && value.ok)), miss: Math.max(number(cloud.miss), number(value && value.miss)), last: Math.max(number(cloud.last), number(value && value.last)) };
+    }
+    const badges = { ...(remote.badges || {}), ...(local.badges || {}) };
+    const timeByDay = { ...(remote.timeByDay || {}) };
+    for (const [date, seconds] of Object.entries(local.timeByDay || {})) timeByDay[date] = Math.max(number(timeByDay[date]), number(seconds));
+    const localDaily = local.daily || {}, remoteDaily = remote.daily || {};
+    const daily = String(localDaily.lastDate || '') > String(remoteDaily.lastDate || '') ? localDaily : (remoteDaily.lastDate ? remoteDaily : localDaily);
     const merged = {
       ...remote,
       name: localIsNewer && local.name && local.name !== 'Me' ? local.name : (remote.name && remote.name !== 'Me' ? remote.name : local.name),
@@ -76,7 +86,8 @@
       resetGeneration: remote.resetGeneration,
       resetId: remote.resetId || local.resetId || null,
       starCounters: counters,
-      stars: sum(counters)
+      stars: sum(counters),
+      mastery, badges, timeByDay, daily
     };
     if (local.pendingResetId) merged.pendingResetId = local.pendingResetId;
     const deletedAt = Math.max(number(local.deletedAt), number(remote.deletedAt));
