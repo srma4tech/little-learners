@@ -455,7 +455,7 @@ try {
         try { localStorage.setItem('kl_account_cache_' + previousUid, localStorage.getItem('kl') || '{}'); localStorage.setItem('kl_last_account_uid', previousUid); } catch (_) {}
         // Never expose an account's cached profile as guest progress.
         let guest = null;
-        try { guest = JSON.parse(localStorage.getItem('kl_guest') || 'null'); } catch (_) {}
+        try { guest = JSON.parse(localStorage.getItem('kl_guest') || localStorage.getItem('kl_guest_backup_v1') || 'null'); } catch (_) {}
         try { localStorage.removeItem('kl_account_uid'); } catch (_) {}
         state.kids = guest?.kids && typeof guest.kids === 'object' ? guest.kids : { me: { name: 'Me', stars: 0 } };
         state.kid = state.kids[state.kid] ? state.kid : Object.keys(state.kids)[0] || 'me';
@@ -500,11 +500,11 @@ try {
               savedAt: Date.now()
             };
             localStorage.setItem('kl_guest', JSON.stringify(guestSnapshot));
+            localStorage.setItem('kl_guest_backup_v1', JSON.stringify(guestSnapshot));
             const meaningful = Object.values(guestSnapshot.kids).some(k => k && ((k.name && k.name !== 'Me') || Number(k.stars) > 0));
             if (meaningful && !lastUid) {
               choice = window.confirm(
-                'You have learning data saved on this device.\n\nOK: explicitly merge this device’s progress into the Google account.\nCancel: use the Google account’s progress and keep guest data separate on this device.'
-              ) ? 'merge' : 'account';
+                'Add this device’s kids to your account?\n\nOK: Add\nCancel: Keep account only (guest data stays on this device).') ? 'merge' : 'account';
             } else {
               choice = 'account';
             }
