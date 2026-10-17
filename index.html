@@ -191,7 +191,7 @@ function gate(){if(Date.now()<unlock&&app.textContent.includes('Parent corner'))
 async function renKid(){const n=(prompt('New name',K().name)||'').replace(/[<>&"']/g,'').trim().slice(0,12);if(!n||n===K().name)return;const kidId=st.kid;K().name=n;saveLocal();if(!localStorage.getItem('kl_account_uid')&&!st.user){try{localStorage.setItem('kl_guest',JSON.stringify({kids:st.kids,kid:st.kid,settings:{lang:st.lang||'both',sound:typeof st.sound==='number'?(st.sound?1:0):1},schemaVersion:2,savedAt:Date.now()}))}catch(e){}}hdr();parent();if(window.fb&&fb.ok&&st.user){try{await fb.renameKid(kidId,n);window.msg='Child name updated and synced.';hdr();parent()}catch(e){window.msg='Name updated on this device; cloud sync is pending. Reconnect and try again.';window.showLLNotice?.('Name saved on this device; cloud sync is pending.','error');hdr();parent()}}else{window.showLLNotice?.('Child name saved on this device.','info')}}
 
 function gbtn(){const e=document.getElementById('gbtn');if(e&&window.fb&&fb.renderGoogle)fb.renderGoogle(e)}
-async function deleteMyData(){if(!window.fb?.deleteAccount){window.showLLNotice?.('Account deletion is available after signing in.','error');return}if(!confirm('Delete your cloud learning data and Little Learners Firebase account? This cannot be undone. This cannot be undone.'))return;try{await fb.deleteAccount()}catch(error){const message=error?.message||'Account deletion failed. Please try again.';window.showLLNotice?.(message,'error');window.msg=message;kl.refresh()}}
+async function deleteMyData(){if(!window.fb?.deleteAccount){window.showLLNotice?.('Account deletion is available after signing in.','error');return}if(!confirm('Delete your cloud learning data and Little Learners Firebase account? This cannot be undone.'))return;try{await fb.deleteAccount()}catch(error){const message=error?.message||'Account deletion failed. Please try again.';window.showLLNotice?.(message,'error');window.msg=message;kl.refresh()}}
 addEventListener('error',e=>{const m=e.message||'Unknown JavaScript error',where=e.filename?(' @ '+e.filename+':'+(e.lineno||0)+':'+(e.colno||0)):'';const stack=e.error&&e.error.stack?String(e.error.stack):'';if(m!=='Script error.'&&m!=='Script error')window.lastErr=(m+where+(stack?'\\n'+stack:'' )).slice(0,3000);else if(e.filename)window.lastErr=('Cross-origin script error @ '+e.filename+':'+(e.lineno||0)+':'+(e.colno||0)+(stack?'\\n'+stack:'' )).slice(0,3000);if(window.kl)kl.refresh()});addEventListener('unhandledrejection',e=>{const r=e.reason;const detail=r&&typeof r==='object'?[r.code,r.message,r.stack].filter(Boolean).join('\\n'):String(r);window.lastErr=(detail||String(r)||'Unhandled promise rejection').slice(0,3000);if(window.kl)kl.refresh()});
 function signInClick(){
   if(window.fb&&fb.renderGoogle){gbtn();return}
@@ -540,8 +540,8 @@ window.msg = '⏳ Signing in securely…'; kl.refresh();
         const cloudKids = cloud.kids && typeof cloud.kids === 'object' ? cloud.kids : {};
         const localKids = choice === 'merge' && state.kids && typeof state.kids === 'object' ? state.kids : {};
         const validKids = source => Object.fromEntries(Object.entries(source).filter(([, kid]) =>
-          kid && typeof kid === 'object' && typeof kid.name === 'string' && kid.name.trim().length <= 12 &&
-          Number.isFinite(kid.stars) && Number.isInteger(kid.stars) && kid.stars >= 0
+          kid && typeof kid === 'object' && typeof kid.name === 'string' && kid.name.trim().length > 0 && kid.name.trim().length <= 12 &&
+          Number.isFinite(kid.stars) && Number.isInteger(kid.stars) && kid.stars >= 0 && kid.stars <= 100000
         ).slice(0,10));
         const mergedKids = window.LLProgress.mergeKids(validKids(localKids), validKids(cloudKids), deviceId);
         for (const kid of Object.values(mergedKids)) {
@@ -553,13 +553,14 @@ window.msg = '⏳ Signing in securely…'; kl.refresh();
           const localSettingsTimestamp=Number(state.settingsUpdatedAt)||0;
           const remoteSettingsTimestamp=Number(cloud.settingsUpdatedAt)||0;
           if (choice !== 'merge' || remoteSettingsTimestamp > localSettingsTimestamp) {
-            if (['en', 'hi', 'both'].includes(cloud.settings.lang)) state.lang = cloud.settings.lang;
-            if (cloud.settings.sound === 0 || cloud.settings.sound === 1) state.sound = cloud.settings.sound;
+            state.lang = ['en', 'hi', 'both'].includes(cloud.settings.lang) ? cloud.settings.lang : 'both';
+            state.sound = cloud.settings.sound === 0 || cloud.settings.sound === 1 ? cloud.settings.sound : 1;
             state.settingsUpdatedAt=remoteSettingsTimestamp;
           }
           window.savedSettingsSignature=JSON.stringify({lang:state.lang,sound:state.sound});
         } else if (choice !== 'merge') {
-          state.lang = 'both'; state.sound = 1;
+          state.lang = 'both'; state.sound = 1; state.settingsUpdatedAt=0;
+          window.savedSettingsSignature=JSON.stringify({lang:state.lang,sound:state.sound});
         }
         const hasConfiguredChild = Object.values(state.kids).some(kid => kid.name && kid.name !== 'Me');
         state.ob = hasConfiguredChild ? 1 : 0;
