@@ -610,19 +610,20 @@ window.msg = '⏳ Signing in securely…'; kl.refresh();
         const childDocs = await dbSdk.getDocs(kidCollectionRef(user.uid));
         let cloudKids = Object.fromEntries(childDocs.docs.map(child => [child.id, child.data()]));
         if (childDocs.empty && cloud.kids && typeof cloud.kids === 'object') {
-          // One-time migration from users/{uid}.kids to users/{uid}/kids/{kidId}.
+          // Publish the allowed child IDs first, then migrate each child, then remove legacy fields.
           cloudKids = validKids(cloud.kids);
+          await dbSdk.updateDoc(ref, {email:dbSdk.deleteField(), displayName:dbSdk.deleteField(), kidIds:Object.keys(cloudKids).slice(0,10), schemaVersion:3, updatedAt:Date.now()});
           for (const [childId, childData] of Object.entries(cloudKids)) {
             await dbSdk.runTransaction(db, async transaction => {
               const childRef = kidRef(user.uid, childId), childSnap = await transaction.get(childRef);
               if (!childSnap.exists()) transaction.set(childRef, childData);
             });
           }
-          await dbSdk.updateDoc(ref, {kids: dbSdk.deleteField(), email: dbSdk.deleteField(), displayName: dbSdk.deleteField(), kidIds: Object.keys(cloudKids).slice(0,10), schemaVersion: 3, updatedAt: Date.now()});
+          await dbSdk.updateDoc(ref, {kids:dbSdk.deleteField(), updatedAt:Date.now()});
           window.cloudStatus = 'migrated legacy profile';
         }
-        if (snapshot.exists() && !Array.isArray(cloud.kidIds)) {
-          await dbSdk.updateDoc(ref, {email:dbSdk.deleteField(), displayName:dbSdk.deleteField(), kidIds:Object.keys(cloudKids).slice(0,10), schemaVersion:3, updatedAt:Date.now()});
+        if (snapshot.exists() && !Array.isArray(cloud.kidIds) && !(cloud.kids && typeof cloud.kids === 'object')) {
+          await dbSdk.updateDoc(ref, {kids:dbSdk.deleteField(), email:dbSdk.deleteField(), displayName:dbSdk.deleteField(), kidIds:Object.keys(cloudKids).slice(0,10), schemaVersion:3, updatedAt:Date.now()});
         }
         const localKids = choice === 'merge' && state.kids && typeof state.kids === 'object' ? state.kids : {};
         const mergedKids = window.LLProgress.mergeKids(validKids(localKids), validKids(cloudKids), deviceId);
