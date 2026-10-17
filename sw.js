@@ -1,5 +1,5 @@
-const C='little-learners-v47';
-const F=['./?section=alphabets','./?section=numbers','./?section=varnamala','./','index.html','manifest.webmanifest','firebase-config.js','progress-model.js','privacy.html','audio/manifest.json','icon-192.png','icon-512.png'];
+const C='little-learners-v48';
+const F=['./?section=alphabets','./?section=numbers','./?section=varnamala','./','index.html','manifest.webmanifest','firebase-config.js','progress-model.js','privacy.html','audio/manifest.json','screenshots/little-learners-desktop.png','screenshots/little-learners-mobile.png','icon-192.png','icon-512.png'];
 
 self.addEventListener('install',event=>{
   event.waitUntil(caches.open(C).then(cache=>cache.addAll(F)));
