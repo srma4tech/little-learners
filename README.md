@@ -52,7 +52,7 @@ AI helpers are disabled until a parent enables them in the gated Parent settings
 
 ## GitHub Pages deployment
 
-The site is served from the repository root on branch `master`; there is no build step.
+The site is served from the repository root on branch `master`; there is no build step. Keep `index.html`, `sw.js`, `manifest.webmanifest`, `firebase-config.js`, `progress-model.js`, `privacy.html`, `audio/manifest.json`, and the icon files at the root or update all relative paths and cache entries.
 
 1. Commit the static files to `master` (or merge a reviewed pull request into `master`).
 2. Wait for the GitHub Pages deployment to finish under **Actions**.
@@ -63,7 +63,7 @@ Keep app files at the repository root unless the service-worker cache list and a
 
 ## Tests and CI
 
-The **Little Learners CI** workflow runs inline JavaScript syntax checks, progress-model tests, a private-credential scan, and required-file/auth-flow checks on pushes and pull requests targeting `master`. Its Playwright live smoke test checks the deployed page and responsive overflow; it does not perform real Google OAuth.
+The **Little Learners CI** workflow runs inline JavaScript syntax checks, progress-model tests, a private-credential scan, required-file/auth-flow checks, and Playwright user-flow tests on pushes and pull requests targeting `master`. The browser tests stub Firebase/GIS and cover onboarding, account migration, quizzes/rewards, the parent gate, child management, offline status, install prompt behavior, XSS escaping and local-only AI-key handling. The separate Playwright live smoke test checks the deployed page and responsive overflow; it does not perform real Google OAuth.
 
 Run the existing progress-model unit tests locally:
 
