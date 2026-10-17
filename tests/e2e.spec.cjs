@@ -65,7 +65,9 @@ async function startGuest(page) {
   await page.getByRole('button', { name: /Start learning/i }).click();
 }
 
-test('guest onboarding, quiz rewards, and section navigation work', async ({ page }) => {
+test('guest onboarding, quiz rewards, and section navigation work without console errors', async ({ page }) => {
+  const consoleErrors=[];
+  page.on('console', message=>{if(message.type()==='error')consoleErrors.push(message.text())});
   await stubFirebase(page);
   await startGuest(page);
   await expect(page.getByRole('button', { name: /Open Alphabets learning section/i })).toBeVisible();
@@ -77,6 +79,7 @@ test('guest onboarding, quiz rewards, and section navigation work', async ({ pag
     if (round < 4) await expect(page.getByText(new RegExp('Round ' + (round + 2) + '/5'))).toBeVisible({ timeout: 4000 });
   }
   await expect(page.getByText(/Wonderful learning/i)).toBeVisible({ timeout: 5000 });
+  expect(consoleErrors).toEqual([]);
 });
 
 test('new Google account remains on child setup until a child is saved', async ({ page }) => {
@@ -121,6 +124,9 @@ test('offline indicator appears and manifest/icons are reachable', async ({ page
   await page.context().setOffline(false);
   const manifest = await page.request.get('http://127.0.0.1:4173/manifest.webmanifest');
   expect(manifest.ok()).toBeTruthy();
+  const devtools=await page.context().newCDPSession(page);
+  const manifestCheck=await devtools.send('Page.getAppManifest');
+  expect(manifestCheck.errors||[]).toEqual([]);
   expect((await page.request.get('http://127.0.0.1:4173/icon-192.png')).ok()).toBeTruthy();
   expect((await page.request.get('http://127.0.0.1:4173/icon-512.png')).ok()).toBeTruthy();
 });
