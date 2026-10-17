@@ -618,11 +618,11 @@ window.msg = '⏳ Signing in securely…'; kl.refresh();
               if (!childSnap.exists()) transaction.set(childRef, childData);
             });
           }
-          await dbSdk.updateDoc(ref, {kids: dbSdk.deleteField(), kidIds: Object.keys(cloudKids).slice(0,10), schemaVersion: 3, updatedAt: Date.now()});
+          await dbSdk.updateDoc(ref, {kids: dbSdk.deleteField(), email: dbSdk.deleteField(), displayName: dbSdk.deleteField(), kidIds: Object.keys(cloudKids).slice(0,10), schemaVersion: 3, updatedAt: Date.now()});
           window.cloudStatus = 'migrated legacy profile';
         }
         if (snapshot.exists() && !Array.isArray(cloud.kidIds)) {
-          await dbSdk.updateDoc(ref, {kidIds:Object.keys(cloudKids).slice(0,10), schemaVersion:3, updatedAt:Date.now()});
+          await dbSdk.updateDoc(ref, {email:dbSdk.deleteField(), displayName:dbSdk.deleteField(), kidIds:Object.keys(cloudKids).slice(0,10), schemaVersion:3, updatedAt:Date.now()});
         }
         const localKids = choice === 'merge' && state.kids && typeof state.kids === 'object' ? state.kids : {};
         const mergedKids = window.LLProgress.mergeKids(validKids(localKids), validKids(cloudKids), deviceId);
