@@ -589,7 +589,7 @@ window.msg = '⏳ Signing in securely…'; kl.refresh();
             };
             localStorage.setItem('kl_guest', JSON.stringify(guestSnapshot));
             localStorage.setItem('kl_guest_backup_v1', JSON.stringify(guestSnapshot));
-            const meaningful = Object.values(guestSnapshot.kids).some(k => k && ((k.name && k.name !== 'Me') || Number(k.stars) > 0));
+            const meaningful = Object.entries(guestSnapshot.kids||{}).some(([id,k]) => k && (id !== 'me' || (k.name && k.name !== 'Me') || Number(k.stars) > 0 || Object.keys(k.mastery||{}).length > 0 || Object.keys(k.badges||{}).length > 0 || Object.keys(k.timeByDay||{}).length > 0 || !!k.daily?.lastDate || !!k.deletedAt)) || guestSnapshot.lang !== 'both' || guestSnapshot.sound !== 1;
             if (meaningful && !lastUid) {
               choice = window.confirm(
                 'Add this device’s kids to your account?\n\nOK: Add\nCancel: Keep account only (guest data stays on this device).') ? 'merge' : 'account';
