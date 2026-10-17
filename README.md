@@ -5,8 +5,8 @@ A child-friendly, installable learning PWA for children aged 4–5. It covers En
 - **Live app:** https://srma4tech.github.io/little-learners/
 - **Repository:** https://github.com/srma4tech/little-learners
 - **Deployment branch:** `master` (GitHub Pages serves the repository root)
-- **Current build:** `2026.10.17.2`
-- **Service-worker cache:** `little-learners-v45`
+- **Current build:** `2026.10.17.3`
+- **Service-worker cache:** `little-learners-v46`
 
 ## Use the app
 
