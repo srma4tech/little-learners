@@ -200,8 +200,24 @@ function signInClick(){
 window.kl={authed(isAuthenticated){if(!st.ob&&st.step<2)st.step=2;save();hdr();if(st.ob&&onbActive)home();else if(!st.ob&&onbActive)onb()},err(e){const c=e&&e.code||'';window.lastErr=c||(e&&e.message)||String(e);const m={'auth/operation-not-allowed':'Google sign-in is not enabled yet: Firebase > Authentication > Sign-in method > Google > Enable.','auth/unauthorized-domain':'Add srma4tech.github.io in Firebase > Authentication > Settings > Authorized domains.','auth/popup-blocked':'The browser blocked the sign-in popup. Allow popups for this site and try again.','auth/invalid-api-key':'The apiKey in firebase-config.js looks wrong.','auth/network-request-failed':'No internet connection.','auth/timeout':'Google sign-in did not complete within 45 seconds. Reload this page before retrying; if it repeats, open the site in a regular Chrome tab instead of the installed app.','auth/gapi-context-failure':'Google sign-in could not initialize its browser iframe (getContext error). Reload this page and try again; if it repeats, open the site in a regular Chrome tab instead of the installed app.','auth/iframe-failure':'Google sign-in hit a browser iframe initialization error. Reload this page before retrying.'};if(c=='auth/popup-closed-by-user'||c=='auth/cancelled-popup-request')return;st.err=m[c]||('Sign-in failed: '+(c||e&&e.message||e));kl.refresh()},st:()=>st,save,refresh:()=>{hdr();if(!st.ob&&onbActive)onb();else if(app.textContent.includes('Parent corner'))parent()}};
 if('serviceWorker' in navigator)addEventListener('load',()=>{
   navigator.serviceWorker.register('./sw.js')
-    .then(()=>navigator.serviceWorker.ready)
-    .then(()=>{window.swS='active'})
+    .then(registration=>{
+      window.swS='active';
+      const offerUpdate=worker=>{
+        if(!worker)return;
+        const toast=document.getElementById('ll-toast');if(!toast)return;
+        toast.replaceChildren();
+        const label=document.createElement('span');label.textContent='New version available.';
+        const button=document.createElement('button');button.type='button';button.textContent='Reload';button.setAttribute('aria-label','Reload to install the new Little Learners version');
+        button.style.cssText='margin-left:10px;padding:6px 12px;border:0;border-radius:999px;font-weight:800;cursor:pointer;min-height:36px';
+        button.addEventListener('click',()=>{navigator.serviceWorker.addEventListener('controllerchange',()=>location.reload(),{once:true});worker.postMessage({type:'SKIP_WAITING'});});
+        toast.append(label,button);toast.style.display='flex';toast.style.alignItems='center';toast.style.justifyContent='center';toast.classList.add('visible');toast.dataset.kind='info';
+      };
+      if(registration.waiting&&navigator.serviceWorker.controller)offerUpdate(registration.waiting);
+      registration.addEventListener('updatefound',()=>{
+        const worker=registration.installing;if(!worker)return;
+        worker.addEventListener('statechange',()=>{if(worker.state==='installed'&&navigator.serviceWorker.controller)offerUpdate(registration.waiting||worker)});
+      });
+    })
     .catch(()=>{window.swS='unavailable'});
 });
 hdr();st.ob?home():onb();
