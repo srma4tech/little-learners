@@ -1,1 +1,84 @@
-{"id":"./","name":"Little Learners","short_name":"Little Learners","description":"Alphabets, Varnamala, numbers, fruits, animals and manners for little kids","start_url":"./","scope":"./","display":"standalone","orientation":"any","background_color":"#fff8e7","theme_color":"#7c4dff","lang":"en","categories":["education","kids"],"icons":[{"src":"icon-192.png","sizes":"192x192","type":"image/png","purpose":"any"},{"src":"icon-512.png","sizes":"512x512","type":"image/png","purpose":"any"},{"src":"icon-192.png","sizes":"192x192","type":"image/png","purpose":"maskable"},{"src":"icon-512.png","sizes":"512x512","type":"image/png","purpose":"maskable"}]}
+{
+  "id": "./",
+  "name": "Little Learners",
+  "short_name": "Little Learners",
+  "description": "Alphabets, Varnamala, numbers, fruits, animals and manners for little kids",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#fff8e7",
+  "theme_color": "#7c4dff",
+  "lang": "en",
+  "categories": [
+    "education",
+    "kids"
+  ],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Learn Alphabets",
+      "short_name": "Alphabets",
+      "description": "Practice English letters",
+      "url": "./?section=alphabets",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Learn Numbers",
+      "short_name": "Numbers",
+      "description": "Practice numbers",
+      "url": "./?section=numbers",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Learn Varnamala",
+      "short_name": "Varnamala",
+      "description": "Practice Hindi letters",
+      "url": "./?section=varnamala",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ]
+}
