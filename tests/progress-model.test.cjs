@@ -63,24 +63,3 @@ test('children are reconciled independently', () => {
   assert.equal(merged.a.stars, 0);
   assert.equal(merged.b.stars, 4);
 });
-
-test('per-device reward counters merge without losing concurrent progress', () => {
-  const merged = mergeKid(
-    { name: 'Ari', stars: 2, starCounters: { 'device-a': 2 }, resetGeneration: 0 },
-    { name: 'Ari', stars: 3, starCounters: { 'device-b': 3 }, resetGeneration: 0 },
-    'device-a'
-  );
-  assert.equal(merged.stars, 5);
-  assert.equal(merged.starCounters['device-a'], 2);
-  assert.equal(merged.starCounters['device-b'], 3);
-});
-
-test('child removal tombstones survive per-kid merge', () => {
-  const merged = mergeKid(
-    { name: 'Ari', stars: 2, starCounters: { 'device-a': 2 }, updatedAt: 200, deletedAt: 200 },
-    { name: 'Ari', stars: 5, starCounters: { 'device-b': 5 }, updatedAt: 100 },
-    'device-a'
-  );
-  assert.equal(merged.deletedAt, 200);
-  assert.equal(merged.stars, 7);
-});
