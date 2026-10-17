@@ -5,8 +5,8 @@ A child-friendly, installable learning PWA for children aged 4–5. It covers En
 - **Live app:** https://srma4tech.github.io/little-learners/
 - **Repository:** https://github.com/srma4tech/little-learners
 - **Deployment branch:** `master` (GitHub Pages serves the repository root)
-- **Current build:** `2026.10.17.3`
-- **Service-worker cache:** `little-learners-v46`
+- **Current build:** `2026.10.17.5`
+- **Service-worker cache:** `little-learners-v47`
 
 ## Use the app
 
@@ -45,6 +45,10 @@ The rules restrict reads and writes to the signed-in owner of `users/{uid}`, val
 Read [the privacy policy](./privacy.html). Guest progress is stored locally. Signed-in progress is stored in the account's Firestore profile. Parent settings include **Delete my data and account**; Firebase may require a fresh sign-in before it will delete the Authentication user. If that happens, sign in again and retry. Clearing browser storage and deleting cloud data are separate operations.
 
 No ads or third-party analytics/tracking are included.
+
+### Experimental AI helpers
+
+AI helpers are disabled until a parent enables them in the gated Parent settings. A parent may paste their own Gemini API key; it is stored only in this browser's local storage and is not included in Firestore sync or repository files. Requests go directly from the browser to Google's Gemini API, so Google receives the prompt and the supplied key is exposed to the browser environment. API usage may incur charges or quota limits. Generated stories and quiz questions can be inaccurate or unsuitable despite prompt and output filtering; a parent must review every result before showing it to a child. Remove the key from Parent settings when it is no longer needed. This browser-only integration has no server-side secret protection.
 
 ## GitHub Pages deployment
 
