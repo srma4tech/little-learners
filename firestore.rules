@@ -1,37 +1,68 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /users/{uid} {
-      function signedInOwner() {
-        return request.auth != null && request.auth.uid == uid;
-      }
-      function validProfile() {
-        return request.resource.data.keys().hasOnly([
-          'kids', 'settings', 'schemaVersion', 'createdAt', 'updatedAt',
-          'email', 'displayName'
+    function signedInOwner(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+
+    function validKid(kid) {
+      return kid is map
+        && kid.keys().hasOnly([
+          'name', 'stars', 'starCounters', 'resetGeneration', 'resetId',
+          'pendingResetId', 'progressResetAt', 'updatedAt'
         ])
-        && request.resource.data.kids is map
-        && request.resource.data.kids.size() <= 10
+        && kid.keys().hasAll(['name', 'stars'])
+        && kid.name is string
+        && kid.name.size() <= 12
+        && kid.stars is int
+        && kid.stars >= 0
+        && kid.stars <= 100000
+        && (!('resetGeneration' in kid) || (kid.resetGeneration is int && kid.resetGeneration >= 0))
+        && (!('updatedAt' in kid) || kid.updatedAt is number)
+        && (!('progressResetAt' in kid) || kid.progressResetAt is number)
+        && (!('resetId' in kid) || kid.resetId is string || kid.resetId == null)
+        && (!('pendingResetId' in kid) || kid.pendingResetId is string || kid.pendingResetId == null)
+        && (!('starCounters' in kid) || kid.starCounters is map);
+    }
+
+    function validKids(kids) {
+      return kids is map
+        && kids.size() <= 10
+        && (kids.size() < 1 || validKid(kids[kids.keys().toList()[0]]))
+        && (kids.size() < 2 || validKid(kids[kids.keys().toList()[1]]))
+        && (kids.size() < 3 || validKid(kids[kids.keys().toList()[2]]))
+        && (kids.size() < 4 || validKid(kids[kids.keys().toList()[3]]))
+        && (kids.size() < 5 || validKid(kids[kids.keys().toList()[4]]))
+        && (kids.size() < 6 || validKid(kids[kids.keys().toList()[5]]))
+        && (kids.size() < 7 || validKid(kids[kids.keys().toList()[6]]))
+        && (kids.size() < 8 || validKid(kids[kids.keys().toList()[7]]))
+        && (kids.size() < 9 || validKid(kids[kids.keys().toList()[8]]))
+        && (kids.size() < 10 || validKid(kids[kids.keys().toList()[9]]));
+    }
+
+    function validProfile() {
+      return request.resource.data.keys().hasOnly([
+          'kids', 'settings', 'schemaVersion', 'createdAt', 'updatedAt',
+          'settingsUpdatedAt'
+        ])
+        && request.resource.data.keys().hasAll(['kids', 'settings', 'updatedAt'])
+        && validKids(request.resource.data.kids)
         && request.resource.data.settings is map
         && request.resource.data.settings.keys().hasOnly(['lang', 'sound'])
+        && request.resource.data.settings.keys().hasAll(['lang', 'sound'])
         && request.resource.data.settings.lang in ['en', 'hi', 'both']
-        && request.resource.data.settings.sound is number
+        && request.resource.data.settings.sound is int
         && request.resource.data.settings.sound in [0, 1]
         && request.resource.data.updatedAt is number
-        && (!('createdAt' in request.resource.data)
-          || request.resource.data.createdAt is number)
-        && (!('schemaVersion' in request.resource.data)
-          || request.resource.data.schemaVersion == 2)
-        && (!('email' in request.resource.data)
-          || request.resource.data.email is string
-          || request.resource.data.email == null)
-        && (!('displayName' in request.resource.data)
-          || request.resource.data.displayName is string
-          || request.resource.data.displayName == null);
-      }
-      allow read: if signedInOwner();
-      allow create, update: if signedInOwner() && validProfile();
-      allow delete: if signedInOwner();
+        && (!('settingsUpdatedAt' in request.resource.data) || request.resource.data.settingsUpdatedAt is number)
+        && (!('createdAt' in request.resource.data) || request.resource.data.createdAt is number)
+        && (!('schemaVersion' in request.resource.data) || request.resource.data.schemaVersion == 2);
+    }
+
+    match /users/{uid} {
+      allow read: if signedInOwner(uid);
+      allow create, update: if signedInOwner(uid) && validProfile();
+      allow delete: if signedInOwner(uid);
     }
   }
 }
