@@ -118,25 +118,3 @@ jobs:
           path: artifacts/screenshots/*.png
           if-no-files-found: ignore
           retention-days: 14
-      - name: Commit manifest screenshots to the same-repository PR branch
-        if: success() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          HEAD_REF: ${{ github.head_ref }}
-          REPOSITORY: ${{ github.repository }}
-        run: |
-          mkdir -p /tmp/little-learners-screenshots
-          cp artifacts/screenshots/*.png /tmp/little-learners-screenshots/
-          git fetch origin "$HEAD_REF"
-          git checkout -B "$HEAD_REF" FETCH_HEAD
-          mkdir -p screenshots
-          cp /tmp/little-learners-screenshots/*.png screenshots/
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add screenshots/little-learners-desktop.png screenshots/little-learners-mobile.png
-          if git diff --cached --quiet; then
-            echo "Screenshot assets are already current."
-            exit 0
-          fi
-          git commit -m "chore(E6): add install screenshots"
-          git push "https://x-access-token:${GH_TOKEN}@github.com/${REPOSITORY}.git" "HEAD:${HEAD_REF}"
