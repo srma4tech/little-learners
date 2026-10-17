@@ -203,3 +203,35 @@ test('capture desktop and mobile app screenshots for PWA metadata', async ({ pag
   await page.setViewportSize({ width: 390, height: 844 });
   await page.screenshot({ path: 'artifacts/screenshots/little-learners-mobile.png', fullPage: true });
 });
+
+async function reopenWelcome(page) {
+  await page.evaluate(() => {
+    const state=JSON.parse(localStorage.getItem('kl')||'{}');
+    state.ob=0;state.step=0;
+    localStorage.setItem('kl',JSON.stringify(state));
+  });
+  await page.reload();
+  await page.getByRole('button', { name: /Let's start/i }).click();
+}
+test('sign-in offers to add guest progress and merges it when accepted', async ({ page }) => {
+  await stubFirebase(page);
+  await startGuest(page);
+  await reopenWelcome(page);
+  page.once('dialog', dialog => dialog.accept());
+  await page.getByRole('button', { name: 'Sign in with Google (stub)' }).click();
+  await expect(page.getByRole('heading', { name: /Hello, Ari/i })).toBeVisible({timeout:5000});
+  await expect.poll(() => page.evaluate(() => {
+    const docs=JSON.parse(localStorage.getItem('__ll_firestore_mock')||'{}');
+    return Object.values(docs).some(kid=>kid&&kid.name==='Ari');
+  })).toBeTruthy();
+});
+test('keeping account-only preserves the guest backup on the device', async ({ page }) => {
+  await stubFirebase(page);
+  await startGuest(page);
+  await reopenWelcome(page);
+  page.once('dialog', dialog => dialog.dismiss());
+  await page.getByRole('button', { name: 'Sign in with Google (stub)' }).click();
+  await expect(page.getByRole('heading', { name: /Who is learning/i })).toBeVisible({timeout:5000});
+  const backup=await page.evaluate(()=>JSON.parse(localStorage.getItem('kl_guest_backup_v1')||'{}'));
+  expect(backup.kids?.me?.name).toBe('Ari');
+});
