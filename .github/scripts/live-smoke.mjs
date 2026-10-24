@@ -208,8 +208,10 @@ try {
       // origin allowlist. Ignore only known Google Identity / blocked auth noise;
       // application JavaScript errors remain fatal.
       if (/\\[GSI_LOGGER\\].*origin is not allowed/i.test(text)) return;
-      if (/Failed to load resource: the server responded with a status of 403/i.test(text)) return;
-      errors.push({ width, type: "console", message: text });
+      const sourceUrl = message.location()?.url || "";
+      if (/Failed to load resource: the server responded with a status of 403/i.test(text)
+          && /accounts\\.google\\.com|googleapis\\.com|gstatic\\.com/i.test(sourceUrl)) return;
+      errors.push({ width, type: "console", message: text, url: sourceUrl });
     });
     page.on("requestfailed", request => {
       const failed = request.failure()?.errorText || "request failed";
