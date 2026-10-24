@@ -2,7 +2,7 @@ import { chromium } from "playwright";
 import fs from "node:fs";
 import path from "node:path";
 
-const baseUrl = "https://srma4tech.github.io/little-learners/";
+const baseUrl = process.env.LL_SMOKE_BASE_URL || "https://srma4tech.github.io/little-learners/";
 // Derive the release markers from the checked-out source instead of maintaining
 // duplicate constants that drift after routine releases.
 const sourceHtml = fs.readFileSync("index.html", "utf8");
@@ -70,7 +70,48 @@ async function checkInteractiveControls(page, width, screen) {
   if (unnamed.length || undersized.length) throw new Error("Accessibility/tap-target check failed at " + width + "px on " + screen + ": " + JSON.stringify({ unnamed, undersized }));
 }
 
+async function checkCompactHomeAndNavigation(page, width) {
+  if (width > 400) return;
+  const result = await page.evaluate(() => {
+    const nav = document.querySelector(".footer-nav");
+    const navRect = nav?.getBoundingClientRect();
+    const buttons = [...(nav?.querySelectorAll("button") || [])];
+    const labels = buttons.map(button => {
+      const label = button.querySelector("span:last-child");
+      return {
+        label: label?.textContent?.trim() || "",
+        fits: !!label && label.getBoundingClientRect().width <= button.getBoundingClientRect().width - 4,
+        buttonFits: button.scrollWidth <= button.clientWidth + 1,
+        hasSeparateIcon: !!button.querySelector('span[aria-hidden="true"]')
+      };
+    });
+    const tiles = [...document.querySelectorAll("#app .tile")];
+    const lastTile = tiles.at(-1)?.getBoundingClientRect();
+    return {
+      navVisible: !!nav && getComputedStyle(nav).display !== "none" && navRect.width > 0,
+      navWithinViewport: !!navRect && navRect.top >= 0 && navRect.bottom <= window.innerHeight + 1,
+      labels,
+      tileCount: tiles.length,
+      lastTileBottom: lastTile?.bottom ?? null,
+      navTop: navRect?.top ?? null,
+      homeTilesClearOfNavigation: !!lastTile && !!navRect && lastTile.bottom <= navRect.top - 4
+    };
+  });
+  const labelsFit = result.labels.length === 4 && result.labels.every(label => label.fits && label.buttonFits && label.hasSeparateIcon);
+  const passed = result.navVisible && result.navWithinViewport && labelsFit && result.homeTilesClearOfNavigation;
+  viewportResults.push({ width, screen: "compact-home-navigation", passed, ...result });
+  if (!passed) {
+    throw new Error("Compact home/navigation layout failed at " + width + "px: " + JSON.stringify({ ...result, labelsFit }));
+  }
+}
+
 async function enterGuestFlow(page) {
+  // Wait for Firebase's initial auth-state callback so its guest-mode refresh
+  // cannot rerender onboarding in the middle of the name-entry interaction.
+  await page.waitForFunction(
+    () => window.cloudStatus === "signed out" || window.fbStatus === "Firebase: failed to load",
+    { timeout: 15000 }
+  );
   const start = page.getByRole("button", { name: /let's start/i });
   if (await start.isVisible().catch(() => false)) await start.click();
   const guest = page.getByRole("button", { name: /skip, continue as guest/i });
@@ -80,6 +121,9 @@ async function enterGuestFlow(page) {
   const finish = page.getByRole("button", { name: /start learning/i });
   if (await finish.isVisible().catch(() => false)) await finish.click();
   await page.getByRole("button", { name: /alphabets/i }).first().waitFor({ state: "visible", timeout: 15000 });
+  if (!(await page.locator("#kid").innerText()).includes("QA Kid")) {
+    throw new Error("Guest onboarding did not save the configured child name before reload");
+  }
 }
 
 try {
@@ -108,6 +152,7 @@ try {
     await checkInteractiveControls(page, width, "home");
     const tiles = page.locator("#app .tile");
     if (await tiles.count() < 7) throw new Error("Expected all learning categories on home");
+    await checkCompactHomeAndNavigation(page, width);
     await page.screenshot({ path: path.join(out, `ui-${width}-home.png`), fullPage: true });
 
     await page.getByRole("button", { name: /alphabets/i }).first().click();

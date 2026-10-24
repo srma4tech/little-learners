@@ -104,11 +104,25 @@ button{overflow-wrap:anywhere}
   .category-bar>.btn:first-child{grid-column:1;grid-row:2;justify-self:start}
   .category-bar>.btn:last-child{grid-column:2;grid-row:2;justify-self:end}
 }
+
+/* Keep the compact-phone dashboard above the fixed navigation without shrinking desktop tiles. */
+@media(max-width:400px){
+  .grid{gap:8px}
+  .tile{min-height:100px;padding:8px 5px;font-size:17px}
+  .tile span{font-size:36px;line-height:1.1}
+  .tile small{font-size:13px}
+}
+/* Explicit icon/label rows prevent the mobile navigation text splitting at narrow widths. */
+.footer-nav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-width:0;white-space:nowrap;line-height:1.1}
+.footer-nav button span:last-child{display:block;white-space:nowrap}
+@media(max-width:360px){
+  .footer-nav button{padding:8px 2px;font-size:12px}
+}
 </style></head><body>
 <a class="skip-link" href="#app">Skip to main content</a>
 <header aria-label="Little Learners header"><button class="pill" type="button" aria-label="Go to home" title="Home" onclick="home()">🏠</button><span class="pill" id="stars" aria-live="polite" aria-label="Stars earned"></span><span><button class="pill" id="inst" type="button" aria-label="Install Little Learners" title="Install app" style="display:none" onclick="doInstall()">📲 Install</button> <button class="pill" id="kid" type="button" aria-label="Select child profile" title="Child profile" onclick="profiles()"></button> <button class="pill" type="button" aria-label="Open stickers" title="Stickers" onclick="stickers()">🎁</button> <button class="pill" type="button" aria-label="Open parent settings" title="Parent settings" onclick="gate()">⚙️</button></span></header>
 <main id="app" tabindex="-1"></main><div id="ll-toast" class="ll-toast" role="status" aria-live="polite" aria-atomic="true"></div>
-<footer class="site-footer" aria-label="Site footer"><nav class="footer-nav" aria-label="Primary navigation"><button type="button" onclick="home()">🏠 Home</button><button type="button" onclick="profiles()">👤 Profile</button><button type="button" onclick="stickers()">🎁 Stickers</button><button type="button" onclick="gate()">⚙️ Parents</button></nav><p class="footer-version" aria-label="Application version">Version 2026.10.18.1</p><p class="footer-copy">Little Learners · Learn, play and grow 🌱<br>Alphabets · हिंदी वर्णमाला · Numbers · Animals · Good manners</p></footer>
+<footer class="site-footer" aria-label="Site footer"><nav class="footer-nav" aria-label="Primary navigation"><button type="button" aria-label="Home" onclick="home()"><span aria-hidden="true">🏠</span><span>Home</span></button><button type="button" aria-label="Profile" onclick="profiles()"><span aria-hidden="true">👤</span><span>Profile</span></button><button type="button" aria-label="Stickers" onclick="stickers()"><span aria-hidden="true">🎁</span><span>Stickers</span></button><button type="button" aria-label="Parents" onclick="gate()"><span aria-hidden="true">⚙️</span><span>Parents</span></button></nav><p class="footer-version" aria-label="Application version">Version 2026.10.24.1</p><p class="footer-copy">Little Learners · Learn, play and grow 🌱<br>Alphabets · हिंदी वर्णमाला · Numbers · Animals · Good manners</p></footer>
 <script src="./progress-model.js"></script>
 <script>
 let llToastTimer;
