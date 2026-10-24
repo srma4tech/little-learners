@@ -3,8 +3,15 @@ import fs from "node:fs";
 import path from "node:path";
 
 const baseUrl = "https://srma4tech.github.io/little-learners/";
-const expectedVersion = "2026.10.13.5";
-const expectedCache = "little-learners-v43";
+// Derive the release markers from the checked-out source instead of maintaining
+// duplicate constants that drift after routine releases.
+const sourceHtml = fs.readFileSync("index.html", "utf8");
+const sourceServiceWorker = fs.readFileSync("sw.js", "utf8");
+const expectedVersion = sourceHtml.match(/2026\.\d{2}\.\d{2}\.\d+/)?.[0];
+const expectedCache = sourceServiceWorker.match(/little-learners-v\d+/)?.[0];
+if (!expectedVersion || !expectedCache) {
+  throw new Error("Could not determine expected release version/cache from checked-out source.");
+}
 const out = "artifacts";
 fs.mkdirSync(out, { recursive: true });
 const errors = [];
