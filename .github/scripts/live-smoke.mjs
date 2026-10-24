@@ -237,6 +237,12 @@ try {
     await page.screenshot({ path: path.join(out, `ui-${width}-home.png`), fullPage: true });
     // Grade 1 reading vertical slice: verify the bilingual story, vocabulary, and gentle retry.
     await page.locator('[data-reading-tile]').click();
+    await page.getByRole('heading', { name: /choose a story/i }).waitFor({ state: 'visible', timeout: 10000 });
+    if (await page.locator('[data-story-id]').count() !== 8) throw new Error('Reading library should show all eight stories');
+    await page.getByRole('button', { name: /The Missing Pencil/i }).click();
+    await page.getByRole('heading', { name: 'The Missing Pencil' }).waitFor({ state: 'visible', timeout: 10000 });
+    await page.getByRole('button', { name: /all stories/i }).click();
+    await page.getByRole('button', { name: /A Seed for Mina/i }).click();
     await page.getByRole('heading', { name: 'A Seed for Mina' }).waitFor({ state: 'visible', timeout: 10000 });
     if (await page.locator('.reading-sentence').count() < 7) throw new Error('Reading story or first question did not render');
     await page.getByRole('button', { name: /show reading tip/i }).click();
@@ -254,6 +260,12 @@ try {
     await page.getByRole('heading', { name: 'मीना का बीज' }).waitFor({ state: 'visible' });
     await checkOverflow(page, width, 'grade-1-reading');
     await checkInteractiveControls(page, width, 'grade-1-reading');
+    await page.getByRole('button', { name: /सभी कहानियाँ/i }).click();
+    await page.getByRole('heading', { name: /choose a story/i }).waitFor({ state: 'visible', timeout: 10000 });
+    if (await page.locator('[data-story-id]').count() !== 8) throw new Error('Hindi reading library should show all eight stories');
+    await page.getByRole('button', { name: /मीना का बीज/i }).click();
+    await page.getByRole('heading', { name: 'मीना का बीज' }).waitFor({ state: 'visible' });
+    await checkOverflow(page, width, 'grade-1-reading-hindi');
     await page.locator('#app .bar button').first().click();
     await page.locator('#app .tile').first().waitFor({ state: 'visible', timeout: 10000 });
     await checkOverflow(page, width, 'home-after-reading');
