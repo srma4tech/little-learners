@@ -140,6 +140,12 @@ button{overflow-wrap:anywhere}
   .home-grid .tile small{font-size:clamp(10px,2.8vw,12px);line-height:1.1}
 }
 /* Keep the final interactive content above the fixed mobile navigation. */
+/* A real scroll tail is needed: padding alone can be swallowed by nested screen layouts. */
+@media(max-width:600px){
+  #app:not(:has(.home-grid))::after{content:"";display:block;flex:0 0 calc(112px + env(safe-area-inset-bottom,0px));min-height:calc(112px + env(safe-area-inset-bottom,0px))}
+  #app:has(.home-grid)::after{content:none}
+}
+
 @media(max-width:600px){
   #app{padding-bottom:calc(132px + env(safe-area-inset-bottom,0px))}
   #app:has(.home-grid){padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
