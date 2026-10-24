@@ -154,7 +154,9 @@ async function checkLastContentClearsNavigation(page, width, screen, selector) {
     const nav = document.querySelector(".footer-nav");
     const last = document.querySelector(selector);
     if (!app || !nav || !last) return { foundApp: !!app, foundNav: !!nav, foundLast: !!last };
-    last.scrollIntoView({ block: "end", behavior: "instant" });
+    /* The active screen can contain nested scrollable regions. Drive the app's
+       designated scroll container directly so this assertion tests the actual shell. */
+    app.scrollTop = app.scrollHeight;
     await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
     const lastRect = last.getBoundingClientRect();
     const navRect = nav.getBoundingClientRect();
@@ -163,6 +165,9 @@ async function checkLastContentClearsNavigation(page, width, screen, selector) {
       lastBottom: lastRect.bottom, navTop: navRect.top,
       lastClearsNavigation: lastRect.bottom <= navRect.top - 4,
       appCanScroll: app.scrollHeight > app.clientHeight,
+      appScrollTop: app.scrollTop,
+      appScrollHeight: app.scrollHeight,
+      appClientHeight: app.clientHeight,
       appBottom: app.getBoundingClientRect().bottom
     };
   }, selector);
