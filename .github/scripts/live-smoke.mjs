@@ -254,7 +254,7 @@ try {
     await page.getByRole('heading', { name: 'मीना का बीज' }).waitFor({ state: 'visible' });
     await checkOverflow(page, width, 'grade-1-reading');
     await checkInteractiveControls(page, width, 'grade-1-reading');
-    await page.getByRole('button', { name: /home/i }).first().click();
+    await page.locator('#app .bar button').first().click();
     await page.locator('#app .tile').first().waitFor({ state: 'visible', timeout: 10000 });
     await checkOverflow(page, width, 'home-after-reading');
 
