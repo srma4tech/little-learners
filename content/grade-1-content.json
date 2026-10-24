@@ -1,0 +1,1288 @@
+{
+  "schemaVersion": "1.0.0",
+  "contentPackId": "little-learners-grade-1-foundation",
+  "title": "Little Learners — Grade 1 Content Foundation",
+  "curriculumLevel": {
+    "grade": 1,
+    "typicalAge": "6–7",
+    "languageSupport": [
+      "en",
+      "hi"
+    ],
+    "positioning": "Primary-school practice companion; align pacing to the child's school syllabus and local curriculum."
+  },
+  "releaseStatus": "draft-content-pack",
+  "scope": {
+    "lessonCount": 25,
+    "questionCount": 75,
+    "strandCount": 7
+  },
+  "learningPrinciples": [
+    "Short, concrete lessons with one main idea at a time.",
+    "Use familiar, child-safe examples from home, school and the local environment.",
+    "Give supportive feedback and explain why an answer is correct.",
+    "Treat mistakes as part of learning; avoid shame, speed pressure and public rankings.",
+    "Keep English and Hindi learning strands distinct while allowing bilingual navigation.",
+    "Have an adult adapt difficulty and check that examples fit the child's curriculum."
+  ],
+  "strands": [
+    {
+      "id": "english",
+      "title": "English Language",
+      "icon": "🔤",
+      "ageBand": "6–7",
+      "goals": [
+        "Recognise and use letter sounds",
+        "Read simple words and sentences",
+        "Build everyday vocabulary"
+      ],
+      "lessons": [
+        {
+          "id": "eng-01",
+          "title": "Alphabet and letter sounds",
+          "concept": "Letters have names and sounds. Vowels are a, e, i, o and u; the other letters are consonants.",
+          "vocabulary": [
+            "letter",
+            "sound",
+            "vowel",
+            "consonant"
+          ],
+          "questions": [
+            {
+              "type": "multiple-choice",
+              "prompt": "Which letter begins the word sun?",
+              "options": [
+                "S",
+                "M",
+                "T"
+              ],
+              "answer": "S",
+              "explanation": "Sun begins with the /s/ sound."
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "Which one is a vowel?",
+              "options": [
+                "B",
+                "E",
+                "P"
+              ],
+              "answer": "E",
+              "explanation": "E is one of the five vowels."
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "Which word begins with the /m/ sound?",
+              "options": [
+                "map",
+                "top",
+                "sun"
+              ],
+              "answer": "map",
+              "explanation": "Map begins with the letter m."
+            }
+          ]
+        },
+        {
+          "id": "eng-02",
+          "title": "Short vowel words",
+          "concept": "Short vowel sounds help us read short words such as cat, bed, sit, hot and sun.",
+          "vocabulary": [
+            "cat",
+            "bed",
+            "sit",
+            "hot",
+            "sun"
+          ],
+          "questions": [
+            {
+              "type": "multiple-choice",
+              "prompt": "Which word rhymes with cat?",
+              "options": [
+                "hat",
+                "hen",
+                "cup"
+              ],
+              "answer": "hat",
+              "explanation": "Cat and hat share the ending sound."
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "Choose the word with a short i sound.",
+              "options": [
+                "pin",
+                "pan",
+                "pen"
+              ],
+              "answer": "pin",
+              "explanation": "Pin has the short i sound."
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "Which word completes this sentence? I sleep in a ___.",
+              "options": [
+                "bed",
+                "bag",
+                "bus"
+              ],
+              "answer": "bed",
+              "explanation": "A bed is where we sleep."
+            }
+          ]
+        },
+        {
+          "id": "eng-03",
+          "title": "Naming words and action words",
+          "concept": "Naming words name people, places, animals or things. Action words tell what someone or something does.",
+          "vocabulary": [
+            "naming word",
+            "action word",
+            "run",
+            "jump",
+            "teacher"
+          ],
+          "questions": [
+            {
+              "type": "multiple-choice",
+              "prompt": "Which is a naming word?",
+              "options": [
+                "teacher",
+                "run",
+                "blue"
+              ],
+              "answer": "teacher",
+              "explanation": "Teacher names a person."
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "Which word shows an action?",
+              "options": [
+                "jump",
+                "chair",
+                "apple"
+              ],
+              "answer": "jump",
+              "explanation": "Jump tells what someone can do."
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "Choose the action word: Birds ___ in the sky.",
+              "options": [
+                "fly",
+                "nest",
+                "blue"
+              ],
+              "answer": "fly",
+              "explanation": "Fly describes an action."
+            }
+          ]
+        },
+        {
+          "id": "eng-04",
+          "title": "Build a simple sentence",
+          "concept": "A sentence tells a complete idea. Begin with a capital letter and finish with a full stop, question mark or exclamation mark.",
+          "vocabulary": [
+            "sentence",
+            "capital letter",
+            "full stop",
+            "question"
+          ],
+          "questions": [
+            {
+              "type": "multiple-choice",
+              "prompt": "Which sentence is written correctly?",
+              "options": [
+                "The sun is hot.",
+                "the sun is hot",
+                "The sun is hot"
+              ],
+              "answer": "The sun is hot.",
+              "explanation": "It starts with a capital letter and ends with a full stop."
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "Which mark usually ends a question?",
+              "options": [
+                "?",
+                "!",
+                ","
+              ],
+              "answer": "?",
+              "explanation": "A question mark ends a question."
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "Choose the best word: I ___ a story.",
+              "options": [
+                "read",
+                "blue",
+                "soft"
+              ],
+              "answer": "read",
+              "explanation": "Read makes a meaningful sentence."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hindi",
+      "title": "हिंदी भाषा (Hindi)",
+      "icon": "अ",
+      "ageBand": "6–7",
+      "goals": [
+        "स्वर और व्यंजन पहचानना",
+        "सरल शब्द पढ़ना",
+        "छोटे वाक्य समझना"
+      ],
+      "lessons": [
+        {
+          "id": "hin-01",
+          "title": "स्वर पहचानें",
+          "concept": "हिंदी के मुख्य स्वर हैं: अ, आ, इ, ई, उ, ऊ, ऋ, ए, ऐ, ओ, औ. इन्हें पहचानें और बोलकर अभ्यास करें।",
+          "vocabulary": [
+            "स्वर",
+            "अ",
+            "आ",
+            "इ",
+            "ई"
+          ],
+          "questions": [
+            {
+              "type": "multiple-choice",
+              "prompt": "इनमें से स्वर कौन-सा है?",
+              "options": [
+                "आ",
+                "क",
+                "म"
+              ],
+              "answer": "आ",
+              "explanation": "आ एक स्वर है।"
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "'अनार' किस अक्षर से शुरू होता है?",
+              "options": [
+                "अ",
+                "इ",
+                "उ"
+              ],
+              "answer": "अ",
+              "explanation": "अनार का पहला अक्षर अ है।"
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "इनमें से कौन-सा स्वर है?",
+              "options": [
+                "ई",
+                "त",
+                "प"
+              ],
+              "answer": "ई",
+              "explanation": "ई एक स्वर है।"
+            }
+          ]
+        },
+        {
+          "id": "hin-02",
+          "title": "व्यंजन पहचानें",
+          "concept": "क, ख, ग, घ, च, ज, ट, ड, त, द, प, ब, म, य, र, ल, व, स, ह जैसे अक्षर व्यंजन हैं।",
+          "vocabulary": [
+            "व्यंजन",
+            "क",
+            "ग",
+            "म",
+            "स"
+          ],
+          "questions": [
+            {
+              "type": "multiple-choice",
+              "prompt": "इनमें से व्यंजन कौन-सा है?",
+              "options": [
+                "क",
+                "आ",
+                "ई"
+              ],
+              "answer": "क",
+              "explanation": "क एक व्यंजन है।"
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "'मछली' किस अक्षर से शुरू होता है?",
+              "options": [
+                "म",
+                "न",
+                "ल"
+              ],
+              "answer": "म",
+              "explanation": "मछली का पहला अक्षर म है।"
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "'कमल' का पहला अक्षर क्या है?",
+              "options": [
+                "क",
+                "म",
+                "ल"
+              ],
+              "answer": "क",
+              "explanation": "कमल क से शुरू होता है।"
+            }
+          ]
+        },
+        {
+          "id": "hin-03",
+          "title": "मात्रा वाले शब्द",
+          "concept": "मात्राएँ स्वर की ध्वनि को व्यंजन के साथ जोड़ती हैं। उदाहरण: का, कि, की, कु, कू, के, कै, को, कौ।",
+          "vocabulary": [
+            "मात्रा",
+            "किताब",
+            "सीता",
+            "फूल"
+          ],
+          "questions": [
+            {
+              "type": "multiple-choice",
+              "prompt": "'की' में कौन-सी मात्रा है?",
+              "options": [
+                "ी",
+                "ि",
+                "ु"
+              ],
+              "answer": "ी",
+              "explanation": "की में ई की मात्रा (ी) है।"
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "किस शब्द में 'ा' की मात्रा है?",
+              "options": [
+                "राम",
+                "दिन",
+                "कुल"
+              ],
+              "answer": "राम",
+              "explanation": "राम में आ की मात्रा है।"
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "'फूल' में कौन-सी मात्रा है?",
+              "options": [
+                "ू",
+                "ु",
+                "े"
+              ],
+              "answer": "ू",
+              "explanation": "फूल में ऊ की मात्रा (ू) है।"
+            }
+          ]
+        },
+        {
+          "id": "hin-04",
+          "title": "सरल वाक्य",
+          "concept": "छोटे वाक्य पढ़ें और उनका अर्थ समझें। उदाहरण: यह फल है। राम घर जाता है। मैं पानी पीता/पीती हूँ।",
+          "vocabulary": [
+            "वाक्य",
+            "फल",
+            "घर",
+            "पानी"
+          ],
+          "questions": [
+            {
+              "type": "multiple-choice",
+              "prompt": "'गाय घास खाती है।' कौन घास खाती है?",
+              "options": [
+                "गाय",
+                "बिल्ली",
+                "चिड़िया"
+              ],
+              "answer": "गाय",
+              "explanation": "वाक्य में गाय घास खाती है।"
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "पानी पीने के लिए क्या उपयोग करते हैं?",
+              "options": [
+                "गिलास",
+                "जूता",
+                "किताब"
+              ],
+              "answer": "गिलास",
+              "explanation": "हम गिलास से पानी पी सकते हैं।"
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "'यह ___ है।' सही शब्द चुनें: 🍎",
+              "options": [
+                "सेब",
+                "बस",
+                "घर"
+              ],
+              "answer": "सेब",
+              "explanation": "यह सेब है।"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mathematics",
+      "title": "Mathematics",
+      "icon": "🔢",
+      "ageBand": "6–7",
+      "goals": [
+        "Count and compare numbers",
+        "Add and subtract within 20",
+        "Recognise shapes, time and measurement"
+      ],
+      "lessons": [
+        {
+          "id": "math-01",
+          "title": "Numbers to 100",
+          "concept": "Count forward and backward, read number names, and understand tens and ones. For example, 34 has 3 tens and 4 ones.",
+          "vocabulary": [
+            "count",
+            "tens",
+            "ones",
+            "before",
+            "after"
+          ],
+          "questions": [
+            {
+              "type": "multiple-choice",
+              "prompt": "What number comes after 39?",
+              "options": [
+                "38",
+                "40",
+                "49"
+              ],
+              "answer": "40",
+              "explanation": "After 39 comes 40."
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "How many tens are in 46?",
+              "options": [
+                "4",
+                "6",
+                "46"
+              ],
+              "answer": "4",
+              "explanation": "46 has 4 tens and 6 ones."
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "Which number is smallest?",
+              "options": [
+                "27",
+                "72",
+                "37"
+              ],
+              "answer": "27",
+              "explanation": "27 is less than 37 and 72."
+            }
+          ]
+        },
+        {
+          "id": "math-02",
+          "title": "Addition within 20",
+          "concept": "Addition joins groups. Count on from the larger number, use objects, or draw dots to find the total.",
+          "vocabulary": [
+            "add",
+            "plus",
+            "total",
+            "altogether"
+          ],
+          "questions": [
+            {
+              "type": "multiple-choice",
+              "prompt": "7 + 5 = ?",
+              "options": [
+                "11",
+                "12",
+                "13"
+              ],
+              "answer": "12",
+              "explanation": "Seven and five make twelve."
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "There are 6 red balls and 3 blue balls. How many balls altogether?",
+              "options": [
+                "8",
+                "9",
+                "10"
+              ],
+              "answer": "9",
+              "explanation": "6 + 3 = 9 balls."
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "10 + 4 = ?",
+              "options": [
+                "6",
+                "14",
+                "15"
+              ],
+              "answer": "14",
+              "explanation": "Ten plus four equals fourteen."
+            }
+          ]
+        },
+        {
+          "id": "math-03",
+          "title": "Subtraction within 20",
+          "concept": "Subtraction means taking away or finding how many are left. Count backward or cross out objects.",
+          "vocabulary": [
+            "subtract",
+            "minus",
+            "left",
+            "difference"
+          ],
+          "questions": [
+            {
+              "type": "multiple-choice",
+              "prompt": "9 − 4 = ?",
+              "options": [
+                "5",
+                "6",
+                "13"
+              ],
+              "answer": "5",
+              "explanation": "Take four away from nine; five remain."
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "There are 12 mangoes. You eat 2. How many are left?",
+              "options": [
+                "9",
+                "10",
+                "14"
+              ],
+              "answer": "10",
+              "explanation": "12 − 2 = 10."
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "15 − 5 = ?",
+              "options": [
+                "5",
+                "10",
+                "20"
+              ],
+              "answer": "10",
+              "explanation": "Fifteen minus five equals ten."
+            }
+          ]
+        },
+        {
+          "id": "math-04",
+          "title": "Shapes and patterns",
+          "concept": "A circle is round, a triangle has 3 sides, a square has 4 equal sides, and a rectangle has 4 sides. Patterns repeat in a rule.",
+          "vocabulary": [
+            "circle",
+            "triangle",
+            "square",
+            "rectangle",
+            "pattern"
+          ],
+          "questions": [
+            {
+              "type": "multiple-choice",
+              "prompt": "Which shape has 3 sides?",
+              "options": [
+                "Circle",
+                "Triangle",
+                "Square"
+              ],
+              "answer": "Triangle",
+              "explanation": "A triangle has three sides."
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "What comes next: red, blue, red, blue, ___?",
+              "options": [
+                "red",
+                "green",
+                "yellow"
+              ],
+              "answer": "red",
+              "explanation": "The pattern repeats red, blue."
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "Which shape has no corners?",
+              "options": [
+                "Circle",
+                "Square",
+                "Triangle"
+              ],
+              "answer": "Circle",
+              "explanation": "A circle has no corners."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "evs",
+      "title": "Environmental Studies",
+      "icon": "🌱",
+      "ageBand": "6–7",
+      "goals": [
+        "Understand living things and their needs",
+        "Recognise our environment",
+        "Practise care for nature"
+      ],
+      "lessons": [
+        {
+          "id": "evs-01",
+          "title": "Plants around us",
+          "concept": "Plants need sunlight, air, water and nutrients to grow. Roots take in water, stems support the plant, and leaves help it make food.",
+          "vocabulary": [
+            "root",
+            "stem",
+            "leaf",
+            "flower",
+            "seed"
+          ],
+          "questions": [
+            {
+              "type": "multiple-choice",
+              "prompt": "Which part usually takes in water from the soil?",
+              "options": [
+                "Root",
+                "Flower",
+                "Fruit"
+              ],
+              "answer": "Root",
+              "explanation": "Roots absorb water and help anchor the plant."
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "What does a seed often grow into?",
+              "options": [
+                "A plant",
+                "A stone",
+                "A cloud"
+              ],
+              "answer": "A plant",
+              "explanation": "With suitable conditions, a seed can grow into a plant."
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "Which does a plant need to grow?",
+              "options": [
+                "Water",
+                "Plastic",
+                "Smoke"
+              ],
+              "answer": "Water",
+              "explanation": "Plants need water, along with light, air and nutrients."
+            }
+          ]
+        },
+        {
+          "id": "evs-02",
+          "title": "Animals and their homes",
+          "concept": "Animals need food, water, air and shelter. Different animals live in different habitats, such as nests, burrows, ponds and forests.",
+          "vocabulary": [
+            "habitat",
+            "nest",
+            "burrow",
+            "pond",
+            "shelter"
+          ],
+          "questions": [
+            {
+              "type": "multiple-choice",
+              "prompt": "Which animal commonly lives in a nest?",
+              "options": [
+                "Bird",
+                "Cow",
+                "Fish"
+              ],
+              "answer": "Bird",
+              "explanation": "Many birds build nests for eggs and chicks."
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "Which animal lives in water?",
+              "options": [
+                "Fish",
+                "Camel",
+                "Hen"
+              ],
+              "answer": "Fish",
+              "explanation": "Fish live in water and use gills to breathe."
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "Why do animals need shelter?",
+              "options": [
+                "For safety and rest",
+                "To become toys",
+                "To make rain"
+              ],
+              "answer": "For safety and rest",
+              "explanation": "Shelter helps protect animals from danger and weather."
+            }
+          ]
+        },
+        {
+          "id": "evs-03",
+          "title": "Our body and healthy habits",
+          "concept": "Our senses help us explore the world. Washing hands, brushing teeth, eating a variety of foods, moving and sleeping support good health.",
+          "vocabulary": [
+            "sense",
+            "sight",
+            "hearing",
+            "hygiene",
+            "exercise"
+          ],
+          "questions": [
+            {
+              "type": "multiple-choice",
+              "prompt": "Which body part helps us hear?",
+              "options": [
+                "Ears",
+                "Elbows",
+                "Knees"
+              ],
+              "answer": "Ears",
+              "explanation": "We use our ears to hear sounds."
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "When should we wash our hands?",
+              "options": [
+                "Before eating and after using the toilet",
+                "Only on birthdays",
+                "Never"
+              ],
+              "answer": "Before eating and after using the toilet",
+              "explanation": "Handwashing helps remove germs."
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "Which habit helps keep teeth clean?",
+              "options": [
+                "Brushing teeth",
+                "Eating only sweets",
+                "Never drinking water"
+              ],
+              "answer": "Brushing teeth",
+              "explanation": "Brushing helps remove food and plaque."
+            }
+          ]
+        },
+        {
+          "id": "evs-04",
+          "title": "Weather and seasons",
+          "concept": "Weather can be sunny, rainy, cloudy or windy. We choose suitable clothing and habits for different weather conditions.",
+          "vocabulary": [
+            "weather",
+            "sunny",
+            "rainy",
+            "cloudy",
+            "season"
+          ],
+          "questions": [
+            {
+              "type": "multiple-choice",
+              "prompt": "What can help keep us dry in the rain?",
+              "options": [
+                "Umbrella",
+                "Sunglasses only",
+                "Wool cap only"
+              ],
+              "answer": "Umbrella",
+              "explanation": "An umbrella helps shield us from rain."
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "Which clothing is often useful on a cold day?",
+              "options": [
+                "Warm sweater",
+                "Swimsuit",
+                "Thin paper"
+              ],
+              "answer": "Warm sweater",
+              "explanation": "A sweater helps keep the body warm."
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "What do dark rain clouds often bring?",
+              "options": [
+                "Rain",
+                "Candy",
+                "Leaves made of paper"
+              ],
+              "answer": "Rain",
+              "explanation": "Rain clouds can bring rainfall."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reasoning",
+      "title": "Thinking Skills",
+      "icon": "🧩",
+      "ageBand": "6–7",
+      "goals": [
+        "Notice similarities and differences",
+        "Complete simple patterns",
+        "Sort and classify objects"
+      ],
+      "lessons": [
+        {
+          "id": "rea-01",
+          "title": "Sort and classify",
+          "concept": "Objects can be grouped by a shared feature such as colour, shape, size, use or type.",
+          "vocabulary": [
+            "sort",
+            "group",
+            "same",
+            "different"
+          ],
+          "questions": [
+            {
+              "type": "multiple-choice",
+              "prompt": "Which item belongs with apple, banana and mango?",
+              "options": [
+                "Orange",
+                "Pencil",
+                "Shoe"
+              ],
+              "answer": "Orange",
+              "explanation": "Orange is also a fruit."
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "Which one is different: circle, square, triangle, carrot?",
+              "options": [
+                "Carrot",
+                "Circle",
+                "Square"
+              ],
+              "answer": "Carrot",
+              "explanation": "Carrot is a vegetable; the others are shapes."
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "Which pair belongs together?",
+              "options": [
+                "Spoon and fork",
+                "Cloud and shoe",
+                "Book and banana"
+              ],
+              "answer": "Spoon and fork",
+              "explanation": "Both are utensils used for eating."
+            }
+          ]
+        },
+        {
+          "id": "rea-02",
+          "title": "Complete the pattern",
+          "concept": "Look for what repeats or changes. Patterns can use colours, shapes, numbers, sounds or movements.",
+          "vocabulary": [
+            "pattern",
+            "repeat",
+            "next",
+            "sequence"
+          ],
+          "questions": [
+            {
+              "type": "multiple-choice",
+              "prompt": "2, 4, 6, 8, __",
+              "options": [
+                "9",
+                "10",
+                "12"
+              ],
+              "answer": "10",
+              "explanation": "The numbers increase by 2 each time."
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "star, heart, star, heart, __",
+              "options": [
+                "star",
+                "circle",
+                "heart"
+              ],
+              "answer": "star",
+              "explanation": "The two-shape pattern repeats."
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "small, medium, large, small, medium, __",
+              "options": [
+                "large",
+                "small",
+                "tiny"
+              ],
+              "answer": "large",
+              "explanation": "The size sequence repeats."
+            }
+          ]
+        },
+        {
+          "id": "rea-03",
+          "title": "Compare and observe",
+          "concept": "Careful observation helps us describe what is the same, what is different, and what may happen next.",
+          "vocabulary": [
+            "observe",
+            "compare",
+            "predict",
+            "detail"
+          ],
+          "questions": [
+            {
+              "type": "multiple-choice",
+              "prompt": "Which is heavier in everyday use: a school bag full of books or one pencil?",
+              "options": [
+                "School bag",
+                "Pencil",
+                "They must weigh the same"
+              ],
+              "answer": "School bag",
+              "explanation": "A bag full of books usually weighs more than one pencil."
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "You see puddles and wet roads after dark clouds. What likely happened?",
+              "options": [
+                "It rained",
+                "It snowed indoors",
+                "The sun turned off"
+              ],
+              "answer": "It rained",
+              "explanation": "Rain often leaves puddles and wet roads."
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "Which is a good way to compare two leaves?",
+              "options": [
+                "Look at their shape and size",
+                "Guess without looking",
+                "Hide both leaves"
+              ],
+              "answer": "Look at their shape and size",
+              "explanation": "Observing visible features helps us compare."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "life-skills",
+      "title": "Good Habits and Life Skills",
+      "icon": "🤝",
+      "ageBand": "6–7",
+      "goals": [
+        "Practise kindness and respect",
+        "Learn basic safety routines",
+        "Build independence"
+      ],
+      "lessons": [
+        {
+          "id": "life-01",
+          "title": "Kind words and manners",
+          "concept": "Use polite words, listen when others speak, take turns, and treat people with respect.",
+          "vocabulary": [
+            "please",
+            "thank you",
+            "sorry",
+            "kindness",
+            "turn"
+          ],
+          "questions": [
+            {
+              "type": "multiple-choice",
+              "prompt": "What can you say when someone helps you?",
+              "options": [
+                "Thank you",
+                "Go away",
+                "Nothing ever"
+              ],
+              "answer": "Thank you",
+              "explanation": "Thank you shows appreciation."
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "Two children want the same toy. What is a fair choice?",
+              "options": [
+                "Take turns",
+                "Push the other child",
+                "Hide the toy"
+              ],
+              "answer": "Take turns",
+              "explanation": "Taking turns gives everyone a chance."
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "You accidentally bump into someone. What should you do?",
+              "options": [
+                "Say sorry and check they are okay",
+                "Laugh at them",
+                "Blame someone else"
+              ],
+              "answer": "Say sorry and check they are okay",
+              "explanation": "Apologising and showing care is respectful."
+            }
+          ]
+        },
+        {
+          "id": "life-02",
+          "title": "Safety at home and outside",
+          "concept": "Follow trusted adult guidance, use road crossings carefully, never touch unknown medicines or dangerous objects, and ask for help when unsure.",
+          "vocabulary": [
+            "safe",
+            "trusted adult",
+            "crossing",
+            "emergency"
+          ],
+          "questions": [
+            {
+              "type": "multiple-choice",
+              "prompt": "Before crossing a road with an adult, what should you do?",
+              "options": [
+                "Stop, look and listen",
+                "Run without looking",
+                "Close your eyes"
+              ],
+              "answer": "Stop, look and listen",
+              "explanation": "Pause and follow the adult's safe crossing instructions."
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "You find an unknown tablet on the floor. What should you do?",
+              "options": [
+                "Do not touch it; tell a trusted adult",
+                "Eat it",
+                "Give it to a friend"
+              ],
+              "answer": "Do not touch it; tell a trusted adult",
+              "explanation": "Unknown medicines can be dangerous."
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "If you feel unsafe or lost, who should you seek?",
+              "options": [
+                "A trusted adult or appropriate helper",
+                "A stranger who asks for secrets",
+                "Nobody"
+              ],
+              "answer": "A trusted adult or appropriate helper",
+              "explanation": "Ask a trusted adult or clearly identified helper for support."
+            }
+          ]
+        },
+        {
+          "id": "life-03",
+          "title": "Taking care of myself and my things",
+          "concept": "Small routines—packing a school bag, putting toys away, drinking water and asking for help—build independence.",
+          "vocabulary": [
+            "routine",
+            "responsibility",
+            "organise",
+            "independent"
+          ],
+          "questions": [
+            {
+              "type": "multiple-choice",
+              "prompt": "What should you do after playing with toys?",
+              "options": [
+                "Put them away safely",
+                "Leave them on the stairs",
+                "Throw them outside"
+              ],
+              "answer": "Put them away safely",
+              "explanation": "Putting toys away keeps the space tidy and safer."
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "What helps you remember your school items?",
+              "options": [
+                "Check your timetable or bag list",
+                "Guess every day",
+                "Hide your books"
+              ],
+              "answer": "Check your timetable or bag list",
+              "explanation": "A simple checklist helps you get ready."
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "If you cannot do a school task yet, what can you do?",
+              "options": [
+                "Try again and ask for help",
+                "Give up forever",
+                "Make fun of others"
+              ],
+              "answer": "Try again and ask for help",
+              "explanation": "Practice and support help us learn."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "general-awareness",
+      "title": "My World",
+      "icon": "🌍",
+      "ageBand": "6–7",
+      "goals": [
+        "Understand family, school and community",
+        "Recognise common places and helpers",
+        "Build awareness of the world"
+      ],
+      "lessons": [
+        {
+          "id": "world-01",
+          "title": "Family, school and community",
+          "concept": "People in families, schools and communities help one another. Families can look different and deserve equal respect.",
+          "vocabulary": [
+            "family",
+            "community",
+            "school",
+            "respect"
+          ],
+          "questions": [
+            {
+              "type": "multiple-choice",
+              "prompt": "Who helps children learn at school?",
+              "options": [
+                "Teacher",
+                "Traffic light",
+                "Pillow"
+              ],
+              "answer": "Teacher",
+              "explanation": "Teachers support learning at school."
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "Which place is used to borrow books?",
+              "options": [
+                "Library",
+                "Bakery",
+                "Garage"
+              ],
+              "answer": "Library",
+              "explanation": "Libraries lend books and support reading."
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "How can you help at home?",
+              "options": [
+                "Put your things away",
+                "Make a mess on purpose",
+                "Waste water"
+              ],
+              "answer": "Put your things away",
+              "explanation": "Small helpful actions support everyone at home."
+            }
+          ]
+        },
+        {
+          "id": "world-02",
+          "title": "Community helpers",
+          "concept": "Different people help communities, including doctors, nurses, farmers, firefighters, cleaners, drivers and shopkeepers.",
+          "vocabulary": [
+            "doctor",
+            "farmer",
+            "firefighter",
+            "nurse",
+            "community helper"
+          ],
+          "questions": [
+            {
+              "type": "multiple-choice",
+              "prompt": "Who helps care for sick people?",
+              "options": [
+                "Doctor or nurse",
+                "Painter only",
+                "Tailor only"
+              ],
+              "answer": "Doctor or nurse",
+              "explanation": "Doctors and nurses help people stay healthy."
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "Who grows many of the crops we eat?",
+              "options": [
+                "Farmer",
+                "Pilot",
+                "Librarian"
+              ],
+              "answer": "Farmer",
+              "explanation": "Farmers grow crops and help produce food."
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "Who helps put out dangerous fires?",
+              "options": [
+                "Firefighter",
+                "Baker",
+                "Gardener only"
+              ],
+              "answer": "Firefighter",
+              "explanation": "Firefighters are trained to respond to fires."
+            }
+          ]
+        },
+        {
+          "id": "world-03",
+          "title": "India and the natural world",
+          "concept": "India has many languages, landscapes, festivals and traditions. We can appreciate differences and care for shared places.",
+          "vocabulary": [
+            "India",
+            "map",
+            "river",
+            "mountain",
+            "respect"
+          ],
+          "questions": [
+            {
+              "type": "multiple-choice",
+              "prompt": "Which is a natural water body?",
+              "options": [
+                "River",
+                "Desk",
+                "Bus stop"
+              ],
+              "answer": "River",
+              "explanation": "A river is a natural flowing body of water."
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "What is a respectful way to learn about another festival or tradition?",
+              "options": [
+                "Ask politely and listen",
+                "Make fun of it",
+                "Say only one way is allowed"
+              ],
+              "answer": "Ask politely and listen",
+              "explanation": "Curiosity and respect help us learn from others."
+            },
+            {
+              "type": "multiple-choice",
+              "prompt": "Which action helps keep a park clean?",
+              "options": [
+                "Put litter in a bin",
+                "Leave wrappers on the grass",
+                "Break young plants"
+              ],
+              "answer": "Put litter in a bin",
+              "explanation": "Using bins helps care for shared spaces."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "futureMediaIntegration": {
+    "status": "not-implemented",
+    "note": "YouTube integration is intentionally out of scope for this content-first phase. A later proposal should define parent-controlled search, topic/grade filters, allowlisted video metadata, age-appropriate review, no autoplay, no open-ended recommendations, and a safe in-app viewing experience before implementation."
+  }
+}
