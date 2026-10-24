@@ -193,11 +193,13 @@ button{overflow-wrap:anywhere}
   .parent-settings .btn{padding:9px 7px;font-size:14px}
   .parent-settings .parent-action-row{gap:6px}
 }
+
+.reading-shell{display:grid;gap:14px;max-width:760px;margin:0 auto}.reading-panel{background:var(--card);border:2px solid #8e7cc3;border-radius:20px;padding:clamp(14px,3vw,22px);box-shadow:0 4px 0 var(--sh)}.reading-panel h2,.reading-panel h3{text-align:left;margin:0 0 10px}.reading-panel p{text-align:left;line-height:1.7;margin:8px 0}.reading-sentence{font-size:clamp(20px,4.6vw,27px);line-height:1.7;margin:6px 0;text-align:left}.reading-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:10px 0}.reading-actions .btn{font-size:16px;padding:9px 14px}.reading-option{width:100%;min-height:48px;border-radius:14px;padding:12px;text-align:left;background:var(--bg);border:2px solid #8885;font-size:18px}.reading-feedback{min-height:28px;font-weight:750;color:var(--a);text-align:left!important}.reading-vocab{display:grid;gap:8px}.reading-vocab details{background:var(--bg);border-radius:12px;padding:10px 12px}.reading-vocab summary{font-size:18px;font-weight:800;cursor:pointer;min-height:32px}.reading-vocab p{font-size:16px;margin:6px 0}.reading-progress{font-size:14px;opacity:.8;text-align:center!important}@media(max-width:360px){.reading-panel{padding:12px}.reading-sentence{font-size:20px}.reading-option{font-size:16px}}
 </style></head><body>
 <a class="skip-link" href="#app">Skip to main content</a>
 <header aria-label="Little Learners header"><button class="pill" type="button" aria-label="Go to home" title="Home" onclick="home()">🏠</button><span class="pill" id="stars" aria-live="polite" aria-label="Stars earned"></span><span><button class="pill" id="inst" type="button" aria-label="Install Little Learners" title="Install app" style="display:none" onclick="doInstall()">📲 Install</button> <button class="pill" id="kid" type="button" aria-label="Select child profile" title="Child profile" onclick="profiles()"></button> <button class="pill" type="button" aria-label="Open stickers" title="Stickers" onclick="stickers()">🎁</button> <button class="pill" type="button" aria-label="Open parent settings" title="Parent settings" onclick="gate()">⚙️</button></span></header>
 <main id="app" tabindex="-1"></main><div id="ll-toast" class="ll-toast" role="status" aria-live="polite" aria-atomic="true"></div>
-<footer class="site-footer" aria-label="Site footer"><nav class="footer-nav" aria-label="Primary navigation"><button type="button" aria-label="Home" onclick="home()"><span aria-hidden="true">🏠</span><span>Home</span></button><button type="button" aria-label="Profile" onclick="profiles()"><span aria-hidden="true">👤</span><span>Profile</span></button><button type="button" aria-label="Stickers" onclick="stickers()"><span aria-hidden="true">🎁</span><span>Stickers</span></button><button type="button" aria-label="Parents" onclick="gate()"><span aria-hidden="true">⚙️</span><span>Parents</span></button></nav><p class="footer-version" aria-label="Application version">Version 2026.10.24.3</p><p class="footer-copy">Little Learners · Learn, play and grow 🌱<br>Alphabets · हिंदी वर्णमाला · Numbers · Animals · Good manners</p></footer>
+<footer class="site-footer" aria-label="Site footer"><nav class="footer-nav" aria-label="Primary navigation"><button type="button" aria-label="Home" onclick="home()"><span aria-hidden="true">🏠</span><span>Home</span></button><button type="button" aria-label="Profile" onclick="profiles()"><span aria-hidden="true">👤</span><span>Profile</span></button><button type="button" aria-label="Stickers" onclick="stickers()"><span aria-hidden="true">🎁</span><span>Stickers</span></button><button type="button" aria-label="Parents" onclick="gate()"><span aria-hidden="true">⚙️</span><span>Parents</span></button></nav><p class="footer-version" aria-label="Application version">Version 2026.10.24.4</p><p class="footer-copy">Little Learners · Learn, play and grow 🌱<br>Alphabets · हिंदी वर्णमाला · Numbers · Animals · Good manners</p></footer>
 <script src="./progress-model.js"></script>
 <script>
 let llToastTimer;
@@ -304,6 +306,7 @@ if('serviceWorker' in navigator)addEventListener('load',()=>{
 });
 hdr();st.ob?home():onb();
 </script>
+<script src="./reading-practice.js"></script>
 
 <script type="module">
 try {
