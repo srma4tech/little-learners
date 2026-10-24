@@ -2,7 +2,7 @@ import { chromium } from "playwright";
 import fs from "node:fs";
 import path from "node:path";
 
-const baseUrl = "https://srma4tech.github.io/little-learners/";
+const baseUrl = process.env.LL_SMOKE_BASE_URL || "https://srma4tech.github.io/little-learners/";
 // Derive the release markers from the checked-out source instead of maintaining
 // duplicate constants that drift after routine releases.
 const sourceHtml = fs.readFileSync("index.html", "utf8");
