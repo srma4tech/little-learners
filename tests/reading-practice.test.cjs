@@ -1,0 +1,11 @@
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const pack = JSON.parse(fs.readFileSync(path.join(__dirname, '../content/grade-1-reading-practice.json'), 'utf8'));
+const html = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');
+const reader = fs.readFileSync(path.join(__dirname, '../reading-practice.js'), 'utf8');
+const sw = fs.readFileSync(path.join(__dirname, '../sw.js'), 'utf8');
+test('first Grade 1 story has English and Hindi text, vocabulary and three questions each', () => { const story=pack.passages.find(item=>item.id==='read-01'); assert.ok(story); assert.equal(story.theme,'A Seed for Mina'); for(const lang of ['en','hi']) { assert.ok(story.languages[lang].title); assert.equal(story.languages[lang].text.length,6); assert.equal(story.languages[lang].vocabulary.length,3); assert.equal(story.questions.filter(q=>q.language===lang).length,3); } });
+test('first-story questions use unique ids and exactly one matching answer option', () => { const story=pack.passages.find(item=>item.id==='read-01'); const ids=story.questions.map(q=>q.id); assert.equal(new Set(ids).size,ids.length); for(const q of story.questions){assert.equal(q.options.length,3);assert.equal(q.options.filter(option=>option===q.answer).length,1);} });
+test('reading screen is wired into home and the offline cache includes its content', () => { assert.match(html,/reading-practice\.js/);assert.match(reader,/openReading = async function/);assert.match(reader,/content\/grade-1-reading-practice\.json/);assert.match(reader,/Look back at the story for a hint, then try again/);assert.match(sw,/little-learners-v48/);assert.match(sw,/content\/grade-1-reading-practice\.json/); });

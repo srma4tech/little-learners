@@ -235,6 +235,29 @@ try {
     await checkCompactHomeAndNavigation(page, width);
     await checkAppLikeMobileShell(page, width);
     await page.screenshot({ path: path.join(out, `ui-${width}-home.png`), fullPage: true });
+    // Grade 1 reading vertical slice: verify the bilingual story, vocabulary, and gentle retry.
+    await page.locator('[data-reading-tile]').click();
+    await page.getByRole('heading', { name: 'A Seed for Mina' }).waitFor({ state: 'visible', timeout: 10000 });
+    if (await page.locator('.reading-sentence').count() < 7) throw new Error('Reading story or first question did not render');
+    await page.getByRole('button', { name: /show reading tip/i }).click();
+    await page.getByText(/take your time/i).waitFor({ state: 'visible' });
+    await page.locator('.reading-vocab summary').first().click();
+    if (!(await page.locator('.reading-vocab details').first().evaluate(element => element.open))) throw new Error('Reading vocabulary disclosure did not open');
+    const readingAnswer = await page.evaluate(() => window.readingPack?.passages?.find(item => item.id === 'read-01')?.questions?.find(item => item.language === window.readingLang)?.answer);
+    const readingWrong = (await page.locator('.reading-option').allTextContents()).find(option => option.trim() !== readingAnswer);
+    await page.getByRole('button', { name: readingWrong, exact: true }).click();
+    await page.getByText(/look back at the story for a hint/i).waitFor({ state: 'visible' });
+    await page.getByRole('button', { name: readingAnswer, exact: true }).click();
+    await page.getByText(/well done/i).waitFor({ state: 'visible' });
+    await page.getByRole('button', { name: /next question/i }).click();
+    await page.getByRole('button', { name: /हिन्दी/i }).click();
+    await page.getByRole('heading', { name: 'मीना का बीज' }).waitFor({ state: 'visible' });
+    await checkOverflow(page, width, 'grade-1-reading');
+    await checkInteractiveControls(page, width, 'grade-1-reading');
+    await page.locator('#app .bar button').first().click();
+    await page.locator('#app .tile').first().waitFor({ state: 'visible', timeout: 10000 });
+    await checkOverflow(page, width, 'home-after-reading');
+
 
     await page.getByRole("button", { name: /alphabets/i }).first().click();
     await page.locator("#app .card").first().waitFor({ state: "visible", timeout: 10000 });
