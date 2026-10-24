@@ -147,6 +147,35 @@ async function checkAppLikeMobileShell(page, width) {
   await page.setViewportSize({ width, height: originalHeight });
 }
 
+async function checkLastContentClearsNavigation(page, width, screen, selector) {
+  if (width > 600) return;
+  const result = await page.evaluate(async selector => {
+    const app = document.querySelector("#app");
+    const nav = document.querySelector(".footer-nav");
+    const last = document.querySelector(selector);
+    if (!app || !nav || !last) return { foundApp: !!app, foundNav: !!nav, foundLast: !!last };
+    /* The active screen can contain nested scrollable regions. Drive the app's
+       designated scroll container directly so this assertion tests the actual shell. */
+    app.scrollTop = app.scrollHeight;
+    await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    const lastRect = last.getBoundingClientRect();
+    const navRect = nav.getBoundingClientRect();
+    return {
+      foundApp: true, foundNav: true, foundLast: true,
+      lastBottom: lastRect.bottom, navTop: navRect.top,
+      lastClearsNavigation: lastRect.bottom <= navRect.top - 4,
+      appCanScroll: app.scrollHeight > app.clientHeight,
+      appScrollTop: app.scrollTop,
+      appScrollHeight: app.scrollHeight,
+      appClientHeight: app.clientHeight,
+      appBottom: app.getBoundingClientRect().bottom
+    };
+  }, selector);
+  const passed = result.foundApp && result.foundNav && result.foundLast && result.lastClearsNavigation;
+  viewportResults.push({ width, screen, passed, ...result });
+  if (!passed) throw new Error(`${screen} final content is obscured by bottom navigation at ${width}px: ${JSON.stringify(result)}`);
+}
+
 async function enterGuestFlow(page) {
   // Wait for Firebase's initial auth-state callback so its guest-mode refresh
   // cannot rerender onboarding in the middle of the name-entry interaction.
@@ -173,7 +202,16 @@ try {
     const page = await browser.newPage({ viewport: { width, height: 900 }, deviceScaleFactor: 1 });
     page.on("pageerror", error => errors.push({ width, type: "pageerror", message: error.message, stack: error.stack || "" }));
     page.on("console", message => {
-      if (message.type() === "error") errors.push({ width, type: "console", message: message.text() });
+      if (message.type() !== "error") return;
+      const text = message.text();
+      // CI intentionally runs in guest mode without the production Google OAuth
+      // origin allowlist. Ignore only known Google Identity / blocked auth noise;
+      // application JavaScript errors remain fatal.
+      if (/\\[GSI_LOGGER\\].*origin is not allowed/i.test(text)) return;
+      const sourceUrl = message.location()?.url || "";
+      if (/Failed to load resource: the server responded with a status of 403/i.test(text)
+          && /accounts\\.google\\.com|googleapis\\.com|gstatic\\.com/i.test(sourceUrl)) return;
+      errors.push({ width, type: "console", message: text, url: sourceUrl });
     });
     page.on("requestfailed", request => {
       const failed = request.failure()?.errorText || "request failed";
@@ -201,6 +239,7 @@ try {
     await page.getByRole("button", { name: /alphabets/i }).first().click();
     await page.locator("#app .card").first().waitFor({ state: "visible", timeout: 10000 });
     await checkOverflow(page, width, "category");
+    await checkLastContentClearsNavigation(page, width, "alphabet-final-card", "#app .card:last-child");
     const categoryWrap = await page.locator(".category-title").evaluate(element => ({ overflowWrap: getComputedStyle(element).overflowWrap, wordBreak: getComputedStyle(element).wordBreak }));
     if (categoryWrap.overflowWrap === "anywhere" || categoryWrap.wordBreak === "break-all") throw new Error("Category heading can split words on narrow screens: " + JSON.stringify(categoryWrap));
     await checkInteractiveControls(page, width, "category");
@@ -243,6 +282,25 @@ try {
     await page.getByText(/who is playing/i).waitFor({ state: "visible", timeout: 10000 });
     await checkOverflow(page, width, "parent-settings");
     await checkInteractiveControls(page, width, "parent-settings");
+    await checkLastContentClearsNavigation(page, width, "parent-settings-final-control", "#app button:last-of-type");
+    if (width <= 600) {
+      const sync = page.locator("#app .sync-status");
+      // Guest-mode CI has no authenticated cloud account, so the cloud-sync
+      // card is intentionally absent. Validate it when the app actually renders it.
+      if (await sync.count()) {
+        await sync.first().waitFor({ state: "visible", timeout: 5000 });
+        const syncText = await sync.first().textContent();
+        for (const text of ["Cloud sync", "Last successful sync", "Automatic check"]) {
+          if (!syncText.includes(text)) throw new Error("Cloud sync status is missing: " + text);
+        }
+        const syncLayout = await sync.first().evaluate(element => {
+          const rect = element.getBoundingClientRect();
+          const styles = getComputedStyle(element);
+          return { width: rect.width, right: rect.right, viewport: innerWidth, display: styles.display };
+        });
+        if (syncLayout.right > syncLayout.viewport + 1 || syncLayout.width <= 0) throw new Error("Cloud sync status overflows mobile viewport: " + JSON.stringify(syncLayout));
+      }
+    }
     await page.screenshot({ path: path.join(out, `ui-${width}-parent.png`), fullPage: true });
 
     await page.close();
