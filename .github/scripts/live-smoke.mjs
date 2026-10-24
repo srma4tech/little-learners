@@ -282,6 +282,17 @@ try {
     await page.getByText(/who is playing/i).waitFor({ state: "visible", timeout: 10000 });
     await checkOverflow(page, width, "parent-settings");
     await checkInteractiveControls(page, width, "parent-settings");
+    const parentLayout = await page.locator("#app .parent-settings").evaluate(section => {
+      const buttons = [...section.querySelectorAll("button")].filter(button => button.getClientRects().length);
+      const overlaps = [];
+      for (let i = 0; i < buttons.length; i++) for (let j = i + 1; j < buttons.length; j++) {
+        const a = buttons[i].getBoundingClientRect(), b = buttons[j].getBoundingClientRect();
+        if (Math.min(a.right, b.right) - Math.max(a.left, b.left) > 1 && Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top) > 1) overlaps.push([buttons[i].innerText, buttons[j].innerText]);
+      }
+      return { overlaps, sectionRight: section.getBoundingClientRect().right, viewport: innerWidth };
+    });
+    if (parentLayout.overlaps.length) throw new Error("Parent settings buttons overlap: " + JSON.stringify(parentLayout.overlaps));
+    if (parentLayout.sectionRight > parentLayout.viewport + 1) throw new Error("Parent settings section overflows viewport: " + JSON.stringify(parentLayout));
     await checkLastContentClearsNavigation(page, width, "parent-settings-final-control", "#app button:last-of-type");
     if (width <= 600) {
       const sync = page.locator("#app .sync-status");
