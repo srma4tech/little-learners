@@ -36,15 +36,15 @@ The site is published from the repository root on `master`. A push to `master` t
 
 ## Continuous integration and browser smoke test
 
-The **Little Learners CI** workflow runs source checks on pushes and pull requests targeting `master`. It checks inline JavaScript syntax, scans tracked files for private credentials, and validates required app files and key authentication markers.
+The **Little Learners CI** workflow runs source checks on pushes and pull requests targeting `master`. It checks inline JavaScript syntax, the Playwright smoke-test script syntax, reset-aware progress-model tests, tracked files for private credentials, and required app files and key authentication markers.
 
-A separate Playwright browser smoke test runs on the scheduled workflow and when manually started from **Actions → Little Learners CI → Run workflow**. It checks the deployed page, confirms expected learning/onboarding content renders, checks for horizontal overflow at a mobile viewport, and captures browser errors and a screenshot as workflow artifacts.
+A separate Playwright browser smoke test runs on scheduled runs, manual dispatch, and pushes to `master`. It waits for GitHub Pages to serve the release version and service-worker cache from the checked-out source, then exercises onboarding/guest entry, learning cards, quizzes and rewards, reload persistence, stickers, and parent settings at 320, 360, 390, 768, 1024, and 1440 CSS pixels. It checks horizontal overflow and visible control labels/tap-target heights, and captures screenshots plus browser diagnostics as workflow artifacts. The expected version and cache markers are read from `index.html` and `sw.js` at runtime so the smoke test does not drift behind routine releases.
 
 To inspect a run, open the repository's **Actions** tab and select the relevant workflow run. The smoke test is a deployment sanity check; it does not sign into a real Google account or replace manual checks of sign-in and cross-device persistence.
 
 ## Updating the app and service-worker cache
 
-The service worker uses a versioned cache in `sw.js` (currently `little-learners-v37`). When changing app files that should refresh for existing installations, increment the cache name, for example from `little-learners-v36` to `little-learners-v37`. Commit the change to `master`, wait for GitHub Pages deployment, then test both a fresh browser session and an already-installed PWA. The reset-aware progress model lives in `progress-model.js` and is covered by `node --test tests/progress-model.test.cjs`.
+The service worker uses a versioned cache in `sw.js` (currently `little-learners-v44`). When changing app files that should refresh for existing installations, increment the cache name, by incrementing the cache suffix (currently `little-learners-v44`) whenever app assets change and need to refresh in installed PWAs. Commit the change to `master`, wait for GitHub Pages deployment, then test both a fresh browser session and an already-installed PWA. The reset-aware progress model lives in `progress-model.js` and is covered by `node --test tests/progress-model.test.cjs`.
 
 ## Data and privacy notes
 
