@@ -80,7 +80,8 @@ async function checkCompactHomeAndNavigation(page, width) {
       const label = button.querySelector("span:last-child");
       return {
         label: label?.textContent?.trim() || "",
-        fits: !!label && label.scrollWidth <= label.clientWidth + 1,
+        fits: !!label && label.getBoundingClientRect().width <= button.getBoundingClientRect().width - 4,
+        buttonFits: button.scrollWidth <= button.clientWidth + 1,
         hasSeparateIcon: !!button.querySelector('span[aria-hidden="true"]')
       };
     });
@@ -96,7 +97,7 @@ async function checkCompactHomeAndNavigation(page, width) {
       homeTilesClearOfNavigation: !!lastTile && !!navRect && lastTile.bottom <= navRect.top - 4
     };
   });
-  const labelsFit = result.labels.length === 4 && result.labels.every(label => label.fits && label.hasSeparateIcon);
+  const labelsFit = result.labels.length === 4 && result.labels.every(label => label.fits && label.buttonFits && label.hasSeparateIcon);
   const passed = result.navVisible && result.navWithinViewport && labelsFit && result.homeTilesClearOfNavigation;
   viewportResults.push({ width, screen: "compact-home-navigation", passed, ...result });
   if (!passed) {
