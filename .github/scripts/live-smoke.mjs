@@ -105,6 +105,48 @@ async function checkCompactHomeAndNavigation(page, width) {
   }
 }
 
+async function checkAppLikeMobileShell(page, width) {
+  if (width > 430) return;
+  const originalHeight = 900;
+  for (const height of [568, 667]) {
+    await page.setViewportSize({ width, height });
+    const result = await page.evaluate(() => {
+      const app = document.querySelector("#app");
+      const nav = document.querySelector(".footer-nav");
+      const navRect = nav?.getBoundingClientRect();
+      const appRect = app?.getBoundingClientRect();
+      const lastTile = document.querySelector("#app .home-grid .tile:last-child")?.getBoundingClientRect();
+      const bodyStyle = getComputedStyle(document.body);
+      const appStyle = getComputedStyle(app);
+      return {
+        viewportHeight: window.innerHeight,
+        documentHeight: document.documentElement.scrollHeight,
+        bodyHeight: document.body.getBoundingClientRect().height,
+        bodyOverflowY: bodyStyle.overflowY,
+        bodyDisplay: bodyStyle.display,
+        appOverflowY: appStyle.overflowY,
+        appFitsHome: !!app && app.scrollHeight <= app.clientHeight + 2,
+        homeTilesAboveNavigation: !!lastTile && !!navRect && lastTile.bottom <= navRect.top - 4,
+        navigationFixed: !!nav && getComputedStyle(nav).position === "fixed",
+        navigationWithinViewport: !!navRect && navRect.top >= 0 && navRect.bottom <= window.innerHeight + 1,
+        appViewport: appRect ? { top: appRect.top, bottom: appRect.bottom, height: appRect.height } : null
+      };
+    });
+    const passed = result.documentHeight <= height + 2
+      && result.bodyHeight <= height + 2
+      && result.bodyOverflowY === "hidden"
+      && result.bodyDisplay === "flex"
+      && result.appOverflowY === "auto"
+      && result.appFitsHome
+      && result.homeTilesAboveNavigation
+      && result.navigationFixed
+      && result.navigationWithinViewport;
+    viewportResults.push({ width, height, screen: "app-like-mobile-shell", passed, ...result });
+    if (!passed) throw new Error("App-like mobile shell failed at " + width + "x" + height + ": " + JSON.stringify(result));
+  }
+  await page.setViewportSize({ width, height: originalHeight });
+}
+
 async function enterGuestFlow(page) {
   // Wait for Firebase's initial auth-state callback so its guest-mode refresh
   // cannot rerender onboarding in the middle of the name-entry interaction.
@@ -153,6 +195,7 @@ try {
     const tiles = page.locator("#app .tile");
     if (await tiles.count() < 7) throw new Error("Expected all learning categories on home");
     await checkCompactHomeAndNavigation(page, width);
+    await checkAppLikeMobileShell(page, width);
     await page.screenshot({ path: path.join(out, `ui-${width}-home.png`), fullPage: true });
 
     await page.getByRole("button", { name: /alphabets/i }).first().click();
