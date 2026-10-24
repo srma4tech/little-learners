@@ -147,6 +147,30 @@ async function checkAppLikeMobileShell(page, width) {
   await page.setViewportSize({ width, height: originalHeight });
 }
 
+async function checkLastContentClearsNavigation(page, width, screen, selector) {
+  if (width > 600) return;
+  const result = await page.evaluate(async selector => {
+    const app = document.querySelector("#app");
+    const nav = document.querySelector(".footer-nav");
+    const last = document.querySelector(selector);
+    if (!app || !nav || !last) return { foundApp: !!app, foundNav: !!nav, foundLast: !!last };
+    last.scrollIntoView({ block: "end", behavior: "instant" });
+    await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    const lastRect = last.getBoundingClientRect();
+    const navRect = nav.getBoundingClientRect();
+    return {
+      foundApp: true, foundNav: true, foundLast: true,
+      lastBottom: lastRect.bottom, navTop: navRect.top,
+      lastClearsNavigation: lastRect.bottom <= navRect.top - 4,
+      appCanScroll: app.scrollHeight > app.clientHeight,
+      appBottom: app.getBoundingClientRect().bottom
+    };
+  }, selector);
+  const passed = result.foundApp && result.foundNav && result.foundLast && result.lastClearsNavigation;
+  viewportResults.push({ width, screen, passed, ...result });
+  if (!passed) throw new Error(`${screen} final content is obscured by bottom navigation at ${width}px: ${JSON.stringify(result)}`);
+}
+
 async function enterGuestFlow(page) {
   // Wait for Firebase's initial auth-state callback so its guest-mode refresh
   // cannot rerender onboarding in the middle of the name-entry interaction.
@@ -201,6 +225,7 @@ try {
     await page.getByRole("button", { name: /alphabets/i }).first().click();
     await page.locator("#app .card").first().waitFor({ state: "visible", timeout: 10000 });
     await checkOverflow(page, width, "category");
+    await checkLastContentClearsNavigation(page, width, "alphabet-final-card", "#app .card:last-child");
     const categoryWrap = await page.locator(".category-title").evaluate(element => ({ overflowWrap: getComputedStyle(element).overflowWrap, wordBreak: getComputedStyle(element).wordBreak }));
     if (categoryWrap.overflowWrap === "anywhere" || categoryWrap.wordBreak === "break-all") throw new Error("Category heading can split words on narrow screens: " + JSON.stringify(categoryWrap));
     await checkInteractiveControls(page, width, "category");
@@ -243,6 +268,20 @@ try {
     await page.getByText(/who is playing/i).waitFor({ state: "visible", timeout: 10000 });
     await checkOverflow(page, width, "parent-settings");
     await checkInteractiveControls(page, width, "parent-settings");
+    await checkLastContentClearsNavigation(page, width, "parent-settings-final-control", "#app button:last-of-type");
+    if (width <= 600) {
+      const sync = page.locator("#app .sync-status");
+      await sync.waitFor({ state: "visible", timeout: 5000 });
+      for (const text of ["Cloud sync", "Last successful sync", "Automatic check"]) {
+        if (!(await sync.innerText()).includes(text)) throw new Error("Cloud sync status is missing: " + text);
+      }
+      const syncLayout = await sync.evaluate(element => {
+        const rect = element.getBoundingClientRect();
+        const styles = getComputedStyle(element);
+        return { width: rect.width, right: rect.right, viewport: innerWidth, display: styles.display };
+      });
+      if (syncLayout.right > syncLayout.viewport + 1 || syncLayout.width <= 0) throw new Error("Cloud sync status overflows mobile viewport: " + JSON.stringify(syncLayout));
+    }
     await page.screenshot({ path: path.join(out, `ui-${width}-parent.png`), fullPage: true });
 
     await page.close();
