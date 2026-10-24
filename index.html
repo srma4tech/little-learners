@@ -29,7 +29,8 @@ h1{font-size:clamp(26px,5vw,44px);text-align:center;margin:8px 0 18px}
 @keyframes sh{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
 #fb{min-height:40px;font-size:26px;font-weight:700}
 .st{font-size:48px;background:var(--card);border-radius:18px;padding:10px;text-align:center}
-p{text-align:center;font-size:18px}body.ob header{display:none}.ib{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;background:var(--card);border:3px dashed var(--a);border-radius:18px;padding:10px 14px;margin:0 0 14px;font-size:18px}button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}body{overflow-wrap:anywhere}@media(max-width:600px){.grid{grid-template-columns:repeat(2,1fr)}.card .e{font-size:44px}.bar h2{font-size:22px}}@media(pointer:coarse){.kb{display:none}}
+p{text-align:center;font-size:18px}body.ob header{display:none}
+  body.ob #app{padding-bottom:14px}.ib{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;background:var(--card);border:3px dashed var(--a);border-radius:18px;padding:10px 14px;margin:0 0 14px;font-size:18px}button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}body{overflow-wrap:anywhere}@media(max-width:600px){.grid{grid-template-columns:repeat(2,1fr)}.card .e{font-size:44px}.bar h2{font-size:22px}}@media(pointer:coarse){.kb{display:none}}
 .ll-toast{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));left:50%;transform:translate(-50%,-12px);z-index:10002;width:min(92vw,520px);padding:13px 18px;border-radius:16px;background:#2e7d32;color:#fff;box-shadow:0 5px 24px #0004;font-weight:750;text-align:center;opacity:0;pointer-events:none;transition:opacity .18s ease,transform .18s ease}.ll-toast[data-kind="error"]{background:#b3261e}.ll-toast[data-kind="info"]{background:#3949ab}.ll-toast.visible{opacity:1;transform:translate(-50%,0)}.sync-status{border:1px solid #8885;border-radius:14px;padding:10px 12px;font-size:14px;line-height:1.5;background:var(--card);margin:12px 0}.sync-status strong{display:block;margin-bottom:2px}@media(prefers-reduced-motion:reduce){.ll-toast{transition:none}}
 /* Responsive refinements: keep learning controls usable on narrow phones and zoomed layouts. */
 #app,.site-footer,header{min-width:0}
@@ -118,11 +119,31 @@ button{overflow-wrap:anywhere}
 @media(max-width:360px){
   .footer-nav button{padding:8px 2px;font-size:12px}
 }
+
+/* App-like mobile shell: the viewport stays fixed while the active screen owns any scrolling. */
+@media(max-width:600px){
+  html,body{height:100%;height:100dvh;overflow:hidden}
+  body{display:flex;flex-direction:column}
+  header{flex:0 0 auto;width:100%;padding:6px 8px;gap:4px}
+  header .pill{padding:6px 9px;font-size:16px}
+  #app{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:6px 8px calc(84px + env(safe-area-inset-bottom,0px));max-width:none;width:100%}
+  #app h1{font-size:clamp(22px,6vw,30px);margin:4px 0 10px}
+  .site-footer{height:0;margin:0;padding:0;border:0;overflow:visible}
+  .footer-version,.footer-copy{display:none}
+  .footer-nav{position:fixed;left:0;right:0;bottom:0;z-index:1000}
+  body.ob header{display:none}
+}
+@media(max-width:430px){
+  .home-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+  .home-grid .tile{min-height:clamp(68px,11vh,82px);padding:6px 2px;font-size:clamp(11px,3.4vw,14px);border-radius:15px;gap:1px;box-shadow:0 3px 0 var(--sh)}
+  .home-grid .tile span{font-size:clamp(24px,7vw,32px);line-height:1.05}
+  .home-grid .tile small{font-size:clamp(10px,2.8vw,12px);line-height:1.1}
+}
 </style></head><body>
 <a class="skip-link" href="#app">Skip to main content</a>
 <header aria-label="Little Learners header"><button class="pill" type="button" aria-label="Go to home" title="Home" onclick="home()">🏠</button><span class="pill" id="stars" aria-live="polite" aria-label="Stars earned"></span><span><button class="pill" id="inst" type="button" aria-label="Install Little Learners" title="Install app" style="display:none" onclick="doInstall()">📲 Install</button> <button class="pill" id="kid" type="button" aria-label="Select child profile" title="Child profile" onclick="profiles()"></button> <button class="pill" type="button" aria-label="Open stickers" title="Stickers" onclick="stickers()">🎁</button> <button class="pill" type="button" aria-label="Open parent settings" title="Parent settings" onclick="gate()">⚙️</button></span></header>
 <main id="app" tabindex="-1"></main><div id="ll-toast" class="ll-toast" role="status" aria-live="polite" aria-atomic="true"></div>
-<footer class="site-footer" aria-label="Site footer"><nav class="footer-nav" aria-label="Primary navigation"><button type="button" aria-label="Home" onclick="home()"><span aria-hidden="true">🏠</span><span>Home</span></button><button type="button" aria-label="Profile" onclick="profiles()"><span aria-hidden="true">👤</span><span>Profile</span></button><button type="button" aria-label="Stickers" onclick="stickers()"><span aria-hidden="true">🎁</span><span>Stickers</span></button><button type="button" aria-label="Parents" onclick="gate()"><span aria-hidden="true">⚙️</span><span>Parents</span></button></nav><p class="footer-version" aria-label="Application version">Version 2026.10.24.1</p><p class="footer-copy">Little Learners · Learn, play and grow 🌱<br>Alphabets · हिंदी वर्णमाला · Numbers · Animals · Good manners</p></footer>
+<footer class="site-footer" aria-label="Site footer"><nav class="footer-nav" aria-label="Primary navigation"><button type="button" aria-label="Home" onclick="home()"><span aria-hidden="true">🏠</span><span>Home</span></button><button type="button" aria-label="Profile" onclick="profiles()"><span aria-hidden="true">👤</span><span>Profile</span></button><button type="button" aria-label="Stickers" onclick="stickers()"><span aria-hidden="true">🎁</span><span>Stickers</span></button><button type="button" aria-label="Parents" onclick="gate()"><span aria-hidden="true">⚙️</span><span>Parents</span></button></nav><p class="footer-version" aria-label="Application version">Version 2026.10.24.2</p><p class="footer-copy">Little Learners · Learn, play and grow 🌱<br>Alphabets · हिंदी वर्णमाला · Numbers · Animals · Good manners</p></footer>
 <script src="./progress-model.js"></script>
 <script>
 let llToastTimer;
@@ -188,7 +209,7 @@ function say(it){try{speechSynthesis.cancel()}catch(e){}const L=st.lang;let n=0;
 function lbl(it){const a=[];if(st.lang!='hi'&&it.en)a.push(it.en);if(st.lang!='en'&&it.hi)a.push(it.hi);return a.length?a.join(' · '):(it.en||it.hi)}
 const es=e=>e.length>8?'font-size:20px':'';
 const hdr=()=>{$('#stars').textContent='⭐ '+K().stars;$('#kid').textContent='👤 '+K().name};
-function home(){onbActive=0;document.body.classList.remove('ob');app.innerHTML=`${instBar()}<h1>${K().name=='Me'?'Hello, little learner!':'Hello, '+K().name+'!'} 👋<br><small style="font-size:.5em;opacity:.8">नमस्ते · Let's learn &amp; play! 🎈</small></h1><div class="grid">${S.map((s,i)=>`<button class="tile" style="--a:${s.c}" onclick="openS(${i})"><span>${s.i}</span>${s.n}<small>${s.h}</small></button>`).join('')}</div>`;app.style.setProperty('--a','#7c4dff')}
+function home(){onbActive=0;document.body.classList.remove('ob');app.innerHTML=`${instBar()}<h1>${K().name=='Me'?'Hello, little learner!':'Hello, '+K().name+'!'} 👋<br><small style="font-size:.5em;opacity:.8">नमस्ते · Let's learn &amp; play! 🎈</small></h1><div class="grid home-grid">${S.map((s,i)=>`<button class="tile" style="--a:${s.c}" onclick="openS(${i})"><span>${s.i}</span>${s.n}<small>${s.h}</small></button>`).join('')}</div>`;app.style.setProperty('--a','#7c4dff')}
 function openS(i){cur=i;const s=S[i];app.style.setProperty('--a',s.c);app.innerHTML=`<div class="bar category-bar"><button class="btn o" onclick="home()">⬅ Home</button><h2 class="category-title">${s.i} ${s.n} ${s.h}</h2><button class="btn" onclick="play()">⭐ Play</button></div><div class="grid">${s.it.map((x,j)=>`<button class="card" onclick="say(S[cur].it[${j}])"><span class="e" style="${es(x.e)}">${x.e}</span>${x.big?`<span class="b">${x.big}</span>`:''}<span class="l">${lbl(x)}</span></button>`).join('')}</div>${cur==0?'<p class="kb">Tip: press any letter key on the keyboard! ⌨️</p>':''}`}
 function play(){q={n:0,ok:0};next()}
 function next(){const s=S[cur],sh=a=>a.sort(()=>Math.random()-.5),t=s.it[Math.random()*s.it.length|0],o=sh([t,...sh(s.it.filter(x=>x.e!=t.e)).slice(0,2)]);q.t=t;q.o=o;q.lock=0;app.innerHTML=`<div class="bar"><button class="btn o" onclick="openS(cur)">⬅ Back</button><h2>Round ${q.n+1}/5</h2></div><div class="q"><div class="big">${t.big||lbl(t)}</div><button class="btn" onclick="say(q.t)">🔊 Hear</button><div class="opts">${o.map((x,j)=>`<button class="opt" style="${es(x.e)}" onclick="ans(${j},this)">${x.e}</button>`).join('')}</div><div id="fb"></div></div>`;say(t)}
