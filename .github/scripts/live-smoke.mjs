@@ -146,7 +146,7 @@ try {
     await checkInteractiveControls(page, width, "stickers");
     await page.screenshot({ path: path.join(out, `ui-${width}-stickers.png`), fullPage: true });
 
-    await page.getByRole("button", { name: /open parent settings/i }).first().click();
+    await page.getByRole("button", { name: /open parent settings|parents/i }).first().click();
     const equation = (await page.locator("#app .big").innerText()).match(/(\d+)\s*\+\s*(\d+)/);
     if (!equation) throw new Error("Parent gate arithmetic challenge did not render");
     const answer = Number(equation[1]) + Number(equation[2]);
