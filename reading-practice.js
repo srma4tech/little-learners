@@ -8,11 +8,12 @@
     document.body.classList.remove('ob'); document.querySelector('#app').style.setProperty('--a','#6d4c9a');
     const app=document.querySelector('#app'); app.replaceChildren(); const top=el('div',undefined,'bar'); top.append(button('⬅ Home','o',window.home),el('h2','📚 Reading practice')); app.append(top);
     const loading=el('section',undefined,'reading-panel'); loading.append(el('p','Loading your story…')); app.append(loading);
-    try { if(!pack){const response=await fetch('./content/grade-1-reading-practice.json',{cache:'no-cache'});if(!response.ok)throw new Error('Story pack unavailable');pack=await response.json();}
+    try { if(!pack){const response=await fetch('./content/grade-1-reading-practice.json',{cache:'no-cache'});if(!response.ok)throw new Error('Story pack unavailable');pack=await response.json();window.readingPack=pack;}
       const story=pack.passages.find(item=>item.id==='read-01'); if(!story)throw new Error('First story is missing'); language=window.kl?.st().lang==='hi'?'hi':'en'; questionIndex=0; answers={}; render(story);
     } catch(error) { loading.replaceChildren(el('h3','Story not ready yet'),el('p','Please check your connection and try again. Your other learning activities are still available.'),button('Try again','',window.openReading),button('Back home','o',window.home)); }
   };
   function render(story) {
+    window.readingLang=language;
     const app=document.querySelector('#app'); app.replaceChildren(); const top=el('div',undefined,'bar');top.append(button('⬅ Home','o',window.home),el('h2','📚 Reading practice'));app.append(top);
     const shell=el('div',undefined,'reading-shell'); const panel=el('section',undefined,'reading-panel');
     const langActions=el('div',undefined,'reading-actions'); langActions.append(button('English',language==='en'?'':'o',()=>{language='en';questionIndex=0;answers={};render(story)}),button('हिन्दी',language==='hi'?'':'o',()=>{language='hi';questionIndex=0;answers={};render(story)}));panel.append(langActions);
