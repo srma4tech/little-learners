@@ -29,7 +29,8 @@ h1{font-size:clamp(26px,5vw,44px);text-align:center;margin:8px 0 18px}
 @keyframes sh{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
 #fb{min-height:40px;font-size:26px;font-weight:700}
 .st{font-size:48px;background:var(--card);border-radius:18px;padding:10px;text-align:center}
-p{text-align:center;font-size:18px}body.ob header{display:none}.ib{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;background:var(--card);border:3px dashed var(--a);border-radius:18px;padding:10px 14px;margin:0 0 14px;font-size:18px}button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}body{overflow-wrap:anywhere}@media(max-width:600px){.grid{grid-template-columns:repeat(2,1fr)}.card .e{font-size:44px}.bar h2{font-size:22px}}@media(pointer:coarse){.kb{display:none}}
+p{text-align:center;font-size:18px}body.ob header{display:none}
+  body.ob #app{padding-bottom:14px}.ib{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;background:var(--card);border:3px dashed var(--a);border-radius:18px;padding:10px 14px;margin:0 0 14px;font-size:18px}button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}body{overflow-wrap:anywhere}@media(max-width:600px){.grid{grid-template-columns:repeat(2,1fr)}.card .e{font-size:44px}.bar h2{font-size:22px}}@media(pointer:coarse){.kb{display:none}}
 .ll-toast{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));left:50%;transform:translate(-50%,-12px);z-index:10002;width:min(92vw,520px);padding:13px 18px;border-radius:16px;background:#2e7d32;color:#fff;box-shadow:0 5px 24px #0004;font-weight:750;text-align:center;opacity:0;pointer-events:none;transition:opacity .18s ease,transform .18s ease}.ll-toast[data-kind="error"]{background:#b3261e}.ll-toast[data-kind="info"]{background:#3949ab}.ll-toast.visible{opacity:1;transform:translate(-50%,0)}.sync-status{border:1px solid #8885;border-radius:14px;padding:10px 12px;font-size:14px;line-height:1.5;background:var(--card);margin:12px 0}.sync-status strong{display:block;margin-bottom:2px}@media(prefers-reduced-motion:reduce){.ll-toast{transition:none}}
 /* Responsive refinements: keep learning controls usable on narrow phones and zoomed layouts. */
 #app,.site-footer,header{min-width:0}
@@ -125,7 +126,7 @@ button{overflow-wrap:anywhere}
   body{display:flex;flex-direction:column}
   header{flex:0 0 auto;width:100%;padding:6px 8px;gap:4px}
   header .pill{padding:6px 9px;font-size:16px}
-  #app{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:6px 8px 14px;max-width:none;width:100%}
+  #app{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:6px 8px calc(84px + env(safe-area-inset-bottom,0px));max-width:none;width:100%}
   #app h1{font-size:clamp(22px,6vw,30px);margin:4px 0 10px}
   .site-footer{height:0;margin:0;padding:0;border:0;overflow:visible}
   .footer-version,.footer-copy{display:none}
