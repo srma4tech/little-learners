@@ -139,11 +139,28 @@ button{overflow-wrap:anywhere}
   .home-grid .tile span{font-size:clamp(24px,7vw,32px);line-height:1.05}
   .home-grid .tile small{font-size:clamp(10px,2.8vw,12px);line-height:1.1}
 }
+/* Keep the final interactive content above the fixed mobile navigation. */
+@media(max-width:600px){
+  #app{padding-bottom:calc(132px + env(safe-area-inset-bottom,0px))}
+  #app:has(.home-grid){padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+}
+.sync-status{padding:10px 12px;font-size:14px;line-height:1.4}
+.sync-status-heading{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.sync-status-heading strong{margin:0}
+.sync-status-badge{flex:0 0 auto;border-radius:999px;padding:3px 9px;background:#e8f5e9;color:#216e39;font-size:12px;font-weight:800}
+.sync-status-pending .sync-status-badge{background:#fff3cd;color:#805b00}
+.sync-status-message{margin:5px 0 2px;text-align:left;font-size:14px}
+.sync-status-details{margin-top:5px;border-top:1px solid #8884;padding-top:5px}
+.sync-status-details summary{cursor:pointer;font-weight:700;min-height:32px;display:flex;align-items:center}
+.sync-status-details dl{margin:6px 0 0;display:grid;gap:6px}
+.sync-status-details dl div{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:10px}
+.sync-status-details dt{opacity:.72}
+.sync-status-details dd{margin:0;text-align:right;overflow-wrap:anywhere}
 </style></head><body>
 <a class="skip-link" href="#app">Skip to main content</a>
 <header aria-label="Little Learners header"><button class="pill" type="button" aria-label="Go to home" title="Home" onclick="home()">🏠</button><span class="pill" id="stars" aria-live="polite" aria-label="Stars earned"></span><span><button class="pill" id="inst" type="button" aria-label="Install Little Learners" title="Install app" style="display:none" onclick="doInstall()">📲 Install</button> <button class="pill" id="kid" type="button" aria-label="Select child profile" title="Child profile" onclick="profiles()"></button> <button class="pill" type="button" aria-label="Open stickers" title="Stickers" onclick="stickers()">🎁</button> <button class="pill" type="button" aria-label="Open parent settings" title="Parent settings" onclick="gate()">⚙️</button></span></header>
 <main id="app" tabindex="-1"></main><div id="ll-toast" class="ll-toast" role="status" aria-live="polite" aria-atomic="true"></div>
-<footer class="site-footer" aria-label="Site footer"><nav class="footer-nav" aria-label="Primary navigation"><button type="button" aria-label="Home" onclick="home()"><span aria-hidden="true">🏠</span><span>Home</span></button><button type="button" aria-label="Profile" onclick="profiles()"><span aria-hidden="true">👤</span><span>Profile</span></button><button type="button" aria-label="Stickers" onclick="stickers()"><span aria-hidden="true">🎁</span><span>Stickers</span></button><button type="button" aria-label="Parents" onclick="gate()"><span aria-hidden="true">⚙️</span><span>Parents</span></button></nav><p class="footer-version" aria-label="Application version">Version 2026.10.24.2</p><p class="footer-copy">Little Learners · Learn, play and grow 🌱<br>Alphabets · हिंदी वर्णमाला · Numbers · Animals · Good manners</p></footer>
+<footer class="site-footer" aria-label="Site footer"><nav class="footer-nav" aria-label="Primary navigation"><button type="button" aria-label="Home" onclick="home()"><span aria-hidden="true">🏠</span><span>Home</span></button><button type="button" aria-label="Profile" onclick="profiles()"><span aria-hidden="true">👤</span><span>Profile</span></button><button type="button" aria-label="Stickers" onclick="stickers()"><span aria-hidden="true">🎁</span><span>Stickers</span></button><button type="button" aria-label="Parents" onclick="gate()"><span aria-hidden="true">⚙️</span><span>Parents</span></button></nav><p class="footer-version" aria-label="Application version">Version 2026.10.24.3</p><p class="footer-copy">Little Learners · Learn, play and grow 🌱<br>Alphabets · हिंदी वर्णमाला · Numbers · Animals · Good manners</p></footer>
 <script src="./progress-model.js"></script>
 <script>
 let llToastTimer;
@@ -416,7 +433,15 @@ try {
         const last = Number(localStorage.getItem('kl_last_sync_' + (auth.currentUser?.uid || '')) || 0);
         const pending = isDirty();
         const when = last ? new Date(last).toLocaleString() : 'Not synced yet';
-        return `<div class="sync-status" role="status"><strong>☁️ Cloud sync</strong>${pending ? 'Changes are waiting to sync.' : 'All local changes are synced.'}<br>Last successful sync: ${when}<br>Automatic check: every 3 hours while the app is open.</div>`;
+        const state = pending ? 'Changes waiting to sync' : 'All local changes are synced';
+        const stateClass = pending ? 'sync-status-pending' : 'sync-status-synced';
+        return `<section class="sync-status ${stateClass}" aria-label="Cloud sync status">
+          <div class="sync-status-heading"><strong>☁️ Cloud sync</strong><span class="sync-status-badge">${pending ? 'Pending' : 'Synced'}</span></div>
+          <p class="sync-status-message">${state}</p>
+          <details class="sync-status-details"><summary>Sync details</summary>
+            <dl><div><dt>Last successful sync</dt><dd>${when}</dd></div><div><dt>Automatic check</dt><dd>Every 3 hours while the app is open</dd></div></dl>
+          </details>
+        </section>`;
       },
       schedulePush: () => {
         if (!auth.currentUser || !profileReady || !isDirty()) return;
