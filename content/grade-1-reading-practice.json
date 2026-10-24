@@ -1,0 +1,1195 @@
+{
+  "schemaVersion": "1.0.0",
+  "contentPackId": "little-learners-grade-1-reading-practice",
+  "title": "Little Learners — Grade 1 Reading Practice Pack",
+  "curriculumLevel": {
+    "grade": 1,
+    "typicalAge": "6–7",
+    "languageSupport": [
+      "en",
+      "hi"
+    ],
+    "positioning": "Supplementary short-passage practice. Adults should align vocabulary and reading difficulty to the child's school curriculum."
+  },
+  "releaseStatus": "draft-content-pack",
+  "contentType": "paired-reading-passages",
+  "scope": {
+    "passageCount": 8,
+    "languagePassageCount": 16,
+    "questionCount": 48,
+    "skillAreas": 6
+  },
+  "learningPrinciples": [
+    "Passages are original, short, concrete and suitable for supported early reading.",
+    "Use read-aloud, echo reading or independent reading according to the child's confidence.",
+    "Ask literal comprehension questions first, then one simple inference or sequencing question.",
+    "Treat reading errors as useful practice; offer a hint and another try rather than shame or speed pressure.",
+    "English and Hindi passages are separately authored adaptations of a shared theme, not strict word-for-word translations.",
+    "Do not treat this draft pack as a diagnostic reading-level assessment."
+  ],
+  "passages": [
+    {
+      "id": "read-01",
+      "theme": "A Seed for Mina",
+      "skillFocus": [
+        "short sentences",
+        "sequence",
+        "plant care"
+      ],
+      "difficulty": "early",
+      "languages": {
+        "en": {
+          "title": "A Seed for Mina",
+          "text": [
+            "Mina has a small pot.",
+            "She puts a seed in the soil.",
+            "She gives the soil a little water.",
+            "Each day, Mina checks the pot.",
+            "Soon, a green shoot comes up.",
+            "Mina smiles and cares for her plant."
+          ],
+          "vocabulary": [
+            {
+              "word": "seed",
+              "meaning": "A part of a plant that can grow into a new plant."
+            },
+            {
+              "word": "soil",
+              "meaning": "The earth in which many plants grow."
+            },
+            {
+              "word": "shoot",
+              "meaning": "A new part of a plant growing above the soil."
+            }
+          ]
+        },
+        "hi": {
+          "title": "मीना का बीज",
+          "text": [
+            "मीना के पास एक छोटा गमला है।",
+            "वह मिट्टी में एक बीज डालती है।",
+            "वह मिट्टी में थोड़ा पानी डालती है।",
+            "मीना हर दिन गमले को देखती है।",
+            "कुछ दिन बाद एक हरा अंकुर निकलता है।",
+            "मीना खुश होती है और पौधे की देखभाल करती है।"
+          ],
+          "vocabulary": [
+            {
+              "word": "बीज",
+              "meaning": "जिससे नया पौधा उग सकता है।"
+            },
+            {
+              "word": "मिट्टी",
+              "meaning": "वह धरती जिसमें कई पौधे उगते हैं।"
+            },
+            {
+              "word": "अंकुर",
+              "meaning": "पौधे का नया भाग जो मिट्टी से बाहर निकलता है।"
+            }
+          ]
+        }
+      },
+      "questions": [
+        {
+          "id": "read-01-q1",
+          "language": "en",
+          "type": "multiple-choice",
+          "prompt": "Where does Mina put the seed?",
+          "options": [
+            "In the soil",
+            "In a shoe",
+            "In a book"
+          ],
+          "answer": "In the soil",
+          "explanation": "Mina puts the seed in the soil."
+        },
+        {
+          "id": "read-01-q2",
+          "language": "en",
+          "type": "multiple-choice",
+          "prompt": "What does Mina give the soil?",
+          "options": [
+            "A little water",
+            "A toy",
+            "A hat"
+          ],
+          "answer": "A little water",
+          "explanation": "Plants need water to grow."
+        },
+        {
+          "id": "read-01-q3",
+          "language": "en",
+          "type": "multiple-choice",
+          "prompt": "What comes up after some time?",
+          "options": [
+            "A green shoot",
+            "A red ball",
+            "A bird nest"
+          ],
+          "answer": "A green shoot",
+          "explanation": "The story says a green shoot comes up."
+        },
+        {
+          "id": "read-01-q4",
+          "language": "hi",
+          "type": "multiple-choice",
+          "prompt": "मीना बीज कहाँ डालती है?",
+          "options": [
+            "मिट्टी में",
+            "जूते में",
+            "किताब में"
+          ],
+          "answer": "मिट्टी में",
+          "explanation": "मीना मिट्टी में बीज डालती है।"
+        },
+        {
+          "id": "read-01-q5",
+          "language": "hi",
+          "type": "multiple-choice",
+          "prompt": "मीना मिट्टी में क्या डालती है?",
+          "options": [
+            "थोड़ा पानी",
+            "खिलौना",
+            "टोपी"
+          ],
+          "answer": "थोड़ा पानी",
+          "explanation": "मीना मिट्टी में थोड़ा पानी डालती है।"
+        },
+        {
+          "id": "read-01-q6",
+          "language": "hi",
+          "type": "multiple-choice",
+          "prompt": "कुछ दिन बाद क्या निकलता है?",
+          "options": [
+            "हरा अंकुर",
+            "लाल गेंद",
+            "घोंसला"
+          ],
+          "answer": "हरा अंकुर",
+          "explanation": "कहानी में हरा अंकुर निकलता है।"
+        }
+      ]
+    },
+    {
+      "id": "read-02",
+      "theme": "The Missing Pencil",
+      "skillFocus": [
+        "problem and solution",
+        "classroom vocabulary",
+        "kindness"
+      ],
+      "difficulty": "early",
+      "languages": {
+        "en": {
+          "title": "The Missing Pencil",
+          "text": [
+            "Aarav is ready to draw.",
+            "He cannot find his blue pencil.",
+            "He looks inside his pencil box.",
+            "His friend Sara sees the pencil under a book.",
+            "Sara gives it to Aarav.",
+            "Aarav says, “Thank you, Sara!”"
+          ],
+          "vocabulary": [
+            {
+              "word": "missing",
+              "meaning": "Not where it should be."
+            },
+            {
+              "word": "inside",
+              "meaning": "In the inner part of something."
+            },
+            {
+              "word": "friend",
+              "meaning": "A person who cares about you and plays or learns with you."
+            }
+          ]
+        },
+        "hi": {
+          "title": "गुम हुई पेंसिल",
+          "text": [
+            "आरव चित्र बनाने के लिए तैयार है।",
+            "उसे अपनी नीली पेंसिल नहीं मिलती।",
+            "वह अपना पेंसिल बॉक्स देखता है।",
+            "सारा को किताब के नीचे पेंसिल दिखती है।",
+            "सारा पेंसिल आरव को दे देती है।",
+            "आरव कहता है, “धन्यवाद, सारा!”"
+          ],
+          "vocabulary": [
+            {
+              "word": "गुम",
+              "meaning": "जो अपनी जगह पर न मिले।"
+            },
+            {
+              "word": "नीचे",
+              "meaning": "किसी चीज़ के तल की ओर।"
+            },
+            {
+              "word": "धन्यवाद",
+              "meaning": "किसी की मदद के लिए आभार जताने का शब्द।"
+            }
+          ]
+        }
+      },
+      "questions": [
+        {
+          "id": "read-02-q1",
+          "language": "en",
+          "type": "multiple-choice",
+          "prompt": "What colour is Aarav's pencil?",
+          "options": [
+            "Blue",
+            "Green",
+            "Yellow"
+          ],
+          "answer": "Blue",
+          "explanation": "Aarav is looking for his blue pencil."
+        },
+        {
+          "id": "read-02-q2",
+          "language": "en",
+          "type": "multiple-choice",
+          "prompt": "Where does Sara see the pencil?",
+          "options": [
+            "Under a book",
+            "In a tree",
+            "Near a river"
+          ],
+          "answer": "Under a book",
+          "explanation": "Sara spots it under a book."
+        },
+        {
+          "id": "read-02-q3",
+          "language": "en",
+          "type": "multiple-choice",
+          "prompt": "What does Aarav say?",
+          "options": [
+            "Thank you",
+            "Go away",
+            "Good night"
+          ],
+          "answer": "Thank you",
+          "explanation": "He thanks Sara for helping him."
+        },
+        {
+          "id": "read-02-q4",
+          "language": "hi",
+          "type": "multiple-choice",
+          "prompt": "आरव की पेंसिल किस रंग की है?",
+          "options": [
+            "नीली",
+            "हरी",
+            "पीली"
+          ],
+          "answer": "नीली",
+          "explanation": "आरव अपनी नीली पेंसिल ढूँढ़ता है।"
+        },
+        {
+          "id": "read-02-q5",
+          "language": "hi",
+          "type": "multiple-choice",
+          "prompt": "सारा को पेंसिल कहाँ दिखती है?",
+          "options": [
+            "किताब के नीचे",
+            "पेड़ पर",
+            "नदी के पास"
+          ],
+          "answer": "किताब के नीचे",
+          "explanation": "पेंसिल किताब के नीचे है।"
+        },
+        {
+          "id": "read-02-q6",
+          "language": "hi",
+          "type": "multiple-choice",
+          "prompt": "मदद मिलने पर आरव क्या कहता है?",
+          "options": [
+            "धन्यवाद",
+            "चले जाओ",
+            "शुभ रात्रि"
+          ],
+          "answer": "धन्यवाद",
+          "explanation": "आरव सारा को धन्यवाद देता है।"
+        }
+      ]
+    },
+    {
+      "id": "read-03",
+      "theme": "Rainy Day",
+      "skillFocus": [
+        "weather words",
+        "cause and effect",
+        "safe choices"
+      ],
+      "difficulty": "early",
+      "languages": {
+        "en": {
+          "title": "A Rainy Day",
+          "text": [
+            "Dark clouds cover the sky.",
+            "Soon, rain taps on the window.",
+            "Tara puts on her raincoat.",
+            "She takes an umbrella with her father.",
+            "They walk slowly around the puddles.",
+            "At home, Tara hangs her wet coat to dry."
+          ],
+          "vocabulary": [
+            {
+              "word": "clouds",
+              "meaning": "White or grey shapes in the sky made of tiny water drops or ice."
+            },
+            {
+              "word": "puddle",
+              "meaning": "A small pool of water on the ground."
+            },
+            {
+              "word": "dry",
+              "meaning": "Not wet."
+            }
+          ]
+        },
+        "hi": {
+          "title": "बारिश का दिन",
+          "text": [
+            "आसमान में काले बादल छा जाते हैं।",
+            "थोड़ी देर बाद खिड़की पर बारिश की बूँदें पड़ती हैं।",
+            "तारा बरसाती पहनती है।",
+            "वह अपने पिता के साथ छाता लेती है।",
+            "वे पानी के गड्ढों से बचकर धीरे चलते हैं।",
+            "घर आकर तारा गीली बरसाती सुखाने के लिए टाँगती है।"
+          ],
+          "vocabulary": [
+            {
+              "word": "बादल",
+              "meaning": "आसमान में दिखने वाले पानी की बूँदों से बने समूह।"
+            },
+            {
+              "word": "छाता",
+              "meaning": "बारिश से बचने के लिए इस्तेमाल की जाने वाली चीज़।"
+            },
+            {
+              "word": "गीला",
+              "meaning": "जिस पर पानी लगा हो।"
+            }
+          ]
+        }
+      },
+      "questions": [
+        {
+          "id": "read-03-q1",
+          "language": "en",
+          "type": "multiple-choice",
+          "prompt": "What falls from the sky?",
+          "options": [
+            "Rain",
+            "Sand",
+            "Leaves only"
+          ],
+          "answer": "Rain",
+          "explanation": "Rain taps on the window."
+        },
+        {
+          "id": "read-03-q2",
+          "language": "en",
+          "type": "multiple-choice",
+          "prompt": "Who walks with Tara?",
+          "options": [
+            "Her father",
+            "A tiger",
+            "Her teacher"
+          ],
+          "answer": "Her father",
+          "explanation": "Tara takes an umbrella with her father."
+        },
+        {
+          "id": "read-03-q3",
+          "language": "en",
+          "type": "multiple-choice",
+          "prompt": "Why should they walk carefully near puddles?",
+          "options": [
+            "To avoid slipping or splashing",
+            "To make more rain",
+            "To find pencils"
+          ],
+          "answer": "To avoid slipping or splashing",
+          "explanation": "Walking carefully near water is a sensible safe choice."
+        },
+        {
+          "id": "read-03-q4",
+          "language": "hi",
+          "type": "multiple-choice",
+          "prompt": "आसमान में क्या छा जाते हैं?",
+          "options": [
+            "बादल",
+            "रेत",
+            "केवल पत्ते"
+          ],
+          "answer": "बादल",
+          "explanation": "कहानी में आसमान में बादल छाते हैं।"
+        },
+        {
+          "id": "read-03-q5",
+          "language": "hi",
+          "type": "multiple-choice",
+          "prompt": "तारा किसके साथ चलती है?",
+          "options": [
+            "अपने पिता",
+            "बाघ",
+            "शिक्षक"
+          ],
+          "answer": "अपने पिता",
+          "explanation": "तारा अपने पिता के साथ चलती है।"
+        },
+        {
+          "id": "read-03-q6",
+          "language": "hi",
+          "type": "multiple-choice",
+          "prompt": "पानी के गड्ढों के पास कैसे चलना चाहिए?",
+          "options": [
+            "ध्यान से",
+            "आँखें बंद करके",
+            "दौड़कर"
+          ],
+          "answer": "ध्यान से",
+          "explanation": "ध्यान से चलने पर फिसलने से बच सकते हैं।"
+        }
+      ]
+    },
+    {
+      "id": "read-04",
+      "theme": "A Visit to the Library",
+      "skillFocus": [
+        "setting",
+        "sequence",
+        "library vocabulary"
+      ],
+      "difficulty": "early",
+      "languages": {
+        "en": {
+          "title": "A Visit to the Library",
+          "text": [
+            "Nila visits the library with her class.",
+            "The librarian welcomes the children.",
+            "Nila chooses a book about birds.",
+            "She sits quietly and turns each page.",
+            "Before leaving, she returns the book to the desk.",
+            "Nila wants to visit again."
+          ],
+          "vocabulary": [
+            {
+              "word": "library",
+              "meaning": "A place where people can read or borrow books."
+            },
+            {
+              "word": "librarian",
+              "meaning": "A person who helps care for a library and its books."
+            },
+            {
+              "word": "page",
+              "meaning": "One side of a sheet in a book."
+            }
+          ]
+        },
+        "hi": {
+          "title": "पुस्तकालय की सैर",
+          "text": [
+            "नीला अपनी कक्षा के साथ पुस्तकालय जाती है।",
+            "पुस्तकालय की देखभाल करने वाले व्यक्ति बच्चों का स्वागत करते हैं।",
+            "नीला पक्षियों पर एक किताब चुनती है।",
+            "वह शांति से बैठकर पन्ने पलटती है।",
+            "जाने से पहले वह किताब मेज़ पर लौटा देती है।",
+            "नीला फिर से वहाँ जाना चाहती है।"
+          ],
+          "vocabulary": [
+            {
+              "word": "पुस्तकालय",
+              "meaning": "वह जगह जहाँ किताबें पढ़ी या उधार ली जा सकती हैं।"
+            },
+            {
+              "word": "पन्ना",
+              "meaning": "किताब के कागज़ का एक भाग।"
+            },
+            {
+              "word": "स्वागत",
+              "meaning": "किसी के आने पर खुशी से मिलना।"
+            }
+          ]
+        }
+      },
+      "questions": [
+        {
+          "id": "read-04-q1",
+          "language": "en",
+          "type": "multiple-choice",
+          "prompt": "Where does Nila go?",
+          "options": [
+            "The library",
+            "The airport",
+            "The farm"
+          ],
+          "answer": "The library",
+          "explanation": "Nila visits the library with her class."
+        },
+        {
+          "id": "read-04-q2",
+          "language": "en",
+          "type": "multiple-choice",
+          "prompt": "What is Nila's book about?",
+          "options": [
+            "Birds",
+            "Trains",
+            "Cakes"
+          ],
+          "answer": "Birds",
+          "explanation": "She chooses a book about birds."
+        },
+        {
+          "id": "read-04-q3",
+          "language": "en",
+          "type": "multiple-choice",
+          "prompt": "What does Nila do before leaving?",
+          "options": [
+            "Returns the book",
+            "Takes every book home",
+            "Hides the book"
+          ],
+          "answer": "Returns the book",
+          "explanation": "She returns the book to the desk."
+        },
+        {
+          "id": "read-04-q4",
+          "language": "hi",
+          "type": "multiple-choice",
+          "prompt": "नीला कहाँ जाती है?",
+          "options": [
+            "पुस्तकालय",
+            "हवाई अड्डा",
+            "खेत"
+          ],
+          "answer": "पुस्तकालय",
+          "explanation": "नीला अपनी कक्षा के साथ पुस्तकालय जाती है।"
+        },
+        {
+          "id": "read-04-q5",
+          "language": "hi",
+          "type": "multiple-choice",
+          "prompt": "नीला किस विषय की किताब चुनती है?",
+          "options": [
+            "पक्षियों",
+            "रेलगाड़ियों",
+            "केक"
+          ],
+          "answer": "पक्षियों",
+          "explanation": "नीला पक्षियों पर किताब चुनती है।"
+        },
+        {
+          "id": "read-04-q6",
+          "language": "hi",
+          "type": "multiple-choice",
+          "prompt": "जाने से पहले नीला क्या करती है?",
+          "options": [
+            "किताब लौटा देती है",
+            "सारी किताबें ले जाती है",
+            "किताब छिपाती है"
+          ],
+          "answer": "किताब लौटा देती है",
+          "explanation": "वह किताब मेज़ पर लौटा देती है।"
+        }
+      ]
+    },
+    {
+      "id": "read-05",
+      "theme": "Sharing Mangoes",
+      "skillFocus": [
+        "counting in context",
+        "fairness",
+        "simple inference"
+      ],
+      "difficulty": "early",
+      "languages": {
+        "en": {
+          "title": "Sharing Mangoes",
+          "text": [
+            "Grandpa brings six ripe mangoes.",
+            "Ravi washes them with care.",
+            "He places the mangoes on a plate.",
+            "Ravi shares them with his sister and Grandpa.",
+            "Everyone gets a piece to enjoy.",
+            "They thank Ravi for helping."
+          ],
+          "vocabulary": [
+            {
+              "word": "ripe",
+              "meaning": "Ready to eat or use."
+            },
+            {
+              "word": "share",
+              "meaning": "To give some of what you have to others."
+            },
+            {
+              "word": "piece",
+              "meaning": "A part of something larger."
+            }
+          ]
+        },
+        "hi": {
+          "title": "आम बाँटना",
+          "text": [
+            "दादाजी छह पके आम लाते हैं।",
+            "रवि उन्हें ध्यान से धोता है।",
+            "वह आमों को एक प्लेट में रखता है।",
+            "रवि अपनी बहन और दादाजी के साथ आम बाँटता है।",
+            "सबको खाने के लिए एक टुकड़ा मिलता है।",
+            "मदद करने के लिए सब रवि को धन्यवाद देते हैं।"
+          ],
+          "vocabulary": [
+            {
+              "word": "पका",
+              "meaning": "जो खाने के लिए तैयार हो।"
+            },
+            {
+              "word": "बाँटना",
+              "meaning": "अपनी चीज़ का कुछ हिस्सा दूसरों को देना।"
+            },
+            {
+              "word": "टुकड़ा",
+              "meaning": "किसी बड़ी चीज़ का छोटा भाग।"
+            }
+          ]
+        }
+      },
+      "questions": [
+        {
+          "id": "read-05-q1",
+          "language": "en",
+          "type": "multiple-choice",
+          "prompt": "How many mangoes does Grandpa bring?",
+          "options": [
+            "Six",
+            "Two",
+            "Ten"
+          ],
+          "answer": "Six",
+          "explanation": "The first sentence says six ripe mangoes."
+        },
+        {
+          "id": "read-05-q2",
+          "language": "en",
+          "type": "multiple-choice",
+          "prompt": "What does Ravi do before sharing?",
+          "options": [
+            "Washes the mangoes",
+            "Paints the plate",
+            "Plants the fruit"
+          ],
+          "answer": "Washes the mangoes",
+          "explanation": "Ravi washes them carefully before placing them on a plate."
+        },
+        {
+          "id": "read-05-q3",
+          "language": "en",
+          "type": "multiple-choice",
+          "prompt": "How does sharing help the family?",
+          "options": [
+            "Everyone can enjoy some",
+            "Nobody gets any",
+            "The mangoes disappear"
+          ],
+          "answer": "Everyone can enjoy some",
+          "explanation": "Sharing lets everyone enjoy the fruit together."
+        },
+        {
+          "id": "read-05-q4",
+          "language": "hi",
+          "type": "multiple-choice",
+          "prompt": "दादाजी कितने आम लाते हैं?",
+          "options": [
+            "छह",
+            "दो",
+            "दस"
+          ],
+          "answer": "छह",
+          "explanation": "कहानी में छह पके आम हैं।"
+        },
+        {
+          "id": "read-05-q5",
+          "language": "hi",
+          "type": "multiple-choice",
+          "prompt": "आम बाँटने से पहले रवि क्या करता है?",
+          "options": [
+            "आम धोता है",
+            "प्लेट रंगता है",
+            "फल बोता है"
+          ],
+          "answer": "आम धोता है",
+          "explanation": "रवि आमों को ध्यान से धोता है।"
+        },
+        {
+          "id": "read-05-q6",
+          "language": "hi",
+          "type": "multiple-choice",
+          "prompt": "आम बाँटने से क्या होता है?",
+          "options": [
+            "सब आम का आनंद लेते हैं",
+            "किसी को कुछ नहीं मिलता",
+            "आम गायब हो जाते हैं"
+          ],
+          "answer": "सब आम का आनंद लेते हैं",
+          "explanation": "बाँटने से सबको आम खाने को मिलता है।"
+        }
+      ]
+    },
+    {
+      "id": "read-06",
+      "theme": "The Helpful Ant",
+      "skillFocus": [
+        "character action",
+        "sequence",
+        "perseverance"
+      ],
+      "difficulty": "developing",
+      "languages": {
+        "en": {
+          "title": "The Helpful Ant",
+          "text": [
+            "A little ant finds a crumb.",
+            "The crumb is bigger than the ant.",
+            "The ant pushes it along the path.",
+            "A second ant comes to help.",
+            "Together, they carry the crumb to their nest.",
+            "The ants work patiently as a team."
+          ],
+          "vocabulary": [
+            {
+              "word": "crumb",
+              "meaning": "A very small piece of food."
+            },
+            {
+              "word": "path",
+              "meaning": "A way that people or animals can walk along."
+            },
+            {
+              "word": "together",
+              "meaning": "With one another."
+            }
+          ]
+        },
+        "hi": {
+          "title": "मददगार चींटी",
+          "text": [
+            "एक छोटी चींटी को रोटी का टुकड़ा मिलता है।",
+            "वह टुकड़ा चींटी से बड़ा है।",
+            "चींटी उसे रास्ते पर धकेलती है।",
+            "दूसरी चींटी मदद करने आती है।",
+            "दोनों मिलकर टुकड़े को अपने बिल तक ले जाती हैं।",
+            "चींटियाँ धैर्य से मिलकर काम करती हैं।"
+          ],
+          "vocabulary": [
+            {
+              "word": "टुकड़ा",
+              "meaning": "किसी चीज़ का छोटा भाग।"
+            },
+            {
+              "word": "रास्ता",
+              "meaning": "वह जगह जहाँ से चला जा सकता है।"
+            },
+            {
+              "word": "धैर्य",
+              "meaning": "शांत रहकर कोशिश करते रहना।"
+            }
+          ]
+        }
+      },
+      "questions": [
+        {
+          "id": "read-06-q1",
+          "language": "en",
+          "type": "multiple-choice",
+          "prompt": "What does the ant find?",
+          "options": [
+            "A crumb",
+            "A shoe",
+            "A leaf boat"
+          ],
+          "answer": "A crumb",
+          "explanation": "The ant finds a small piece of food."
+        },
+        {
+          "id": "read-06-q2",
+          "language": "en",
+          "type": "multiple-choice",
+          "prompt": "Who comes to help?",
+          "options": [
+            "A second ant",
+            "A fish",
+            "A bus driver"
+          ],
+          "answer": "A second ant",
+          "explanation": "Another ant joins the first one."
+        },
+        {
+          "id": "read-06-q3",
+          "language": "en",
+          "type": "multiple-choice",
+          "prompt": "What lesson does the story show?",
+          "options": [
+            "Working together can help",
+            "Never help anyone",
+            "Give up at once"
+          ],
+          "answer": "Working together can help",
+          "explanation": "The ants move the crumb together."
+        },
+        {
+          "id": "read-06-q4",
+          "language": "hi",
+          "type": "multiple-choice",
+          "prompt": "चींटी को क्या मिलता है?",
+          "options": [
+            "रोटी का टुकड़ा",
+            "जूता",
+            "पत्ते की नाव"
+          ],
+          "answer": "रोटी का टुकड़ा",
+          "explanation": "चींटी को खाने का छोटा टुकड़ा मिलता है।"
+        },
+        {
+          "id": "read-06-q5",
+          "language": "hi",
+          "type": "multiple-choice",
+          "prompt": "मदद करने कौन आती है?",
+          "options": [
+            "दूसरी चींटी",
+            "मछली",
+            "बस चालक"
+          ],
+          "answer": "दूसरी चींटी",
+          "explanation": "दूसरी चींटी मदद करने आती है।"
+        },
+        {
+          "id": "read-06-q6",
+          "language": "hi",
+          "type": "multiple-choice",
+          "prompt": "कहानी हमें क्या सिखाती है?",
+          "options": [
+            "मिलकर काम करना मददगार है",
+            "किसी की मदद न करो",
+            "तुरंत हार मान लो"
+          ],
+          "answer": "मिलकर काम करना मददगार है",
+          "explanation": "दोनों चींटियाँ मिलकर टुकड़ा ले जाती हैं।"
+        }
+      ]
+    },
+    {
+      "id": "read-07",
+      "theme": "At the Market",
+      "skillFocus": [
+        "everyday vocabulary",
+        "details",
+        "polite communication"
+      ],
+      "difficulty": "developing",
+      "languages": {
+        "en": {
+          "title": "At the Market",
+          "text": [
+            "Meera goes to the market with her mother.",
+            "They buy carrots, peas and apples.",
+            "Meera helps put the food in a cloth bag.",
+            "She says hello to the shopkeeper.",
+            "At home, they wash the fruit and vegetables.",
+            "Meera helps put everything away."
+          ],
+          "vocabulary": [
+            {
+              "word": "market",
+              "meaning": "A place where people buy and sell things."
+            },
+            {
+              "word": "shopkeeper",
+              "meaning": "A person who runs or works in a shop."
+            },
+            {
+              "word": "vegetables",
+              "meaning": "Parts of plants that people eat as food."
+            }
+          ]
+        },
+        "hi": {
+          "title": "बाज़ार में",
+          "text": [
+            "मीरा अपनी माँ के साथ बाज़ार जाती है।",
+            "वे गाजर, मटर और सेब खरीदते हैं।",
+            "मीरा सामान कपड़े के थैले में रखने में मदद करती है।",
+            "वह दुकानदार को नमस्ते कहती है।",
+            "घर पर वे फल और सब्ज़ियाँ धोते हैं।",
+            "मीरा सामान सही जगह रखने में मदद करती है।"
+          ],
+          "vocabulary": [
+            {
+              "word": "बाज़ार",
+              "meaning": "वह जगह जहाँ लोग सामान खरीदते और बेचते हैं।"
+            },
+            {
+              "word": "दुकानदार",
+              "meaning": "जो दुकान चलाता है या वहाँ काम करता है।"
+            },
+            {
+              "word": "सब्ज़ियाँ",
+              "meaning": "पौधों के वे भाग जिन्हें हम भोजन में खाते हैं।"
+            }
+          ]
+        }
+      },
+      "questions": [
+        {
+          "id": "read-07-q1",
+          "language": "en",
+          "type": "multiple-choice",
+          "prompt": "Who goes to the market with Meera?",
+          "options": [
+            "Her mother",
+            "Her coach",
+            "A penguin"
+          ],
+          "answer": "Her mother",
+          "explanation": "Meera goes with her mother."
+        },
+        {
+          "id": "read-07-q2",
+          "language": "en",
+          "type": "multiple-choice",
+          "prompt": "Which item is a vegetable in the story?",
+          "options": [
+            "Carrot",
+            "Apple",
+            "Toy car"
+          ],
+          "answer": "Carrot",
+          "explanation": "Carrots are vegetables; apples are fruit."
+        },
+        {
+          "id": "read-07-q3",
+          "language": "en",
+          "type": "multiple-choice",
+          "prompt": "What does Meera say to the shopkeeper?",
+          "options": [
+            "Hello",
+            "Be quiet forever",
+            "I am a cloud"
+          ],
+          "answer": "Hello",
+          "explanation": "Meera greets the shopkeeper politely."
+        },
+        {
+          "id": "read-07-q4",
+          "language": "hi",
+          "type": "multiple-choice",
+          "prompt": "मीरा किसके साथ बाज़ार जाती है?",
+          "options": [
+            "अपनी माँ",
+            "अपने कोच",
+            "पेंगुइन"
+          ],
+          "answer": "अपनी माँ",
+          "explanation": "मीरा अपनी माँ के साथ बाज़ार जाती है।"
+        },
+        {
+          "id": "read-07-q5",
+          "language": "hi",
+          "type": "multiple-choice",
+          "prompt": "कहानी में कौन-सी सब्ज़ी है?",
+          "options": [
+            "गाजर",
+            "सेब",
+            "खिलौना कार"
+          ],
+          "answer": "गाजर",
+          "explanation": "गाजर एक सब्ज़ी है।"
+        },
+        {
+          "id": "read-07-q6",
+          "language": "hi",
+          "type": "multiple-choice",
+          "prompt": "मीरा दुकानदार से क्या कहती है?",
+          "options": [
+            "नमस्ते",
+            "हमेशा चुप रहो",
+            "मैं बादल हूँ"
+          ],
+          "answer": "नमस्ते",
+          "explanation": "मीरा दुकानदार का विनम्रता से अभिवादन करती है।"
+        }
+      ]
+    },
+    {
+      "id": "read-08",
+      "theme": "A Day at the Pond",
+      "skillFocus": [
+        "observation",
+        "animal vocabulary",
+        "simple inference"
+      ],
+      "difficulty": "developing",
+      "languages": {
+        "en": {
+          "title": "A Day at the Pond",
+          "text": [
+            "Kabir visits a pond with his aunt.",
+            "He sees two ducks swimming.",
+            "A frog sits on a green leaf.",
+            "Kabir watches quietly from the path.",
+            "He does not throw stones or rubbish into the water.",
+            "He leaves the pond clean for the animals."
+          ],
+          "vocabulary": [
+            {
+              "word": "pond",
+              "meaning": "A small area of still water."
+            },
+            {
+              "word": "quietly",
+              "meaning": "Without making much noise."
+            },
+            {
+              "word": "rubbish",
+              "meaning": "Things people throw away as waste."
+            }
+          ]
+        },
+        "hi": {
+          "title": "तालाब के पास",
+          "text": [
+            "कबीर अपनी मौसी के साथ तालाब जाता है।",
+            "वह दो बत्तखों को तैरते देखता है।",
+            "एक मेंढक हरे पत्ते पर बैठा है।",
+            "कबीर रास्ते से शांति से देखता है।",
+            "वह पानी में पत्थर या कचरा नहीं फेंकता।",
+            "वह तालाब को जानवरों के लिए साफ़ छोड़ता है।"
+          ],
+          "vocabulary": [
+            {
+              "word": "तालाब",
+              "meaning": "ठहरे हुए पानी का छोटा जलाशय।"
+            },
+            {
+              "word": "मेंढक",
+              "meaning": "पानी और ज़मीन के पास रहने वाला एक जीव।"
+            },
+            {
+              "word": "कचरा",
+              "meaning": "वे चीज़ें जिन्हें हम फेंक देते हैं।"
+            }
+          ]
+        }
+      },
+      "questions": [
+        {
+          "id": "read-08-q1",
+          "language": "en",
+          "type": "multiple-choice",
+          "prompt": "How many ducks does Kabir see?",
+          "options": [
+            "Two",
+            "Five",
+            "None"
+          ],
+          "answer": "Two",
+          "explanation": "The story says he sees two ducks."
+        },
+        {
+          "id": "read-08-q2",
+          "language": "en",
+          "type": "multiple-choice",
+          "prompt": "Where does the frog sit?",
+          "options": [
+            "On a green leaf",
+            "On a school bus",
+            "On a plate"
+          ],
+          "answer": "On a green leaf",
+          "explanation": "The frog sits on a green leaf."
+        },
+        {
+          "id": "read-08-q3",
+          "language": "en",
+          "type": "multiple-choice",
+          "prompt": "Why does Kabir leave the pond clean?",
+          "options": [
+            "To care for the animals and their home",
+            "To hide his books",
+            "To make the pond noisy"
+          ],
+          "answer": "To care for the animals and their home",
+          "explanation": "Keeping natural places clean helps living things."
+        },
+        {
+          "id": "read-08-q4",
+          "language": "hi",
+          "type": "multiple-choice",
+          "prompt": "कबीर कितनी बत्तखें देखता है?",
+          "options": [
+            "दो",
+            "पाँच",
+            "एक भी नहीं"
+          ],
+          "answer": "दो",
+          "explanation": "कहानी में दो बत्तखें हैं।"
+        },
+        {
+          "id": "read-08-q5",
+          "language": "hi",
+          "type": "multiple-choice",
+          "prompt": "मेंढक कहाँ बैठा है?",
+          "options": [
+            "हरे पत्ते पर",
+            "स्कूल बस पर",
+            "प्लेट में"
+          ],
+          "answer": "हरे पत्ते पर",
+          "explanation": "मेंढक हरे पत्ते पर बैठा है।"
+        },
+        {
+          "id": "read-08-q6",
+          "language": "hi",
+          "type": "multiple-choice",
+          "prompt": "कबीर तालाब को साफ़ क्यों छोड़ता है?",
+          "options": [
+            "जानवरों और उनके घर की देखभाल के लिए",
+            "किताबें छिपाने के लिए",
+            "तालाब में शोर करने के लिए"
+          ],
+          "answer": "जानवरों और उनके घर की देखभाल के लिए",
+          "explanation": "साफ़ प्राकृतिक जगहें जीवों के लिए अच्छी होती हैं।"
+        }
+      ]
+    }
+  ],
+  "useGuidance": {
+    "suggestedRoutine": [
+      "Adult or app reads the title aloud.",
+      "Child listens to or reads one sentence at a time.",
+      "Invite the child to explain one new word.",
+      "Ask the three questions in the selected language.",
+      "If an answer is incorrect, offer a gentle hint and let the child try again."
+    ],
+    "accessibility": [
+      "Keep text large and line spacing comfortable.",
+      "Offer replay without time pressure.",
+      "Do not require microphone permission for text-based reading.",
+      "If voice practice is added later, explain microphone use clearly and keep a non-voice alternative."
+    ],
+    "integration": "Draft content only. The app should not assume this schema is already wired into the runtime. Integrate through a small tested vertical slice after reviewing the data contract.",
+    "reviewChecklist": [
+      "Review Hindi spelling, grammar and age suitability with a fluent Hindi educator.",
+      "Review English decoding difficulty and vocabulary with a primary educator.",
+      "Confirm every answer matches exactly one option.",
+      "Check IDs for uniqueness before adding more batches.",
+      "Keep passages original; obtain rights review before adding third-party stories or illustrations."
+    ]
+  },
+  "futureMediaIntegration": {
+    "status": "not-implemented",
+    "note": "YouTube integration remains out of scope. Reading passages must work without videos, external links or network access."
+  }
+}
