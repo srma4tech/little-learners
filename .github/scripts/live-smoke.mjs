@@ -106,6 +106,12 @@ async function checkCompactHomeAndNavigation(page, width) {
 }
 
 async function enterGuestFlow(page) {
+  // Wait for Firebase's initial auth-state callback so its guest-mode refresh
+  // cannot rerender onboarding in the middle of the name-entry interaction.
+  await page.waitForFunction(
+    () => window.cloudStatus === "signed out" || window.fbStatus === "Firebase: failed to load",
+    { timeout: 15000 }
+  );
   const start = page.getByRole("button", { name: /let's start/i });
   if (await start.isVisible().catch(() => false)) await start.click();
   const guest = page.getByRole("button", { name: /skip, continue as guest/i });
@@ -115,6 +121,9 @@ async function enterGuestFlow(page) {
   const finish = page.getByRole("button", { name: /start learning/i });
   if (await finish.isVisible().catch(() => false)) await finish.click();
   await page.getByRole("button", { name: /alphabets/i }).first().waitFor({ state: "visible", timeout: 15000 });
+  if (!(await page.locator("#kid").innerText()).includes("QA Kid")) {
+    throw new Error("Guest onboarding did not save the configured child name before reload");
+  }
 }
 
 try {
