@@ -273,7 +273,7 @@ try {
       const sync = page.locator("#app .sync-status");
       await sync.waitFor({ state: "visible", timeout: 5000 });
       for (const text of ["Cloud sync", "Last successful sync", "Automatic check"]) {
-        if (!(await sync.innerText()).includes(text)) throw new Error("Cloud sync status is missing: " + text);
+        if (!(await sync.textContent()).includes(text)) throw new Error("Cloud sync status is missing: " + text);
       }
       const syncLayout = await sync.evaluate(element => {
         const rect = element.getBoundingClientRect();
