@@ -81,6 +81,24 @@ function validateActivity(a) {
   assert(a.accessibility && typeof a.accessibility.notes === 'string', 'Missing accessibility notes');
   return true;
 }
+function validateActivityPack(pack) {
+  assert(pack && pack.schemaVersion === '1.0.0', 'Activity pack schemaVersion must be 1.0.0');
+  assert(Array.isArray(pack.activities) && pack.activities.length > 0, 'Activity pack needs activities');
+  unique(pack.activities.map(a => a.id), 'activity');
+  for (const activity of pack.activities) {
+    validateActivity(activity);
+    for (const lang of ['en','hi']) {
+      const variant = activity.languageVariants[lang];
+      assert(variant && variant.title && variant.instructions && variant.prompt, 'Missing bilingual activity copy: ' + activity.id + '/' + lang);
+      assert(activity.feedback && activity.feedback[lang], 'Missing feedback: ' + activity.id + '/' + lang);
+    }
+    assert(Array.isArray(activity.options) && activity.options.length >= 2, 'Activity needs at least two options: ' + activity.id);
+    unique(activity.options.map(option => option.id), 'option in ' + activity.id);
+    for (const option of activity.options) assert(option.label && option.label.en && option.label.hi && option.emoji, 'Malformed bilingual option: ' + activity.id);
+    assert(activity.options.some(option => option.id === activity.answerId), 'Answer ID not found in options: ' + activity.id);
+  }
+  return {activities:pack.activities.length, stages:[...new Set(pack.activities.flatMap(a=>a.stageIds))].length};
+}
 function run() {
   validateStageCatalog(stageCatalog);
   const foundation = validateFoundationPack(read('content/grade-1-content.json'));
@@ -88,4 +106,4 @@ function run() {
   console.log('Content validation passed: ' + JSON.stringify({stages:STAGE_IDS.size,foundation,reading}));
 }
 if (require.main === module) { try { run(); } catch (e) { console.error('Content validation failed: ' + e.message); process.exitCode = 1; } }
-module.exports = {validateStageCatalog,validateFoundationPack,validateReadingPack,validateActivity,STAGE_IDS};
+module.exports = {validateStageCatalog,validateFoundationPack,validateReadingPack,validateActivity,validateActivityPack,STAGE_IDS};
