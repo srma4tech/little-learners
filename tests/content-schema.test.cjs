@@ -83,7 +83,7 @@ test('learning path runner is wired to the home CTA and idempotent completion AP
   assert.match(guide,/openLearningPath/);
   assert.match(runner,/activityCompletions/);
   assert.match(runner,/completeActivity\(activity\.id\)/);
-  assert.match(runner,/a\\.stageIds\\.includes\\(currentStage\\.id\\)/);
+  assert.ok(runner.includes('a.stageIds.includes(currentStage.id)'));
   assert.match(sw,/little-learners-v52/);
   assert.match(sw,/stage-learning-activities\.json/);
 });
