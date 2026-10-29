@@ -9,7 +9,7 @@ const path = require('node:path');
 
 const API_BASE = 'https://www.googleapis.com/youtube/v3';
 const API_KEY = process.env.YOUTUBE_DATA_API_KEY;
-const MAX_PAGES = Math.min(3, Math.max(1, Number.parseInt(process.env.MAX_PAGES_PER_QUERY || '2', 10) || 2));
+const MAX_PAGES = Math.min(3, Math.max(1, Number.parseInt(process.env.MAX_PAGES_PER_QUERY || '3', 10) || 2));
 const MAX_QUERIES = Math.min(14, Math.max(1, Number.parseInt(process.env.MAX_SEARCH_QUERIES || '14', 10) || 14));
 const OUT = process.env.CANDIDATE_OUTPUT || path.join('artifacts', 'watch-learn-candidates.json');
 
