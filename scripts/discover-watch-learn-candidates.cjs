@@ -53,7 +53,7 @@ async function api(resource, params) {
 }
 async function main() {
   if (!API_KEY) fail('Missing YOUTUBE_DATA_API_KEY. Add it as a GitHub Actions repository secret before running candidate discovery.');
-  const selectedPlans = plans.slice(0, MAX_QUERIES);
+  const selectedPlans = MAX_QUERIES === 7 ? plans.filter(plan => plan.language === 'en') : plans;
   const found = new Map();
   let searchCalls = 0;
 
