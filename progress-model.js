@@ -31,6 +31,18 @@
     return result;
   }
 
+  function mergeStage(local, remote) {
+    if (local.stageId && remote.stageId) {
+      const localAt = number(local.stageUpdatedAt);
+      const remoteAt = number(remote.stageUpdatedAt);
+      if (remoteAt > localAt) return { stageId: remote.stageId, stageUpdatedAt: remoteAt };
+      return { stageId: local.stageId, stageUpdatedAt: localAt || remoteAt || 0 };
+    }
+    if (local.stageId) return { stageId: local.stageId, stageUpdatedAt: number(local.stageUpdatedAt) };
+    if (remote.stageId) return { stageId: remote.stageId, stageUpdatedAt: number(remote.stageUpdatedAt) };
+    return {};
+  }
+
   function mergeKid(localKid, remoteKid, deviceId = 'device-local') {
     const local = localKid ? normalizeKid(localKid, deviceId) : null;
     const remote = remoteKid ? normalizeKid(remoteKid, deviceId) : null;
@@ -44,6 +56,7 @@
       for (const [key, value] of Object.entries(local.starCounters)) counters[key] = Math.max(number(counters[key]), number(value));
       const acknowledged = {
         ...remote,
+        ...mergeStage(local, remote),
         name: remote.name && remote.name !== 'Me' ? remote.name : local.name,
         resetGeneration: remote.resetGeneration,
         starCounters: counters,
@@ -61,13 +74,14 @@
       };
     }
 
-    if (local.resetGeneration > remote.resetGeneration) return local;
-    if (remote.resetGeneration > local.resetGeneration) return remote;
+    if (local.resetGeneration > remote.resetGeneration) return { ...local, ...mergeStage(local, remote) };
+    if (remote.resetGeneration > local.resetGeneration) return { ...remote, ...mergeStage(local, remote) };
 
     const counters = { ...remote.starCounters };
     for (const [key, value] of Object.entries(local.starCounters)) counters[key] = Math.max(number(counters[key]), number(value));
     const merged = {
       ...remote,
+      ...mergeStage(local, remote),
       name: remote.name && remote.name !== 'Me' ? remote.name : local.name,
       resetGeneration: remote.resetGeneration,
       resetId: remote.resetId || local.resetId || null,

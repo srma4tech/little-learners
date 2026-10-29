@@ -63,3 +63,12 @@ test('children are reconciled independently', () => {
   assert.equal(merged.a.stars, 0);
   assert.equal(merged.b.stars, 4);
 });
+
+test('selected learning stage survives profile merges and progress reset', () => {
+  const local = {name:'Ari',stageId:'nursery',stars:4,starCounters:{'device-a':4},resetGeneration:0};
+  const merged = mergeKid(local,{name:'Ari',stars:5,starCounters:{'device-b':5},resetGeneration:0},'device-a');
+  assert.equal(merged.stageId,'nursery');
+  const reset = resetKid(merged);
+  assert.equal(reset.stageId,'nursery');
+  assert.equal(reset.stars,0);
+});

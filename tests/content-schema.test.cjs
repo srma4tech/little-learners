@@ -33,3 +33,18 @@ test('new activity contract accepts valid metadata and rejects unknown stages', 
   assert.throws(()=>validateActivity({...a,stageIds:['class-9']}),/Unknown stage ID/);
   assert.equal(STAGE_IDS.size,7);
 });
+
+test('runtime stage model matches the canonical catalog and is wired into parent settings', () => {
+  const model = fs.readFileSync(path.join(__dirname,'..','learning-stage-model.js'),'utf8');
+  const html = fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');
+  const sw = fs.readFileSync(path.join(__dirname,'..','sw.js'),'utf8');
+  assert.match(model,/playgroup/);
+  assert.match(model,/class-3/);
+  assert.match(html,/learning-stage-model\.js/);
+  assert.match(html,/parent-stage-grid/);
+  assert.match(html,/setLearningStage\(this\.dataset\.stage\)/);
+  assert.match(html,/K\(\)\.stageId=id/);
+  assert.match(sw,/little-learners-v50/);
+  assert.match(sw,/learning-stage-model\.js/);
+  assert.match(sw,/content\/learning-stages\.json/);
+});
