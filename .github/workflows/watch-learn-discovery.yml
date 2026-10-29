@@ -7,7 +7,7 @@ on:
         description: Maximum YouTube Search API pages per stage/language query (quota-aware)
         type: choice
         options: ['1', '2', '3']
-        default: '2'
+        default: '3'
         required: true
       max_search_queries:
         description: Number of predefined stage/language queries to run
@@ -52,7 +52,7 @@ jobs:
         if: steps.api-key.outputs.configured == 'true'
         env:
           YOUTUBE_DATA_API_KEY: ${{ secrets.YOUTUBE_DATA_API_KEY }}
-          MAX_PAGES_PER_QUERY: ${{ github.event.inputs.max_pages_per_query || '2' }}
+          MAX_PAGES_PER_QUERY: ${{ github.event.inputs.max_pages_per_query || '3' }}
           MAX_SEARCH_QUERIES: ${{ github.event.inputs.max_search_queries || '14' }}
           CANDIDATE_OUTPUT: artifacts/watch-learn-candidates.json
         run: node scripts/discover-watch-learn-candidates.cjs
