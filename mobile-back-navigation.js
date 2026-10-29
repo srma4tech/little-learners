@@ -113,10 +113,11 @@
     }
 
     setTimeout(() => {
-      const next = screenKey();
-      lastScreen = '';
+      // popstate has already moved the browser's history pointer. Pushing a
+      // replacement entry here would erase Forward navigation and trap Back
+      // on the same screen. Record the rendered destination without pushing.
+      lastScreen = screenKey();
       handlingBack = false;
-      pushScreen(next);
     }, 0);
   });
 })();
