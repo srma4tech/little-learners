@@ -241,7 +241,11 @@ try {
     else if (await page.locator("#app [data-learning-path-home-entry]").count()) await page.locator("#app [data-learning-path-home-entry]").click();
     else throw new Error("Learning path entry did not render on Home");
     await page.getByRole("heading", { name: /learning path/i }).waitFor({ state: "visible", timeout: 10000 });
-    if (await page.locator("#app .learning-path-choice").count() !== 2) throw new Error("Class 1 learning path should show two activities");
+    const activityCount = await page.locator("#app .learning-path-choice").count();
+    if (activityCount !== 2) {
+      const diagnostics = await page.evaluate(() => { const state=window.kl?.st?.(); const kid=state?.kids?.[state?.kid]||{}; const activities=window.learningActivityPack?.activities||[]; return {stageId:kid.stageId,normalizedStage:window.LearningStages?.normalize(kid.stageId),packCount:activities.length,class1Ids:activities.filter(a=>a.stageIds.includes("class-1")).map(a=>a.id),visibleChoices:document.querySelectorAll("#app .learning-path-choice").length}; });
+      throw new Error("Class 1 learning path should show two activities: " + JSON.stringify(diagnostics));
+    }
     await page.locator("#app .learning-path-choice").first().click();
     const activityAnswer = await page.evaluate(() => {
       const activity = window.learningActivityPack?.activities?.find(item => item.id === "class-1-add-within-ten");
