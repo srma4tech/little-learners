@@ -204,12 +204,32 @@ button{overflow-wrap:anywhere}
 }
 
 .ll-pull-refresh-indicator{position:fixed;z-index:10003;top:calc(8px + env(safe-area-inset-top,0px));left:50%;transform:translate(-50%,-150%);opacity:0;pointer-events:none;width:max-content;max-width:92vw;padding:10px 16px;border-radius:999px;background:var(--card,#fff);color:var(--ink,#2d2a4a);border:1px solid #7c4dff55;box-shadow:0 4px 18px #0002;font-size:14px;font-weight:750;text-align:center;transition:transform .16s ease,opacity .16s ease}.ll-pull-refresh-indicator.visible{transform:translate(-50%,0);opacity:1}.ll-pull-refresh-indicator[data-state="refreshing"]{border-color:#7c4dff}.ll-pull-refresh-indicator[data-state="success"]{border-color:#43a047}.ll-pull-refresh-indicator[data-state="warning"]{border-color:#d97706}@media(prefers-reduced-motion:reduce){.ll-pull-refresh-indicator{transition:none}}
+
+.watch-learn-shell{display:grid;gap:14px;max-width:900px;margin:0 auto}
+.watch-stage-note{background:var(--card);border:2px solid #00897b66;border-radius:18px;padding:14px 16px}
+.watch-stage-note strong{display:block;text-align:center;font-size:18px}
+.watch-stage-note p,.watch-parent-note{font-size:14px;line-height:1.55;opacity:.82;margin:8px 0;text-align:center}
+.watch-empty-state{text-align:center}
+.watch-empty-state h2{text-align:center;margin:8px 0}
+.watch-empty-icon{font-size:48px}
+.watch-domain-filters{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0 14px}
+.watch-domain-filters .btn{font-size:15px;padding:9px 14px}
+.watch-video-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:14px}
+.watch-video-card{min-width:0;overflow:hidden;background:var(--card);border:2px solid #00897b66;border-radius:18px;box-shadow:0 4px 0 var(--sh);display:flex;flex-direction:column}
+.watch-video-card>img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;background:#8882}
+.watch-video-placeholder{display:grid;place-items:center;aspect-ratio:16/9;background:#00897b12;font-size:48px}
+.watch-video-copy{display:grid;gap:7px;padding:12px;min-width:0}
+.watch-video-copy h3{margin:0;font-size:19px;overflow-wrap:anywhere}
+.watch-video-copy p{font-size:14px;line-height:1.4;text-align:left;margin:0;opacity:.78}
+.watch-video-copy .btn{font-size:16px;padding:10px 14px}
+.watch-player-frame{width:100%;aspect-ratio:16/9;background:#000;border-radius:14px;overflow:hidden;margin:12px 0}
+.watch-player-frame iframe{display:block;width:100%;height:100%;border:0}
 </style></head><body>
 <a class="skip-link" href="#app">Skip to main content</a>
 <header aria-label="Little Learners header"><button class="pill" type="button" aria-label="Go to home" title="Home" onclick="home()">🏠</button><span class="pill" id="stars" aria-live="polite" aria-label="Stars earned"></span><span><button class="pill" id="inst" type="button" aria-label="Install Little Learners" title="Install app" style="display:none" onclick="doInstall()">📲 Install</button> <button class="pill" id="kid" type="button" aria-label="Select child profile" title="Child profile" onclick="profiles()"></button> <button class="pill" type="button" aria-label="Open stickers" title="Stickers" onclick="stickers()">🎁</button> <button class="pill" type="button" aria-label="Open parent settings" title="Parent settings" onclick="gate()">⚙️</button></span></header>
 <main id="app" tabindex="-1"></main><div id="ll-toast" class="ll-toast" role="status" aria-live="polite" aria-atomic="true"></div>
 <footer class="site-footer" aria-label="Site footer"><nav class="footer-nav" aria-label="Primary navigation"><button type="button" aria-label="Home" onclick="home()"><span aria-hidden="true">🏠</span><span>Home</span></button><button type="button" aria-label="Profile" onclick="profiles()"><span aria-hidden="true">👤</span><span>Profile</span></button><button type="button" aria-label="Stickers" onclick="stickers()"><span aria-hidden="true">🎁</span><span>Stickers</span></button><button type="button" aria-label="Parents" onclick="gate()"><span aria-hidden="true">⚙️</span><span>Parents</span></button></nav><p class="footer-version" aria-label="Application version">Version 2026.10.29.1</p><p class="footer-copy">Little Learners · Learn, play and grow 🌱<br>Alphabets · हिंदी वर्णमाला · Numbers · Animals · Good manners</p></footer>
-<script src="./learning-stage-model.js"></script><script src="./progress-model.js"></script>
+<script src="./learning-stage-model.js"></script><script src="./progress-model.js"></script><script src="./watch-learn.js"></script>
 <script>
 let llToastTimer;
 window.showLLNotice = (message, kind='success') => {
@@ -274,7 +294,7 @@ function say(it){try{speechSynthesis.cancel()}catch(e){}const L=st.lang;let n=0;
 function lbl(it){const a=[];if(st.lang!='hi'&&it.en)a.push(it.en);if(st.lang!='en'&&it.hi)a.push(it.hi);return a.length?a.join(' · '):(it.en||it.hi)}
 const es=e=>e.length>8?'font-size:20px':'';
 const hdr=()=>{$('#stars').textContent='⭐ '+K().stars;$('#kid').textContent='👤 '+K().name};
-function home(){onbActive=0;document.body.classList.remove('ob');app.innerHTML=`${instBar()}<h1>${K().name=='Me'?'Hello, little learner!':'Hello, '+K().name+'!'} 👋<br><small style="font-size:.5em;opacity:.8">नमस्ते · Let's learn &amp; play! 🎈</small></h1><div class="grid home-grid">${S.map((s,i)=>`<button class="tile" style="--a:${s.c}" onclick="openS(${i})"><span>${s.i}</span>${s.n}<small>${s.h}</small></button>`).join('')}</div>`;app.style.setProperty('--a','#7c4dff')}
+function home(){onbActive=0;document.body.classList.remove('ob');app.innerHTML=`${instBar()}<h1>${K().name=='Me'?'Hello, little learner!':'Hello, '+K().name+'!'} 👋<br><small style="font-size:.5em;opacity:.8">नमस्ते · Let's learn &amp; play! 🎈</small></h1><div class="grid home-grid">${S.map((s,i)=>`<button class="tile" style="--a:${s.c}" onclick="openS(${i})"><span>${s.i}</span>${s.n}<small>${s.h}</small></button>`).join('')}<button class="tile" style="--a:#00897b" type="button" onclick="openWatchLearn()"><span>🎬</span>Watch &amp; Learn<small>देखें और सीखें</small></button></div>`;app.style.setProperty('--a','#7c4dff')}
 function openS(i){cur=i;const s=S[i];app.style.setProperty('--a',s.c);app.innerHTML=`<div class="bar category-bar"><button class="btn o" onclick="home()">⬅ Home</button><h2 class="category-title">${s.i} ${s.n} ${s.h}</h2><button class="btn" onclick="play()">⭐ Play</button></div><div class="grid">${s.it.map((x,j)=>`<button class="card" onclick="say(S[cur].it[${j}])"><span class="e" style="${es(x.e)}">${x.e}</span>${x.big?`<span class="b">${x.big}</span>`:''}<span class="l">${lbl(x)}</span></button>`).join('')}</div>${cur==0?'<p class="kb">Tip: press any letter key on the keyboard! ⌨️</p>':''}`}
 function play(){q={n:0,ok:0};next()}
 function next(){const s=S[cur],sh=a=>a.sort(()=>Math.random()-.5),t=s.it[Math.random()*s.it.length|0],o=sh([t,...sh(s.it.filter(x=>x.e!=t.e)).slice(0,2)]);q.t=t;q.o=o;q.lock=0;app.innerHTML=`<div class="bar"><button class="btn o" onclick="openS(cur)">⬅ Back</button><h2>Round ${q.n+1}/5</h2></div><div class="q"><div class="big">${t.big||lbl(t)}</div><button class="btn" onclick="say(q.t)">🔊 Hear</button><div class="opts">${o.map((x,j)=>`<button class="opt" style="${es(x.e)}" onclick="ans(${j},this)">${x.e}</button>`).join('')}</div><div id="fb"></div></div>`;say(t)}

@@ -1,0 +1,6 @@
+{
+  "schemaVersion": "1.0.0",
+  "catalogId": "little-learners-watch-learn-approved-channels",
+  "note": "Only explicitly reviewed channel IDs belong here. This list is intentionally empty until an adult reviewer approves source channels.",
+  "channels": []
+}

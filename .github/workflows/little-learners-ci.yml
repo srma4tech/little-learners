@@ -59,6 +59,8 @@ jobs:
           node --check reading-practice.js
           node --check home-guide.js
           node --check learning-path.js
+          node --check watch-learn.js
+          node --check scripts/discover-watch-learn-candidates.cjs
       - name: Validate learning content and stage catalog
         run: node .github/scripts/validate-content.cjs
       - name: Test progress, reading, and content contracts

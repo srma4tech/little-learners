@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://srma4tech.github.io/little-learners/schemas/watch-learn-approved-channels.schema.json",
+  "title": "LittleLearners approved YouTube channel allowlist",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "catalogId",
+    "channels"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "catalogId": {
+      "const": "little-learners-watch-learn-approved-channels"
+    },
+    "note": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "channels": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/channel"
+      },
+      "uniqueItems": true
+    }
+  },
+  "$defs": {
+    "channel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "channelId",
+        "channelTitle",
+        "reviewStatus",
+        "reviewedAt",
+        "reviewedByRole"
+      ],
+      "properties": {
+        "channelId": {
+          "type": "string",
+          "pattern": "^UC[A-Za-z0-9_-]{22}$"
+        },
+        "channelTitle": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "reviewStatus": {
+          "const": "approved"
+        },
+        "reviewedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "reviewedByRole": {
+          "enum": [
+            "educator",
+            "parent-reviewer",
+            "content-editor"
+          ]
+        },
+        "reviewNotes": {
+          "type": "string",
+          "maxLength": 1000
+        }
+      }
+    }
+  }
+}

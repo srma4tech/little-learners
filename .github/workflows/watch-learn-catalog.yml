@@ -1,0 +1,50 @@
+name: Watch & Learn catalogue checks
+
+on:
+  pull_request:
+    branches: [master]
+    paths:
+      - 'content/watch-learn-catalog.json'
+      - 'content/watch-learn-approved-channels.json'
+      - 'schemas/watch-learn-catalog.schema.json'
+      - 'schemas/watch-learn-approved-channels.schema.json'
+      - 'scripts/validate-watch-learn-catalog.cjs'
+      - 'tests/watch-learn-catalog.test.cjs'
+      - 'scripts/discover-watch-learn-candidates.cjs'
+      - '.github/workflows/watch-learn-discovery.yml'
+      - '.github/workflows/watch-learn-catalog.yml'
+  push:
+    branches: [master]
+    paths:
+      - 'content/watch-learn-catalog.json'
+      - 'content/watch-learn-approved-channels.json'
+      - 'schemas/watch-learn-catalog.schema.json'
+      - 'scripts/validate-watch-learn-catalog.cjs'
+      - 'tests/watch-learn-catalog.test.cjs'
+      - '.github/workflows/watch-learn-catalog.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: watch-learn-catalog-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-catalog:
+    name: Validate catalogue and child-safety gates
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Check candidate discovery script syntax
+        run: node --check scripts/discover-watch-learn-candidates.cjs
+      - name: Validate catalogue
+        run: node scripts/validate-watch-learn-catalog.cjs
+      - name: Test catalogue safety rules
+        run: node --test tests/watch-learn-catalog.test.cjs
