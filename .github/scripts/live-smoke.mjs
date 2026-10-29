@@ -273,6 +273,28 @@ try {
     if (await page.locator('[data-story-id]').count() !== 8) throw new Error('Reading library should show all eight stories');
     await page.getByRole('button', { name: /The Missing Pencil/i }).click();
     await page.getByRole('heading', { name: 'The Missing Pencil' }).waitFor({ state: 'visible', timeout: 10000 });
+
+    // Exercise the actual browser Back event against the app's in-page history
+    // rather than checking that the navigation script is merely loaded.
+    await page.evaluate(() => history.back());
+    await page.getByRole('heading', { name: /choose a story/i }).waitFor({ state: 'visible', timeout: 10000 });
+    if (await page.locator('[data-story-id]').count() !== 8) {
+      throw new Error('Browser Back from a reading story did not restore the reading library');
+    }
+
+    // Back must continue through the app history rather than trapping the
+    // child on the same screen after the popstate handler runs.
+    await page.evaluate(() => history.back());
+    await page.getByRole('heading', { name: /home|learn & play/i }).waitFor({ state: 'visible', timeout: 10000 });
+    await page.locator('[data-reading-tile]').click();
+    await page.getByRole('heading', { name: /choose a story/i }).waitFor({ state: 'visible', timeout: 10000 });
+    await page.getByRole('button', { name: /The Missing Pencil/i }).click();
+    await page.getByRole('heading', { name: 'The Missing Pencil' }).waitFor({ state: 'visible', timeout: 10000 });
+    await page.evaluate(() => history.back());
+    await page.getByRole('heading', { name: /choose a story/i }).waitFor({ state: 'visible', timeout: 10000 });
+
+    await page.getByRole('button', { name: /The Missing Pencil/i }).click();
+    await page.getByRole('heading', { name: 'The Missing Pencil' }).waitFor({ state: 'visible', timeout: 10000 });
     await page.getByRole('button', { name: /all stories/i }).click();
     await page.getByRole('button', { name: /A Seed for Mina/i }).click();
     await page.getByRole('heading', { name: 'A Seed for Mina' }).waitFor({ state: 'visible', timeout: 10000 });

@@ -12,8 +12,14 @@
     if (app.querySelector('.learning-path-options')) return 'learning-activity:' + (app.querySelector('h2')?.textContent.trim() || '');
     if (app.querySelector('.learning-path-list')) return 'learning-path';
     if (app.querySelector('.reading-shell')) {
-      const heading = app.querySelector('.reading-shell h1, .reading-shell h2');
-      return 'reading:' + (heading?.textContent.trim() || 'library');
+      // Library and story detail share a toolbar heading, so identify them
+      // from their actual content regions rather than the common toolbar.
+      if (app.querySelector('.reading-story')) {
+        const title = app.querySelector('.reading-story')?.closest('.reading-panel')?.querySelector('h2');
+        return 'reading-story:' + (title?.textContent.trim() || 'detail');
+      }
+      if (app.querySelector('.reading-library')) return 'reading-library';
+      return 'reading-loading';
     }
     if (app.querySelector('.category-bar')) return 'category:' + (app.querySelector('.category-title')?.textContent.trim() || '');
     if (/Round\s+\d+\//.test(app.textContent)) return 'quiz:' + (app.querySelector('.bar h2')?.textContent.trim() || '');
@@ -40,6 +46,15 @@
   function backControl() {
     const app = root();
     if (!app) return null;
+
+    // Reading story detail has a meaningful in-section Back target. Prefer
+    // returning to the library over the generic toolbar's Home button.
+    if (app.querySelector('.reading-story')) {
+      const storyLibrary = [...app.querySelectorAll('.reading-actions button:not(:disabled)')]
+        .find(button => /all stories|सभी कहानियाँ/i.test(button.textContent || ''));
+      if (storyLibrary) return storyLibrary;
+    }
+
     const buttons = [...app.querySelectorAll('button:not(:disabled)')];
     // Accessible labels are the most reliable signal across feature areas.
     const explicit = buttons.find(button => {
@@ -98,10 +113,11 @@
     }
 
     setTimeout(() => {
-      const next = screenKey();
-      lastScreen = '';
+      // popstate has already moved the browser's history pointer. Pushing a
+      // replacement entry here would erase Forward navigation and trap Back
+      // on the same screen. Record the rendered destination without pushing.
+      lastScreen = screenKey();
       handlingBack = false;
-      pushScreen(next);
     }, 0);
   });
 })();
