@@ -53,6 +53,8 @@ The Watch & Learn work is being introduced behind a reviewed catalogue workflow.
 - The current feature branch adds a Watch & Learn entry point and a responsive video catalogue/player shell. Until reviewed videos are published, the section shows a safe empty state and all existing learning activities remain available.
 - The catalogue validator is `scripts/validate-watch-learn-catalog.cjs`; its safety tests are `tests/watch-learn-catalog.test.cjs`.
 - The `Watch & Learn catalogue checks` workflow validates the catalogue and tests approval gates on relevant pull requests and pushes.
+- The `Watch & Learn candidate discovery` workflow uses the repository secret `YOUTUBE_DATA_API_KEY`, paginates stage/language searches (up to three pages per query), enriches results with video metadata, and uploads a short-lived review artifact. It never commits or publishes discovered videos. If the secret is missing, the run safely skips discovery.
+- To enable discovery, add a YouTube Data API key as a repository Actions secret named `YOUTUBE_DATA_API_KEY` (enable YouTube Data API v3 in the associated Google Cloud project and apply appropriate quota restrictions). Never paste the key into source files or chat; run the workflow from Actions and review its artifact.
 - Do not add an API key or client secret to frontend code or this public repository. Automated discovery, if added later, must run server-side using a GitHub Actions secret and send candidates to review—not publish them directly.
 - Embedded YouTube playback is not the YouTube Kids app and does not guarantee complete control over the provider's interface or recommendations. Videos must be reviewed for stage, language, suitability, source, availability and policy considerations.
 
