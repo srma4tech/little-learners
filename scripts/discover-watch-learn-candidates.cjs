@@ -216,5 +216,7 @@ async function main() {
   console.log('Candidate discovery complete: ' + found.size + ' unique discovered video(s); ' + candidates.length + ' retained, ' + filteredOut.length + ' filtered out; ' + searchCalls + ' search request(s). Output: ' + OUT);
   console.log('All records remain pending review. No production catalogue was changed.');
 }
-main().catch(error => fail(error.message || 'Candidate discovery failed.'));
+if (require.main === module) {
+  main().catch(error => fail(error.message || 'Candidate discovery failed.'));
+}
 module.exports = { triageCandidate };
