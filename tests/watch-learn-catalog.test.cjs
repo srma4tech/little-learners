@@ -2,7 +2,7 @@
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { validateCatalog } = require('../scripts/validate-watch-learn-catalog.cjs');
+const { validateCatalog, validateAllowlist } = require('../scripts/validate-watch-learn-catalog.cjs');
 
 const base = () => ({
   schemaVersion: '1.0.0',
@@ -129,4 +129,29 @@ test('runtime eligibility blocks pending, unsuitable, wrong-stage and wrong-lang
   assert.equal(watchLearnModule.eligible([approved], 'class-1', 'en', allowlist).length, 0);
   assert.equal(watchLearnModule.eligible([approved], 'class-2', 'hi', allowlist).length, 0);
   assert.equal(watchLearnModule.eligible([video()], 'class-1', 'en', allowlist).length, 0);
+});
+
+test('accepts an empty channel allowlist before adult source review', () => {
+  assert.deepEqual(validateAllowlist({
+    schemaVersion: '1.0.0',
+    catalogId: 'little-learners-watch-learn-approved-channels',
+    channels: []
+  }), []);
+});
+
+test('requires every allowlisted channel to have a valid ID and human approval record', () => {
+  const errors = validateAllowlist({
+    schemaVersion: '1.0.0',
+    catalogId: 'little-learners-watch-learn-approved-channels',
+    channels: [{
+      channelId: 'not-a-channel',
+      channelTitle: 'Unreviewed source',
+      reviewStatus: 'pending-review',
+      reviewedAt: null,
+      reviewedByRole: 'automated-candidate'
+    }]
+  });
+  assert.ok(errors.some(x => x.includes('valid-shaped YouTube channel ID')));
+  assert.ok(errors.some(x => x.includes('only human-approved channels may be allowlisted')));
+  assert.ok(errors.some(x => x.includes('must identify a human reviewer role')));
 });
