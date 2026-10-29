@@ -103,7 +103,7 @@
   }
   function ensureHomeEntry() {
     const root=app(), grid=root && root.querySelector('.home-grid');
-    if(!grid || root.querySelector('.home-learning-guide') || root.querySelector('[data-learning-path-home-entry]'))return;
+    if(!grid || root.querySelector('.home-learning-guide button[data-learning-path-start]') || root.querySelector('[data-learning-path-home-entry]'))return;
     const start=button(lang()==='hi'?'अभ्यास शुरू करें':'Start activity','',window.openLearningPath);
     start.dataset.learningPathHomeEntry='true';
     start.className='btn learning-path-home-entry';
