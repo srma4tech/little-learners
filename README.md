@@ -44,7 +44,7 @@ To inspect a run, open the repository's **Actions** tab and select the relevant 
 
 ## Updating the app and service-worker cache
 
-The service worker uses a versioned cache in `sw.js` (currently `little-learners-v56`). When changing app files that should refresh for existing installations, increment the service-worker cache suffix (currently `little-learners-v56`). Do not bump it for documentation-only changes. The live smoke test derives the expected cache name and footer version from the checked-out `sw.js` and `index.html`, so those markers do not need to be copied into the test script. Commit the change to `master`, wait for GitHub Pages deployment, then test both a fresh browser session and an already-installed PWA. The reset-aware progress model lives in `progress-model.js` and is covered by `node --test tests/progress-model.test.cjs`.
+The service worker uses a versioned cache in `sw.js` (currently `little-learners-v57`). When changing app files that should refresh for existing installations, increment the service-worker cache suffix (currently `little-learners-v56`). Do not bump it for documentation-only changes. The live smoke test derives the expected cache name and footer version from the checked-out `sw.js` and `index.html`, so those markers do not need to be copied into the test script. Commit the change to `master`, wait for GitHub Pages deployment, then test both a fresh browser session and an already-installed PWA. The reset-aware progress model lives in `progress-model.js` and is covered by `node --test tests/progress-model.test.cjs`.
 
 ## Watch & Learn (YouTube) — staged rollout
 
