@@ -9,6 +9,8 @@ on:
       - 'schemas/watch-learn-catalog.schema.json'
       - 'scripts/validate-watch-learn-catalog.cjs'
       - 'tests/watch-learn-catalog.test.cjs'
+      - 'scripts/discover-watch-learn-candidates.cjs'
+      - '.github/workflows/watch-learn-discovery.yml'
       - '.github/workflows/watch-learn-catalog.yml'
   push:
     branches: [master]
@@ -39,6 +41,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+      - name: Check candidate discovery script syntax
+        run: node --check scripts/discover-watch-learn-candidates.cjs
       - name: Validate catalogue
         run: node scripts/validate-watch-learn-catalog.cjs
       - name: Test catalogue safety rules
