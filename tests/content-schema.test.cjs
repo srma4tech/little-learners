@@ -44,7 +44,7 @@ test('runtime stage model matches the canonical catalog and is wired into parent
   assert.match(html,/parent-stage-grid/);
   assert.match(html,/setLearningStage\(this\.dataset\.stage\)/);
   assert.match(html,/K\(\)\.stageId=id/);
-  assert.match(sw,/little-learners-v51/);
+  assert.match(sw,/little-learners-v52/);
   assert.match(sw,/learning-stage-model\.js/);
   assert.match(sw,/content\/learning-stages\.json/);
 });
@@ -57,7 +57,7 @@ test('guided home explains the selected stage in English and Hindi', () => {
   assert.match(guide,/home-learning-guide/);
   assert.match(guide,/hiMessages/);
   assert.match(guide,/window\.openParentSettings/);
-  assert.match(sw,/little-learners-v51/);
+  assert.match(sw,/little-learners-v52/);
   assert.match(sw,/home-guide\.js/);
 });
 
