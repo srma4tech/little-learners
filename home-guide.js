@@ -44,8 +44,7 @@
     start.addEventListener('click', () => window.openLearningPath?.());
     section.append(copy, change, start);
     const grid = document.querySelector('#app .home-grid');
-    const heading = document.querySelector('#app h1');
-    if (grid && heading && !document.querySelector('#app .home-learning-guide')) grid.parentNode.insertBefore(section, grid);
+    if (grid && !document.querySelector('#app .home-learning-guide')) grid.parentNode.insertBefore(section, grid);
   }
   function styles() {
     if (document.getElementById('home-guide-styles')) return;
