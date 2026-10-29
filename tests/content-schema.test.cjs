@@ -71,3 +71,19 @@ test('stage activity pack covers all seven stages with bilingual prompts and val
   broken.activities[0].answerId='missing-option';
   assert.throws(()=>validateActivityPack(broken),/Answer ID not found/);
 });
+
+test('learning path runner is wired to the home CTA and idempotent completion API', () => {
+  const runner=fs.readFileSync(path.join(__dirname,'..','learning-path.js'),'utf8');
+  const guide=fs.readFileSync(path.join(__dirname,'..','home-guide.js'),'utf8');
+  const html=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');
+  const sw=fs.readFileSync(path.join(__dirname,'..','sw.js'),'utf8');
+  assert.match(html,/learning-path\.js/);
+  assert.match(html,/completeActivity\(activityId\)/);
+  assert.match(guide,/Start activity/);
+  assert.match(guide,/openLearningPath/);
+  assert.match(runner,/activityCompletions/);
+  assert.match(runner,/completeActivity\(activity\.id\)/);
+  assert.match(runner,/activity\.stageIds\.includes\(currentStage\.id\)/);
+  assert.match(sw,/little-learners-v52/);
+  assert.match(sw,/stage-learning-activities\.json/);
+});
