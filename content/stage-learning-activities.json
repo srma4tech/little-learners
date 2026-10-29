@@ -677,7 +677,7 @@
         "en": {
           "title": "Choose the matra",
           "instructions": "Choose the word with the आ की मात्रा sound.",
-          "prompt": "Which word has ा (आ की मात्रा)?"
+          "prompt": "Which word has the ा (aa) matra?"
         },
         "hi": {
           "title": "मात्रा चुनें",
@@ -687,19 +687,19 @@
       },
       "options": [
         {
+          "id": "ram",
+          "emoji": "राम",
+          "label": {
+            "en": "Ram",
+            "hi": "राम"
+          }
+        },
+        {
           "id": "kamal",
           "emoji": "कमल",
           "label": {
             "en": "Kamal",
             "hi": "कमल"
-          }
-        },
-        {
-          "id": "aam",
-          "emoji": "आम",
-          "label": {
-            "en": "Aam",
-            "hi": "आम"
           }
         },
         {
@@ -711,10 +711,10 @@
           }
         }
       ],
-      "answerId": "aam",
+      "answerId": "ram",
       "feedback": {
-        "en": "आम uses the आ vowel sound; compare the written form with help if needed.",
-        "hi": "आम में आ की ध्वनि है। लिखावट को ध्यान से देखें।"
+        "en": "राम uses the ा (aa) matra.",
+        "hi": "राम में ा (आ की मात्रा) है।"
       },
       "completion": {
         "criteria": "Choose an answer and review the feedback."
