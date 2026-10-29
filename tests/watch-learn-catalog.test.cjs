@@ -61,7 +61,7 @@ test('rejects approved content from a channel outside the allowlist', () => {
     curriculumFit: 'strong',
     availabilityStatus: 'available',
     madeForKidsStatus: 'verified',
-    lastVerifiedAt: '2026-10-29T00:00:00Z',
+    lastVerifiedAt: new Date(Date.now() - 1000).toISOString(),
     thumbnailUrl: 'https://i.ytimg.com/vi/abcdefghijk/hqdefault.jpg',
     durationSeconds: 120
   });
@@ -83,7 +83,7 @@ test('rejects automated candidate identity as a human approval', () => {
     curriculumFit: 'strong',
     availabilityStatus: 'available',
     madeForKidsStatus: 'verified',
-    lastVerifiedAt: '2026-10-29T00:00:00Z',
+    lastVerifiedAt: new Date(Date.now() - 1000).toISOString(),
     thumbnailUrl: 'https://i.ytimg.com/vi/abcdefghijk/hqdefault.jpg',
     durationSeconds: 120
   });
@@ -103,7 +103,7 @@ test('runtime video eligibility requires explicit source allowlisting', () => {
     curriculumFit: 'strong',
     availabilityStatus: 'available',
     madeForKidsStatus: 'verified',
-    lastVerifiedAt: '2026-10-29T00:00:00Z',
+    lastVerifiedAt: new Date(Date.now() - 1000).toISOString(),
     thumbnailUrl: 'https://i.ytimg.com/vi/abcdefghijk/hqdefault.jpg',
     durationSeconds: 120
   });
@@ -121,7 +121,7 @@ test('runtime eligibility blocks pending, unsuitable, wrong-stage and wrong-lang
     curriculumFit: 'strong',
     availabilityStatus: 'available',
     madeForKidsStatus: 'verified',
-    lastVerifiedAt: '2026-10-29T00:00:00Z',
+    lastVerifiedAt: new Date(Date.now() - 1000).toISOString(),
     thumbnailUrl: 'https://i.ytimg.com/vi/abcdefghijk/hqdefault.jpg',
     durationSeconds: 120,
     languages: ['hi']
