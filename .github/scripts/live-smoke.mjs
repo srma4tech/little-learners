@@ -236,7 +236,8 @@ try {
     await checkAppLikeMobileShell(page, width);
     await page.screenshot({ path: path.join(out, `ui-${width}-home.png`), fullPage: true });
     // Stage-aware Learning Path vertical slice: complete one activity and verify its one-time star reward.
-    await page.getByRole("button", { name: /start activity/i }).click();
+    if (await page.locator("#app .home-learning-guide button").count() < 2) throw new Error("Guided Home stage card did not render its controls");
+    await page.locator("#app .home-learning-guide button").last().click();
     await page.getByRole("heading", { name: /learning path/i }).waitFor({ state: "visible", timeout: 10000 });
     if (await page.locator("#app .learning-path-choice").count() !== 2) throw new Error("Class 1 learning path should show two activities");
     await page.locator("#app .learning-path-choice").first().click();
@@ -246,12 +247,12 @@ try {
     });
     if (!activityAnswer) throw new Error("Learning activity answer metadata was not available");
     await page.locator("#app .learning-path-options button").filter({ hasText: activityAnswer }).click();
-    await page.getByText(/you earned one star/i).waitFor({ state: "visible", timeout: 5000 });
-    await page.getByRole("button", { name: /back to activities/i }).click();
-    await page.getByText(/practised/i).first().waitFor({ state: "visible", timeout: 5000 });
+    await page.getByText(/you earned one star|एक सितारा मिला/i).waitFor({ state: "visible", timeout: 5000 });
+    await page.locator("#app .learning-path-feedback button").click();
+    await page.getByText(/practised|अभ्यास पूरा/i).first().waitFor({ state: "visible", timeout: 5000 });
     await page.locator("#app .learning-path-choice").first().click();
     await page.locator("#app .learning-path-options button").filter({ hasText: activityAnswer }).click();
-    await page.getByText(/already completed this activity/i).waitFor({ state: "visible", timeout: 5000 });
+    await page.getByText(/already completed this activity|पहले ही पूरा कर चुके/i).waitFor({ state: "visible", timeout: 5000 });
     if (!(await page.locator("#stars").innerText()).includes("1")) throw new Error("Repeating a completed activity awarded an extra star");
     await page.locator("#app .bar button").first().click();
     await page.locator("#app .tile").first().waitFor({ state: "visible", timeout: 10000 });
