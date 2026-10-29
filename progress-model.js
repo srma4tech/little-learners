@@ -73,8 +73,8 @@
       };
     }
 
-    if (local.resetGeneration > remote.resetGeneration) return local;
-    if (remote.resetGeneration > local.resetGeneration) return remote;
+    if (local.resetGeneration > remote.resetGeneration) return { ...local, ...mergeStage(local, remote) };
+    if (remote.resetGeneration > local.resetGeneration) return { ...remote, ...mergeStage(local, remote) };
 
     const counters = { ...remote.starCounters };
     for (const [key, value] of Object.entries(local.starCounters)) counters[key] = Math.max(number(counters[key]), number(value));
