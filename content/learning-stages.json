@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "1.0.0",
+  "catalogId": "little-learners-learning-stages",
+  "releaseStatus": "foundation",
+  "stages": [
+    {"id":"playgroup","order":1,"label":{"en":"Playgroup","hi":"प्लेग्रुप"},"typicalAge":{"min":2,"max":3},"focus":["sensory-exploration","listening","matching","movement","familiar-objects"]},
+    {"id":"nursery","order":2,"label":{"en":"Nursery","hi":"नर्सरी"},"typicalAge":{"min":3,"max":4},"focus":["language-exposure","sorting","counting","patterns","everyday-concepts"]},
+    {"id":"lkg","order":3,"label":{"en":"LKG","hi":"एलकेजी"},"typicalAge":{"min":4,"max":5},"focus":["letter-sound-awareness","number-sense","sequencing","writing-readiness"]},
+    {"id":"ukg","order":4,"label":{"en":"UKG","hi":"यूकेजी"},"typicalAge":{"min":5,"max":6},"focus":["early-decoding","short-words","number-operations-readiness","school-routines"]},
+    {"id":"class-1","order":5,"label":{"en":"Class 1","hi":"कक्षा 1"},"typicalAge":{"min":6,"max":7},"focus":["foundational-reading","writing","numeracy","environmental-awareness","reasoning"]},
+    {"id":"class-2","order":6,"label":{"en":"Class 2","hi":"कक्षा 2"},"typicalAge":{"min":7,"max":8},"focus":["reading-fluency","comprehension","number-operations","measurement","explanation"]},
+    {"id":"class-3","order":7,"label":{"en":"Class 3","hi":"कक्षा 3"},"typicalAge":{"min":8,"max":9},"focus":["independent-reading","written-expression","multi-step-maths","inquiry","problem-solving"]}
+  ]
+}
