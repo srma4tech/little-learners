@@ -91,7 +91,8 @@ test('rejects automated candidate identity as a human approval', () => {
   assert.ok(errors.some(x => x.includes('approved items require a human reviewer role')));
 });
 
-const watchLearnModule = require('../watch-learn.js');
+require('../watch-learn.js');
+const watchLearnModule = globalThis.WatchLearn;
 
 test('runtime video eligibility requires explicit source allowlisting', () => {
   global.st = { lang: 'en' };
