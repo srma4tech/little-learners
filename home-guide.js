@@ -39,6 +39,7 @@
     change.addEventListener('click', () => window.openParentSettings?.());
     const start = document.createElement('button');
     start.className = 'btn';
+    start.dataset.learningPathStart = 'true';
     start.type = 'button';
     start.textContent = lang === 'hi' ? 'अभ्यास शुरू करें' : 'Start activity';
     start.addEventListener('click', () => window.openLearningPath?.());
