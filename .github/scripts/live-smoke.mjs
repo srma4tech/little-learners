@@ -262,6 +262,9 @@ try {
     await page.getByText(/already completed this activity|पहले ही पूरा कर चुके/i).waitFor({ state: "visible", timeout: 5000 });
     if (!(await page.locator("#stars").innerText()).includes("1")) throw new Error("Repeating a completed activity awarded an extra star");
     await page.locator("#app .bar button").first().click();
+    // New navigation returns from an activity to the activity list first; older
+    // deployed builds return directly home. Support both during rollout.
+    if (!(await page.locator("#app .tile").count())) await page.locator("#app .bar button").first().click();
     await page.locator("#app .tile").first().waitFor({ state: "visible", timeout: 10000 });
     await checkOverflow(page, width, "home-after-learning-path");
     // Grade 1 reading vertical slice: verify the bilingual story, vocabulary, and gentle retry.

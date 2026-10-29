@@ -9,7 +9,7 @@
   const el = (tag, text, cls) => { const n=document.createElement(tag); if(text!==undefined)n.textContent=text; if(cls)n.className=cls; return n; };
   const button = (text, cls, action) => { const b=el('button',text,'btn '+(cls||'')); b.type='button'; b.addEventListener('click',action); return b; };
   const stage = () => window.LearningStages.get(window.LearningStages.normalize(kid()?.stageId));
-  const top = title => { const row=el('div',undefined,'bar'); row.append(button('⬅ Home','o',window.home),el('h2',title)); return row; };
+  const top = (title, backAction=window.home, backLabel='⬅ Home') => { const row=el('div',undefined,'bar'); row.append(button(backLabel,'o',backAction),el('h2',title)); return row; };
   function showMessage(message) {
     const box=el('p',message,'learning-path-message');
     box.setAttribute('role','status');
@@ -66,7 +66,7 @@
   }
   function renderActivity(activity) {
     const root=app(), language=lang(), variant=activity.languageVariants[language], currentKid=kid();
-    root.replaceChildren(top('🧩 '+variant.title));
+    root.replaceChildren(top('🧩 '+variant.title,renderList,'⬅ Back to activities'));
     const panel=el('section',undefined,'learning-path-panel');
     panel.append(el('p',variant.instructions,'learning-path-instructions'));
     panel.append(el('h3',variant.prompt,'learning-path-prompt'));
