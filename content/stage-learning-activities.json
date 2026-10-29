@@ -3,12 +3,845 @@
   "contentPackId": "little-learners-stage-activities-v1",
   "releaseStatus": "draft-content-pack",
   "activities": [
-    {"id":"playgroup-find-the-same-shape","schemaVersion":"1.0.0","domain":"reasoning","stageIds":["playgroup"],"activityType":"match","difficulty":"introductory","reviewStatus":"draft","languageVariants":{"en":{"title":"Find the same shape","instructions":"Look at the shape. Tap the one that looks the same.","prompt":"Find the circle."},"hi":{"title":"एक जैसी आकृति खोजें","instructions":"आकृति देखें। उससे मिलती-जुलती आकृति चुनें।","prompt":"गोला खोजें।"}},"options":[{"id":"circle","emoji":"🟡","label":{"en":"Circle","hi":"गोला"}},{"id":"square","emoji":"🟦","label":{"en":"Square","hi":"वर्ग"}},{"id":"triangle","emoji":"🔺","label":{"en":"Triangle","hi":"त्रिकोण"}}],"answerId":"circle","feedback":{"en":"You found the circle!","hi":"आपने गोला खोज लिया!"},"completion":{"criteria":"Choose the matching shape."},"accessibility":{"notes":"Every choice has a text label; no timing or audio is required."}},
-    {"id":"nursery-count-the-apples","schemaVersion":"1.0.0","domain":"mathematics","stageIds":["nursery"],"activityType":"multiple-choice","difficulty":"introductory","reviewStatus":"draft","languageVariants":{"en":{"title":"Count the apples","instructions":"Count the apples and choose the number.","prompt":"🍎 🍎 🍎 How many apples?"},"hi":{"title":"सेब गिनें","instructions":"सेब गिनकर संख्या चुनें।","prompt":"🍎 🍎 🍎 कितने सेब हैं?"}},"options":[{"id":"two","emoji":"2️⃣","label":{"en":"Two","hi":"दो"}},{"id":"three","emoji":"3️⃣","label":{"en":"Three","hi":"तीन"}},{"id":"four","emoji":"4️⃣","label":{"en":"Four","hi":"चार"}}],"answerId":"three","feedback":{"en":"That’s right—three apples!","hi":"सही—तीन सेब!"},"completion":{"criteria":"Count the pictured objects and select the matching number."},"accessibility":{"notes":"Large tap targets and text labels; no speed requirement."}},
-    {"id":"lkg-first-letter-sun","schemaVersion":"1.0.0","domain":"english","stageIds":["lkg"],"activityType":"multiple-choice","difficulty":"introductory","reviewStatus":"draft","languageVariants":{"en":{"title":"First sound","instructions":"Say the word slowly, then choose its first letter.","prompt":"☀️ Sun begins with which letter?"},"hi":{"title":"पहला अक्षर","instructions":"शब्द बोलें और उसका पहला अक्षर चुनें।","prompt":"☀️ सूरज का पहला अक्षर कौन-सा है?"}},"options":[{"id":"s","emoji":"🔤","label":{"en":"S","hi":"स"}},{"id":"m","emoji":"🔤","label":{"en":"M","hi":"म"}},{"id":"t","emoji":"🔤","label":{"en":"T","hi":"त"}}],"answerId":"s","feedback":{"en":"Sun starts with S. सूरज starts with स.","hi":"सूरज का पहला अक्षर स है।"},"completion":{"criteria":"Choose the first letter or sound shown in the prompt."},"accessibility":{"notes":"The prompt and every answer are available as text."}},
-    {"id":"ukg-match-word-to-picture","schemaVersion":"1.0.0","domain":"english","stageIds":["ukg"],"activityType":"match","difficulty":"developing","reviewStatus":"draft","languageVariants":{"en":{"title":"Match the word","instructions":"Read the word or ask an adult to read it. Choose the picture.","prompt":"Which picture matches CAT?"},"hi":{"title":"शब्द से चित्र मिलाएँ","instructions":"शब्द पढ़ें या किसी बड़े से पढ़वाएँ। सही चित्र चुनें।","prompt":"CAT शब्द से कौन-सा चित्र मिलता है?"}},"options":[{"id":"cat","emoji":"🐱","label":{"en":"Cat","hi":"बिल्ली"}},{"id":"dog","emoji":"🐶","label":{"en":"Dog","hi":"कुत्ता"}},{"id":"sun","emoji":"☀️","label":{"en":"Sun","hi":"सूरज"}}],"answerId":"cat","feedback":{"en":"CAT matches the cat picture.","hi":"CAT शब्द बिल्ली के चित्र से मिलता है।"},"completion":{"criteria":"Match a familiar short word to its picture."},"accessibility":{"notes":"Use picture plus text labels; an adult may read prompts aloud."}},
-    {"id":"class-1-add-within-ten","schemaVersion":"1.0.0","domain":"mathematics","stageIds":["class-1"],"activityType":"multiple-choice","difficulty":"introductory","reviewStatus":"draft","languageVariants":{"en":{"title":"Add the dots","instructions":"Count all the dots, then choose the answer.","prompt":"● ● ● + ● ● = ?"},"hi":{"title":"बिंदु जोड़ें","instructions":"सभी बिंदु गिनें और उत्तर चुनें।","prompt":"● ● ● + ● ● = ?"}},"options":[{"id":"four","emoji":"4️⃣","label":{"en":"4","hi":"4"}},{"id":"five","emoji":"5️⃣","label":{"en":"5","hi":"5"}},{"id":"six","emoji":"6️⃣","label":{"en":"6","hi":"6"}}],"answerId":"five","feedback":{"en":"3 + 2 = 5. Count both groups together.","hi":"3 + 2 = 5। दोनों समूहों को साथ गिनें।"},"completion":{"criteria":"Solve a simple addition problem and review feedback."},"accessibility":{"notes":"Visual counters and written numerals are both provided."}},
-    {"id":"class-2-skip-count-by-two","schemaVersion":"1.0.0","domain":"mathematics","stageIds":["class-2"],"activityType":"sequence","difficulty":"developing","reviewStatus":"draft","languageVariants":{"en":{"title":"Count by twos","instructions":"Look at how the numbers grow. Choose the next number.","prompt":"2, 4, 6, 8, __"},"hi":{"title":"दो-दो करके गिनें","instructions":"संख्याओं का क्रम देखें और अगली संख्या चुनें।","prompt":"2, 4, 6, 8, __"}},"options":[{"id":"nine","emoji":"9️⃣","label":{"en":"9","hi":"9"}},{"id":"ten","emoji":"🔟","label":{"en":"10","hi":"10"}},{"id":"twelve","emoji":"1️⃣2️⃣","label":{"en":"12","hi":"12"}}],"answerId":"ten","feedback":{"en":"Add 2 each time: the next number is 10.","hi":"हर बार 2 जोड़ें: अगली संख्या 10 है।"},"completion":{"criteria":"Identify the next number in a skip-counting sequence."},"accessibility":{"notes":"Sequence is displayed as text; no time limit."}},
-    {"id":"class-3-complete-the-pattern","schemaVersion":"1.0.0","domain":"reasoning","stageIds":["class-3"],"activityType":"sequence","difficulty":"developing","reviewStatus":"draft","languageVariants":{"en":{"title":"Complete the pattern","instructions":"Notice how the shapes repeat. Choose what comes next.","prompt":"🔵 🔺 🔵 🔺 🔵 __"},"hi":{"title":"पैटर्न पूरा करें","instructions":"आकृतियों का दोहराव देखें और अगली आकृति चुनें।","prompt":"🔵 🔺 🔵 🔺 🔵 __"}},"options":[{"id":"circle","emoji":"🔵","label":{"en":"Circle","hi":"गोला"}},{"id":"triangle","emoji":"🔺","label":{"en":"Triangle","hi":"त्रिकोण"}},{"id":"square","emoji":"🟦","label":{"en":"Square","hi":"वर्ग"}}],"answerId":"triangle","feedback":{"en":"Circle and triangle alternate, so the next shape is a triangle.","hi":"गोला और त्रिकोण बारी-बारी आते हैं, इसलिए अगली आकृति त्रिकोण है।"},"completion":{"criteria":"Find the next item in a repeating visual pattern."},"accessibility":{"notes":"Every option includes a descriptive text label and no timer."}}
+    {
+      "id": "playgroup-find-the-same-shape",
+      "schemaVersion": "1.0.0",
+      "domain": "reasoning",
+      "stageIds": [
+        "playgroup"
+      ],
+      "activityType": "match",
+      "difficulty": "introductory",
+      "reviewStatus": "draft",
+      "languageVariants": {
+        "en": {
+          "title": "Find the same shape",
+          "instructions": "Look at the shape. Tap the one that looks the same.",
+          "prompt": "Find the circle."
+        },
+        "hi": {
+          "title": "एक जैसी आकृति खोजें",
+          "instructions": "आकृति देखें। उससे मिलती-जुलती आकृति चुनें।",
+          "prompt": "गोला खोजें।"
+        }
+      },
+      "options": [
+        {
+          "id": "circle",
+          "emoji": "🟡",
+          "label": {
+            "en": "Circle",
+            "hi": "गोला"
+          }
+        },
+        {
+          "id": "square",
+          "emoji": "🟦",
+          "label": {
+            "en": "Square",
+            "hi": "वर्ग"
+          }
+        },
+        {
+          "id": "triangle",
+          "emoji": "🔺",
+          "label": {
+            "en": "Triangle",
+            "hi": "त्रिकोण"
+          }
+        }
+      ],
+      "answerId": "circle",
+      "feedback": {
+        "en": "You found the circle!",
+        "hi": "आपने गोला खोज लिया!"
+      },
+      "completion": {
+        "criteria": "Choose the matching shape."
+      },
+      "accessibility": {
+        "notes": "Every choice has a text label; no timing or audio is required."
+      }
+    },
+    {
+      "id": "nursery-count-the-apples",
+      "schemaVersion": "1.0.0",
+      "domain": "mathematics",
+      "stageIds": [
+        "nursery"
+      ],
+      "activityType": "multiple-choice",
+      "difficulty": "introductory",
+      "reviewStatus": "draft",
+      "languageVariants": {
+        "en": {
+          "title": "Count the apples",
+          "instructions": "Count the apples and choose the number.",
+          "prompt": "🍎 🍎 🍎 How many apples?"
+        },
+        "hi": {
+          "title": "सेब गिनें",
+          "instructions": "सेब गिनकर संख्या चुनें।",
+          "prompt": "🍎 🍎 🍎 कितने सेब हैं?"
+        }
+      },
+      "options": [
+        {
+          "id": "two",
+          "emoji": "2️⃣",
+          "label": {
+            "en": "Two",
+            "hi": "दो"
+          }
+        },
+        {
+          "id": "three",
+          "emoji": "3️⃣",
+          "label": {
+            "en": "Three",
+            "hi": "तीन"
+          }
+        },
+        {
+          "id": "four",
+          "emoji": "4️⃣",
+          "label": {
+            "en": "Four",
+            "hi": "चार"
+          }
+        }
+      ],
+      "answerId": "three",
+      "feedback": {
+        "en": "That’s right—three apples!",
+        "hi": "सही—तीन सेब!"
+      },
+      "completion": {
+        "criteria": "Count the pictured objects and select the matching number."
+      },
+      "accessibility": {
+        "notes": "Large tap targets and text labels; no speed requirement."
+      }
+    },
+    {
+      "id": "lkg-first-letter-sun",
+      "schemaVersion": "1.0.0",
+      "domain": "english",
+      "stageIds": [
+        "lkg"
+      ],
+      "activityType": "multiple-choice",
+      "difficulty": "introductory",
+      "reviewStatus": "draft",
+      "languageVariants": {
+        "en": {
+          "title": "First sound",
+          "instructions": "Say the word slowly, then choose its first letter.",
+          "prompt": "☀️ Sun begins with which letter?"
+        },
+        "hi": {
+          "title": "पहला अक्षर",
+          "instructions": "शब्द बोलें और उसका पहला अक्षर चुनें।",
+          "prompt": "☀️ सूरज का पहला अक्षर कौन-सा है?"
+        }
+      },
+      "options": [
+        {
+          "id": "s",
+          "emoji": "🔤",
+          "label": {
+            "en": "S",
+            "hi": "स"
+          }
+        },
+        {
+          "id": "m",
+          "emoji": "🔤",
+          "label": {
+            "en": "M",
+            "hi": "म"
+          }
+        },
+        {
+          "id": "t",
+          "emoji": "🔤",
+          "label": {
+            "en": "T",
+            "hi": "त"
+          }
+        }
+      ],
+      "answerId": "s",
+      "feedback": {
+        "en": "Sun starts with S. सूरज starts with स.",
+        "hi": "सूरज का पहला अक्षर स है।"
+      },
+      "completion": {
+        "criteria": "Choose the first letter or sound shown in the prompt."
+      },
+      "accessibility": {
+        "notes": "The prompt and every answer are available as text."
+      }
+    },
+    {
+      "id": "ukg-match-word-to-picture",
+      "schemaVersion": "1.0.0",
+      "domain": "english",
+      "stageIds": [
+        "ukg"
+      ],
+      "activityType": "match",
+      "difficulty": "developing",
+      "reviewStatus": "draft",
+      "languageVariants": {
+        "en": {
+          "title": "Match the word",
+          "instructions": "Read the word or ask an adult to read it. Choose the picture.",
+          "prompt": "Which picture matches CAT?"
+        },
+        "hi": {
+          "title": "शब्द से चित्र मिलाएँ",
+          "instructions": "शब्द पढ़ें या किसी बड़े से पढ़वाएँ। सही चित्र चुनें।",
+          "prompt": "CAT शब्द से कौन-सा चित्र मिलता है?"
+        }
+      },
+      "options": [
+        {
+          "id": "cat",
+          "emoji": "🐱",
+          "label": {
+            "en": "Cat",
+            "hi": "बिल्ली"
+          }
+        },
+        {
+          "id": "dog",
+          "emoji": "🐶",
+          "label": {
+            "en": "Dog",
+            "hi": "कुत्ता"
+          }
+        },
+        {
+          "id": "sun",
+          "emoji": "☀️",
+          "label": {
+            "en": "Sun",
+            "hi": "सूरज"
+          }
+        }
+      ],
+      "answerId": "cat",
+      "feedback": {
+        "en": "CAT matches the cat picture.",
+        "hi": "CAT शब्द बिल्ली के चित्र से मिलता है।"
+      },
+      "completion": {
+        "criteria": "Match a familiar short word to its picture."
+      },
+      "accessibility": {
+        "notes": "Use picture plus text labels; an adult may read prompts aloud."
+      }
+    },
+    {
+      "id": "class-1-add-within-ten",
+      "schemaVersion": "1.0.0",
+      "domain": "mathematics",
+      "stageIds": [
+        "class-1"
+      ],
+      "activityType": "multiple-choice",
+      "difficulty": "introductory",
+      "reviewStatus": "draft",
+      "languageVariants": {
+        "en": {
+          "title": "Add the dots",
+          "instructions": "Count all the dots, then choose the answer.",
+          "prompt": "● ● ● + ● ● = ?"
+        },
+        "hi": {
+          "title": "बिंदु जोड़ें",
+          "instructions": "सभी बिंदु गिनें और उत्तर चुनें।",
+          "prompt": "● ● ● + ● ● = ?"
+        }
+      },
+      "options": [
+        {
+          "id": "four",
+          "emoji": "4️⃣",
+          "label": {
+            "en": "4",
+            "hi": "4"
+          }
+        },
+        {
+          "id": "five",
+          "emoji": "5️⃣",
+          "label": {
+            "en": "5",
+            "hi": "5"
+          }
+        },
+        {
+          "id": "six",
+          "emoji": "6️⃣",
+          "label": {
+            "en": "6",
+            "hi": "6"
+          }
+        }
+      ],
+      "answerId": "five",
+      "feedback": {
+        "en": "3 + 2 = 5. Count both groups together.",
+        "hi": "3 + 2 = 5। दोनों समूहों को साथ गिनें।"
+      },
+      "completion": {
+        "criteria": "Solve a simple addition problem and review feedback."
+      },
+      "accessibility": {
+        "notes": "Visual counters and written numerals are both provided."
+      }
+    },
+    {
+      "id": "class-2-skip-count-by-two",
+      "schemaVersion": "1.0.0",
+      "domain": "mathematics",
+      "stageIds": [
+        "class-2"
+      ],
+      "activityType": "sequence",
+      "difficulty": "developing",
+      "reviewStatus": "draft",
+      "languageVariants": {
+        "en": {
+          "title": "Count by twos",
+          "instructions": "Look at how the numbers grow. Choose the next number.",
+          "prompt": "2, 4, 6, 8, __"
+        },
+        "hi": {
+          "title": "दो-दो करके गिनें",
+          "instructions": "संख्याओं का क्रम देखें और अगली संख्या चुनें।",
+          "prompt": "2, 4, 6, 8, __"
+        }
+      },
+      "options": [
+        {
+          "id": "nine",
+          "emoji": "9️⃣",
+          "label": {
+            "en": "9",
+            "hi": "9"
+          }
+        },
+        {
+          "id": "ten",
+          "emoji": "🔟",
+          "label": {
+            "en": "10",
+            "hi": "10"
+          }
+        },
+        {
+          "id": "twelve",
+          "emoji": "1️⃣2️⃣",
+          "label": {
+            "en": "12",
+            "hi": "12"
+          }
+        }
+      ],
+      "answerId": "ten",
+      "feedback": {
+        "en": "Add 2 each time: the next number is 10.",
+        "hi": "हर बार 2 जोड़ें: अगली संख्या 10 है।"
+      },
+      "completion": {
+        "criteria": "Identify the next number in a skip-counting sequence."
+      },
+      "accessibility": {
+        "notes": "Sequence is displayed as text; no time limit."
+      }
+    },
+    {
+      "id": "class-3-complete-the-pattern",
+      "schemaVersion": "1.0.0",
+      "domain": "reasoning",
+      "stageIds": [
+        "class-3"
+      ],
+      "activityType": "sequence",
+      "difficulty": "developing",
+      "reviewStatus": "draft",
+      "languageVariants": {
+        "en": {
+          "title": "Complete the pattern",
+          "instructions": "Notice how the shapes repeat. Choose what comes next.",
+          "prompt": "🔵 🔺 🔵 🔺 🔵 __"
+        },
+        "hi": {
+          "title": "पैटर्न पूरा करें",
+          "instructions": "आकृतियों का दोहराव देखें और अगली आकृति चुनें।",
+          "prompt": "🔵 🔺 🔵 🔺 🔵 __"
+        }
+      },
+      "options": [
+        {
+          "id": "circle",
+          "emoji": "🔵",
+          "label": {
+            "en": "Circle",
+            "hi": "गोला"
+          }
+        },
+        {
+          "id": "triangle",
+          "emoji": "🔺",
+          "label": {
+            "en": "Triangle",
+            "hi": "त्रिकोण"
+          }
+        },
+        {
+          "id": "square",
+          "emoji": "🟦",
+          "label": {
+            "en": "Square",
+            "hi": "वर्ग"
+          }
+        }
+      ],
+      "answerId": "triangle",
+      "feedback": {
+        "en": "Circle and triangle alternate, so the next shape is a triangle.",
+        "hi": "गोला और त्रिकोण बारी-बारी आते हैं, इसलिए अगली आकृति त्रिकोण है।"
+      },
+      "completion": {
+        "criteria": "Find the next item in a repeating visual pattern."
+      },
+      "accessibility": {
+        "notes": "Every option includes a descriptive text label and no timer."
+      }
+    },
+    {
+      "id": "playgroup-find-the-animal",
+      "schemaVersion": "1.0.0",
+      "domain": "reasoning",
+      "stageIds": [
+        "playgroup"
+      ],
+      "activityType": "match",
+      "difficulty": "introductory",
+      "reviewStatus": "draft",
+      "languageVariants": {
+        "en": {
+          "title": "Find the animal",
+          "instructions": "Look at the pictures. Tap the animal.",
+          "prompt": "Which one is an animal?"
+        },
+        "hi": {
+          "title": "जानवर खोजें",
+          "instructions": "चित्र देखें। जानवर चुनें।",
+          "prompt": "इनमें से कौन-सा जानवर है?"
+        }
+      },
+      "options": [
+        {
+          "id": "cat",
+          "emoji": "🐱",
+          "label": {
+            "en": "Cat",
+            "hi": "बिल्ली"
+          }
+        },
+        {
+          "id": "ball",
+          "emoji": "⚽",
+          "label": {
+            "en": "Ball",
+            "hi": "गेंद"
+          }
+        },
+        {
+          "id": "cup",
+          "emoji": "🥤",
+          "label": {
+            "en": "Cup",
+            "hi": "कप"
+          }
+        }
+      ],
+      "answerId": "cat",
+      "feedback": {
+        "en": "A cat is an animal.",
+        "hi": "बिल्ली एक जानवर है।"
+      },
+      "completion": {
+        "criteria": "Choose an answer and review the feedback."
+      },
+      "accessibility": {
+        "notes": "No timer. Every option has a text label, and the activity works without audio."
+      }
+    },
+    {
+      "id": "nursery-fruit-or-vegetable",
+      "schemaVersion": "1.0.0",
+      "domain": "environmental-learning",
+      "stageIds": [
+        "nursery"
+      ],
+      "activityType": "sort",
+      "difficulty": "introductory",
+      "reviewStatus": "draft",
+      "languageVariants": {
+        "en": {
+          "title": "Find the fruit",
+          "instructions": "Choose the fruit from the pictures.",
+          "prompt": "Which one is a fruit?"
+        },
+        "hi": {
+          "title": "फल खोजें",
+          "instructions": "चित्रों में से फल चुनें।",
+          "prompt": "इनमें से कौन-सा फल है?"
+        }
+      },
+      "options": [
+        {
+          "id": "mango",
+          "emoji": "🥭",
+          "label": {
+            "en": "Mango",
+            "hi": "आम"
+          }
+        },
+        {
+          "id": "carrot",
+          "emoji": "🥕",
+          "label": {
+            "en": "Carrot",
+            "hi": "गाजर"
+          }
+        },
+        {
+          "id": "leaf",
+          "emoji": "🍃",
+          "label": {
+            "en": "Leaf",
+            "hi": "पत्ता"
+          }
+        }
+      ],
+      "answerId": "mango",
+      "feedback": {
+        "en": "Mango is a fruit.",
+        "hi": "आम एक फल है।"
+      },
+      "completion": {
+        "criteria": "Choose an answer and review the feedback."
+      },
+      "accessibility": {
+        "notes": "No timer. Every option has a text label, and the activity works without audio."
+      }
+    },
+    {
+      "id": "lkg-count-the-stars",
+      "schemaVersion": "1.0.0",
+      "domain": "mathematics",
+      "stageIds": [
+        "lkg"
+      ],
+      "activityType": "multiple-choice",
+      "difficulty": "introductory",
+      "reviewStatus": "draft",
+      "languageVariants": {
+        "en": {
+          "title": "Count the stars",
+          "instructions": "Count the stars and choose the number.",
+          "prompt": "⭐ ⭐ ⭐ ⭐ How many stars?"
+        },
+        "hi": {
+          "title": "तारे गिनें",
+          "instructions": "तारे गिनें और संख्या चुनें।",
+          "prompt": "⭐ ⭐ ⭐ ⭐ कितने तारे हैं?"
+        }
+      },
+      "options": [
+        {
+          "id": "three",
+          "emoji": "3️⃣",
+          "label": {
+            "en": "Three",
+            "hi": "तीन"
+          }
+        },
+        {
+          "id": "four",
+          "emoji": "4️⃣",
+          "label": {
+            "en": "Four",
+            "hi": "चार"
+          }
+        },
+        {
+          "id": "five",
+          "emoji": "5️⃣",
+          "label": {
+            "en": "Five",
+            "hi": "पाँच"
+          }
+        }
+      ],
+      "answerId": "four",
+      "feedback": {
+        "en": "There are four stars.",
+        "hi": "चार तारे हैं।"
+      },
+      "completion": {
+        "criteria": "Choose an answer and review the feedback."
+      },
+      "accessibility": {
+        "notes": "No timer. Every option has a text label, and the activity works without audio."
+      }
+    },
+    {
+      "id": "ukg-find-the-hindi-vowel",
+      "schemaVersion": "1.0.0",
+      "domain": "hindi",
+      "stageIds": [
+        "ukg"
+      ],
+      "activityType": "match",
+      "difficulty": "developing",
+      "reviewStatus": "draft",
+      "languageVariants": {
+        "en": {
+          "title": "Find the swar",
+          "instructions": "Choose the Hindi vowel (swar).",
+          "prompt": "Which one is a swar?"
+        },
+        "hi": {
+          "title": "स्वर खोजें",
+          "instructions": "हिंदी स्वर चुनें।",
+          "prompt": "इनमें से कौन-सा स्वर है?"
+        }
+      },
+      "options": [
+        {
+          "id": "aa",
+          "emoji": "आ",
+          "label": {
+            "en": "आ",
+            "hi": "आ"
+          }
+        },
+        {
+          "id": "ka",
+          "emoji": "क",
+          "label": {
+            "en": "क",
+            "hi": "क"
+          }
+        },
+        {
+          "id": "ma",
+          "emoji": "म",
+          "label": {
+            "en": "म",
+            "hi": "म"
+          }
+        }
+      ],
+      "answerId": "aa",
+      "feedback": {
+        "en": "आ is a vowel (swar).",
+        "hi": "आ एक स्वर है।"
+      },
+      "completion": {
+        "criteria": "Choose an answer and review the feedback."
+      },
+      "accessibility": {
+        "notes": "No timer. Every option has a text label, and the activity works without audio."
+      }
+    },
+    {
+      "id": "class-1-hindi-matra-aa",
+      "schemaVersion": "1.0.0",
+      "domain": "hindi",
+      "stageIds": [
+        "class-1"
+      ],
+      "activityType": "multiple-choice",
+      "difficulty": "introductory",
+      "reviewStatus": "draft",
+      "languageVariants": {
+        "en": {
+          "title": "Choose the matra",
+          "instructions": "Choose the word with the आ की मात्रा sound.",
+          "prompt": "Which word has the ा (aa) matra?"
+        },
+        "hi": {
+          "title": "मात्रा चुनें",
+          "instructions": "आ की मात्रा वाला शब्द चुनें।",
+          "prompt": "किस शब्द में ा (आ की मात्रा) है?"
+        }
+      },
+      "options": [
+        {
+          "id": "ram",
+          "emoji": "राम",
+          "label": {
+            "en": "Ram",
+            "hi": "राम"
+          }
+        },
+        {
+          "id": "kamal",
+          "emoji": "कमल",
+          "label": {
+            "en": "Kamal",
+            "hi": "कमल"
+          }
+        },
+        {
+          "id": "ghar",
+          "emoji": "घर",
+          "label": {
+            "en": "Ghar",
+            "hi": "घर"
+          }
+        }
+      ],
+      "answerId": "ram",
+      "feedback": {
+        "en": "राम uses the ा (aa) matra.",
+        "hi": "राम में ा (आ की मात्रा) है।"
+      },
+      "completion": {
+        "criteria": "Choose an answer and review the feedback."
+      },
+      "accessibility": {
+        "notes": "No timer. Every option has a text label, and the activity works without audio."
+      }
+    },
+    {
+      "id": "class-2-add-tens",
+      "schemaVersion": "1.0.0",
+      "domain": "mathematics",
+      "stageIds": [
+        "class-2"
+      ],
+      "activityType": "multiple-choice",
+      "difficulty": "developing",
+      "reviewStatus": "draft",
+      "languageVariants": {
+        "en": {
+          "title": "Add tens",
+          "instructions": "Add the tens and choose the answer.",
+          "prompt": "30 + 20 = ?"
+        },
+        "hi": {
+          "title": "दहाइयाँ जोड़ें",
+          "instructions": "दहाइयाँ जोड़ें और उत्तर चुनें।",
+          "prompt": "30 + 20 = ?"
+        }
+      },
+      "options": [
+        {
+          "id": "40",
+          "emoji": "4️⃣0️⃣",
+          "label": {
+            "en": "40",
+            "hi": "40"
+          }
+        },
+        {
+          "id": "50",
+          "emoji": "5️⃣0️⃣",
+          "label": {
+            "en": "50",
+            "hi": "50"
+          }
+        },
+        {
+          "id": "60",
+          "emoji": "6️⃣0️⃣",
+          "label": {
+            "en": "60",
+            "hi": "60"
+          }
+        }
+      ],
+      "answerId": "50",
+      "feedback": {
+        "en": "Three tens plus two tens make five tens: 50.",
+        "hi": "तीन दहाई और दो दहाई मिलकर पाँच दहाई यानी 50 होते हैं।"
+      },
+      "completion": {
+        "criteria": "Choose an answer and review the feedback."
+      },
+      "accessibility": {
+        "notes": "No timer. Every option has a text label, and the activity works without audio."
+      }
+    },
+    {
+      "id": "class-3-multiplication-groups",
+      "schemaVersion": "1.0.0",
+      "domain": "mathematics",
+      "stageIds": [
+        "class-3"
+      ],
+      "activityType": "multiple-choice",
+      "difficulty": "developing",
+      "reviewStatus": "draft",
+      "languageVariants": {
+        "en": {
+          "title": "Equal groups",
+          "instructions": "Count the equal groups to solve the problem.",
+          "prompt": "3 groups of 4 = ?"
+        },
+        "hi": {
+          "title": "बराबर समूह",
+          "instructions": "बराबर समूह गिनकर हल करें।",
+          "prompt": "4 के 3 समूह = ?"
+        }
+      },
+      "options": [
+        {
+          "id": "7",
+          "emoji": "7️⃣",
+          "label": {
+            "en": "7",
+            "hi": "7"
+          }
+        },
+        {
+          "id": "12",
+          "emoji": "1️⃣2️⃣",
+          "label": {
+            "en": "12",
+            "hi": "12"
+          }
+        },
+        {
+          "id": "16",
+          "emoji": "1️⃣6️⃣",
+          "label": {
+            "en": "16",
+            "hi": "16"
+          }
+        }
+      ],
+      "answerId": "12",
+      "feedback": {
+        "en": "4 + 4 + 4 = 12, so 3 groups of 4 make 12.",
+        "hi": "4 + 4 + 4 = 12, इसलिए 4 के 3 समूह 12 होते हैं।"
+      },
+      "completion": {
+        "criteria": "Choose an answer and review the feedback."
+      },
+      "accessibility": {
+        "notes": "No timer. Every option has a text label, and the activity works without audio."
+      }
+    }
   ]
 }
