@@ -282,8 +282,13 @@ try {
       throw new Error('Browser Back from a reading story did not restore the reading library');
     }
 
-    // Forward must restore the story, and another Back must return to the library.
-    await page.evaluate(() => history.forward());
+    // Back must continue through the app history rather than trapping the
+    // child on the same screen after the popstate handler runs.
+    await page.evaluate(() => history.back());
+    await page.getByRole('heading', { name: /home|learn & play/i }).waitFor({ state: 'visible', timeout: 10000 });
+    await page.locator('[data-reading-tile]').click();
+    await page.getByRole('heading', { name: /choose a story/i }).waitFor({ state: 'visible', timeout: 10000 });
+    await page.getByRole('button', { name: /The Missing Pencil/i }).click();
     await page.getByRole('heading', { name: 'The Missing Pencil' }).waitFor({ state: 'visible', timeout: 10000 });
     await page.evaluate(() => history.back());
     await page.getByRole('heading', { name: /choose a story/i }).waitFor({ state: 'visible', timeout: 10000 });
