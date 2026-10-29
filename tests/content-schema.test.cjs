@@ -99,4 +99,4 @@ test('parent corner exposes stars, activity count and selected stage', () => {
   assert.match(html,/सितारे/);
 });
 
-test('mobile back navigation is loaded and cached for offline use',()=>{const navigation=fs.readFileSync(path.join(__dirname,'../mobile-back-navigation.js'),'utf8');assert.match(html,/mobile-back-navigation\.js/);assert.match(sw,/mobile-back-navigation\.js/);assert.match(navigation,/addEventListener\('popstate'/);assert.match(navigation,/history\.pushState/)});
+test('mobile back navigation is loaded and cached for offline use',()=>{const html=fs.readFileSync(path.join(__dirname,'../index.html'),'utf8');const sw=fs.readFileSync(path.join(__dirname,'../sw.js'),'utf8');const navigation=fs.readFileSync(path.join(__dirname,'../mobile-back-navigation.js'),'utf8');assert.match(html,/mobile-back-navigation\.js/);assert.match(sw,/mobile-back-navigation\.js/);assert.match(navigation,/addEventListener\('popstate'/);assert.match(navigation,/history\.pushState/)})
