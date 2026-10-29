@@ -13,6 +13,18 @@ const MAX_PAGES = Math.min(3, Math.max(1, Number.parseInt(process.env.MAX_PAGES_
 const MAX_QUERIES = Math.min(14, Math.max(1, Number.parseInt(process.env.MAX_SEARCH_QUERIES || '14', 10) || 14));
 const OUT = process.env.CANDIDATE_OUTPUT || path.join('artifacts', 'watch-learn-candidates.json');
 
+// Conservative title-based triage reduces obvious noise; it is not an approval or safety decision.
+const BLOCK_TERMS = /\\b(job|jobs|vacancy|vacancies|recruitment|salary|sarkari naukri|government exam|competitive exam|neet|jee|upsc|ssc cgl|bank po|class 11|class 12|grade 11|grade 12|adult|dating|prank|horror|weapon|fight|violence)\\b|सरकारी नौकरी|भर्ती|वैकेंसी|प्रतियोगी परीक्षा|कक्षा 11|कक्षा 12/iu;
+const STAGE_TERMS = {
+  playgroup: /color|colour|shape|animal|nursery rhyme|toddler|preschool|alphabet|abc|count|number|बालगीत|रंग|आकार|जानवर|अक्षर|गिनती|बच्चों की कविता/iu,
+  nursery: /phonics|alphabet|letter|color|colour|shape|count|number|nursery|बालगीत|वर्णमाला|अक्षर|रंग|गिनती|संख्या/iu,
+  lkg: /phonics|letter sound|alphabet|vowel|number|count|hindi varnamala|एलकेजी|वर्णमाला|मात्रा|गिनती|संख्या|अक्षर/iu,
+  ukg: /reading|short word|phonics|addition|subtraction|count|sentence|हिंदी पढ़ना|शब्द|गिनती|जोड़|घटाव|वाक्य/iu,
+  'class-1': /class 1|grade 1|first grade|phonics|reading|counting|addition|subtraction|basic science|कक्षा 1|कक्षा एक|हिंदी|गणित|पर्यावरण अध्ययन/iu,
+  'class-2': /class 2|grade 2|second grade|reading|comprehension|addition|subtraction|multiplication|basic science|कक्षा 2|कक्षा दो|हिंदी|गणित|पर्यावरण अध्ययन/iu,
+  'class-3': /class 3|grade 3|third grade|reading|multiplication|division|fractions|science|environmental studies|कक्षा 3|कक्षा तीन|हिंदी|गणित|विज्ञान|पर्यावरण अध्ययन/iu
+};
+
 const plans = [
   { stageId: 'playgroup', language: 'en', query: 'preschool learning colors shapes animals songs for toddlers' },
   { stageId: 'playgroup', language: 'hi', query: 'प्लेग्रुप बच्चों के रंग आकार जानवर सीखने के वीडियो' },
@@ -104,7 +116,7 @@ async function main() {
     for (const item of data.items || []) details.set(item.id, item);
   }
 
-  const candidates = [];
+  const candidates = [];\n  const filteredOut = [];
   for (const [id, base] of found.entries()) {
     const detail = details.get(id);
     if (!detail) continue;
@@ -149,7 +161,7 @@ async function main() {
     candidateCount: candidates.length,
     notes: [
       'Candidate discovery only; no record in this file is approved for children.',
-      'Search ranking and SafeSearch are not substitutes for adult content review.',
+      'Automated keyword triage reduces obvious off-topic results but may produce false positives and false negatives.',\n      'Search ranking and SafeSearch are not substitutes for adult content review.',
       'Review channel identity, exact video content, age suitability, curriculum fit, language, availability, embed behaviour and applicable YouTube policies.',
       'Never copy this artifact directly into the published catalogue.'
     ],
