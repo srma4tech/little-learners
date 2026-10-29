@@ -2,7 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const {validateStageCatalog,validateFoundationPack,validateReadingPack,validateActivity,STAGE_IDS} = require('../.github/scripts/validate-content.cjs');
+const {validateStageCatalog,validateFoundationPack,validateReadingPack,validateActivity,validateActivityPack,STAGE_IDS} = require('../.github/scripts/validate-content.cjs');
 const read = file => JSON.parse(fs.readFileSync(path.join(__dirname,'..',file),'utf8'));
 
 test('stage catalog has seven stable bilingual stages', () => {
@@ -59,4 +59,15 @@ test('guided home explains the selected stage in English and Hindi', () => {
   assert.match(guide,/window\.openParentSettings/);
   assert.match(sw,/little-learners-v51/);
   assert.match(sw,/home-guide\.js/);
+});
+
+test('stage activity pack covers all seven stages with bilingual prompts and valid answers', () => {
+  const pack=read('content/stage-learning-activities.json');
+  const result=validateActivityPack(pack);
+  assert.equal(result.activities,7);
+  assert.equal(result.stages,7);
+  assert.ok(pack.activities.every(a=>a.languageVariants.en && a.languageVariants.hi));
+  const broken=structuredClone(pack);
+  broken.activities[0].answerId='missing-option';
+  assert.throws(()=>validateActivityPack(broken),/Answer ID not found/);
 });
