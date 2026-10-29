@@ -22,6 +22,7 @@
     const data=await response.json();
     if(!Array.isArray(data.activities))throw new Error('Activity pack has an invalid format.');
     pack=data;
+    window.learningActivityPack=data;
     return pack;
   }
   window.openLearningPath = async function() {
@@ -31,7 +32,9 @@
     try {
       await loadPack();
       renderList();
-    } catch (_) {
+    } catch (error) {
+      window.learningPathError = error && error.message ? error.message : String(error);
+      console.error('Learning path load failed:', error);
       root.replaceChildren(top('🧭 Learning path'),showMessage('Activities could not be loaded. Please check your connection and try again.'),button('Try again','',window.openLearningPath));
     }
   };
@@ -98,5 +101,19 @@
     s.textContent='.learning-path-panel{background:var(--card);border:2px solid #7c4dff66;border-radius:20px;padding:16px;margin:10px 0;min-width:0}.learning-path-panel h3{margin:4px 0 10px;overflow-wrap:anywhere}.learning-path-panel p{line-height:1.5}.learning-path-list{display:grid;grid-template-columns:minmax(0,1fr);gap:10px}.learning-path-card{min-width:0;background:var(--card);border:1px solid #8d7aa533;border-radius:18px;padding:8px}.learning-path-choice{display:flex;flex-direction:column;align-items:flex-start;gap:7px;text-align:left;width:100%;min-width:0;padding:12px;background:transparent;color:var(--ink);border:0;box-shadow:none;border-radius:12px;white-space:normal}.learning-path-choice strong,.learning-path-choice span{overflow-wrap:anywhere}.learning-path-choice span{line-height:1.4}.learning-path-choice small{opacity:.7}.learning-path-options{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,130px),1fr));gap:10px}.learning-path-options .btn{min-height:76px;white-space:normal;overflow-wrap:anywhere}.learning-path-options .btn:disabled{opacity:.7}.learning-path-wrong{border:2px solid #e53935!important}.learning-path-correct{border:2px solid #43a047!important}.learning-path-message{background:#7c4dff12;border-radius:14px;padding:12px;line-height:1.5}.learning-path-feedback{margin-top:12px}@media(min-width:720px){.learning-path-list{grid-template-columns:repeat(2,minmax(0,1fr))}}';
     document.head.append(s);
   }
+  function ensureHomeEntry() {
+    const root=app(), grid=root && root.querySelector('.home-grid');
+    if(!grid || root.querySelector('.home-learning-guide') || root.querySelector('[data-learning-path-home-entry]'))return;
+    const start=button(lang()==='hi'?'अभ्यास शुरू करें':'Start activity','',window.openLearningPath);
+    start.dataset.learningPathHomeEntry='true';
+    start.className='btn learning-path-home-entry';
+    grid.parentNode.insertBefore(start,grid);
+  }
   styles();
+  const root=app();
+  if(root && typeof MutationObserver!=='undefined') {
+    const observer=new MutationObserver(()=>ensureHomeEntry());
+    observer.observe(root,{childList:true,subtree:true});
+  }
+  ensureHomeEntry();
 })();

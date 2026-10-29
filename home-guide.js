@@ -44,8 +44,7 @@
     start.addEventListener('click', () => window.openLearningPath?.());
     section.append(copy, change, start);
     const grid = document.querySelector('#app .home-grid');
-    const heading = document.querySelector('#app h1');
-    if (grid && heading && !document.querySelector('#app .home-learning-guide')) grid.parentNode.insertBefore(section, grid);
+    if (grid && !document.querySelector('#app .home-learning-guide')) grid.parentNode.insertBefore(section, grid);
   }
   function styles() {
     if (document.getElementById('home-guide-styles')) return;
@@ -54,6 +53,12 @@
     style.textContent = '.home-learning-guide{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;background:var(--card);border:2px solid #7c4dff66;border-radius:20px;padding:14px 16px;margin:0 0 18px;box-shadow:0 4px 0 var(--sh)}.home-learning-guide>div{flex:1 1 220px;min-width:0}.home-learning-guide p{margin:4px 0;line-height:1.45;overflow-wrap:anywhere}.home-learning-guide h2{margin:0;font-size:clamp(20px,4vw,26px)}.home-guide-eyebrow{font-size:13px;font-weight:800;opacity:.7}.home-learning-guide .btn{font-size:15px;padding:9px 14px;white-space:normal}@media(max-width:380px){.home-learning-guide{padding:12px;gap:8px}.home-learning-guide .btn{width:100%}}';
     document.head.append(style);
   }
+  window.renderHomeGuide = renderGuide;
   window.home = function() { originalHome(); styles(); renderGuide(); };
+  const appRoot = document.querySelector('#app');
+  if (appRoot && typeof MutationObserver !== 'undefined') {
+    const observer = new MutationObserver(() => { if (document.querySelector('#app .home-grid')) { styles(); renderGuide(); } });
+    observer.observe(appRoot, { childList: true, subtree: true });
+  }
   if (document.querySelector('#app .home-grid')) { styles(); renderGuide(); }
 })();
