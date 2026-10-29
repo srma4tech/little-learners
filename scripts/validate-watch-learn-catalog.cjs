@@ -23,6 +23,28 @@ function isYouTubeId(value) {
 function isChannelId(value) {
   return typeof value === 'string' && /^UC[A-Za-z0-9_-]{22}$/.test(value);
 }
+function validateAllowlist(data) {
+  const errors = [];
+  const error = (where, message) => errors.push(`${where}: ${message}`);
+  if (!data || typeof data !== 'object' || Array.isArray(data)) return ['allowlist: must be an object'];
+  if (data.schemaVersion !== '1.0.0') error('allowlist.schemaVersion', 'must equal 1.0.0');
+  if (data.catalogId !== 'little-learners-watch-learn-approved-channels') error('allowlist.catalogId', 'unexpected allowlist ID');
+  if (!Array.isArray(data.channels)) return errors.concat('allowlist.channels: must be an array');
+  const ids = new Set();
+  for (const [i, channel] of data.channels.entries()) {
+    const p = `allowlist.channels[${i}]`;
+    if (!channel || typeof channel !== 'object' || Array.isArray(channel)) { error(p, 'must be an object'); continue; }
+    if (!isChannelId(channel.channelId)) error(p + '.channelId', 'must be a valid-shaped YouTube channel ID');
+    if (ids.has(channel.channelId)) error(p + '.channelId', 'duplicate channel ID');
+    ids.add(channel.channelId);
+    if (typeof channel.channelTitle !== 'string' || !channel.channelTitle.trim() || channel.channelTitle.length > 120) error(p + '.channelTitle', 'must be a non-empty channel title (max 120 chars)');
+    if (channel.reviewStatus !== 'approved') error(p + '.reviewStatus', 'only human-approved channels may be allowlisted');
+    if (!isDate(channel.reviewedAt)) error(p + '.reviewedAt', 'must be an ISO date-time');
+    if (!APPROVED_REVIEWERS.has(channel.reviewedByRole)) error(p + '.reviewedByRole', 'must identify a human reviewer role');
+  }
+  return errors;
+}
+
 function validateCatalog(catalog, allowlist) {
   const errors = [];
   const error = (where, message) => errors.push(`${where}: ${message}`);
@@ -99,8 +121,9 @@ function validateCatalog(catalog, allowlist) {
 function main() {
   const catalog = readJson('content/watch-learn-catalog.json');
   const allowlistData = readJson('content/watch-learn-approved-channels.json');
+  const allowlistErrors = validateAllowlist(allowlistData);
   const allowlist = new Set(Array.isArray(allowlistData.channels) ? allowlistData.channels.map(c => c.channelId) : []);
-  const errors = validateCatalog(catalog, allowlist);
+  const errors = [...allowlistErrors, ...validateCatalog(catalog, allowlist)];
   if (errors.length) {
     console.error('Watch & Learn catalogue validation failed:');
     for (const item of errors) console.error(' - ' + item);
@@ -111,4 +134,4 @@ function main() {
 }
 
 if (require.main === module) main();
-module.exports = { validateCatalog };
+module.exports = { validateCatalog, validateAllowlist };
