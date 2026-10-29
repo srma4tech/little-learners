@@ -13,17 +13,32 @@ const MAX_PAGES = Math.min(3, Math.max(1, Number.parseInt(process.env.MAX_PAGES_
 const MAX_QUERIES = Math.min(14, Math.max(1, Number.parseInt(process.env.MAX_SEARCH_QUERIES || '14', 10) || 14));
 const OUT = process.env.CANDIDATE_OUTPUT || path.join('artifacts', 'watch-learn-candidates.json');
 
-// Conservative title-based triage reduces obvious noise; it is not an approval or safety decision.
-const BLOCK_TERMS = /\b(job|jobs|vacancy|vacancies|recruitment|salary|sarkari naukri|government exam|competitive exam|neet|jee|upsc|ssc cgl|bank po|class 11|class 12|grade 11|grade 12|adult|dating|prank|horror|weapon|fight|violence)\b|सरकारी नौकरी|भर्ती|वैकेंसी|प्रतियोगी परीक्षा|कक्षा 11|कक्षा 12/iu;
+// Conservative title-based triage is a relevance aid, never a safety decision or approval.
+const BLOCK_TERMS = /\b(job|jobs|vacancy|vacancies|recruitment|salary|sarkari naukri|government exam|competitive exam|neet|jee|upsc|ssc cgl|bank po|class (?:[4-9]|1[0-2])|grade (?:[4-9]|1[0-2])|standard (?:[4-9]|1[0-2])|adult|dating|prank|horror|weapon|fight|violence)\b|सरकारी नौकरी|भर्ती|वैकेंसी|प्रतियोगी परीक्षा|कक्षा (?:[४-९]|[1-9]|1[0-2])/iu;
 const STAGE_TERMS = {
-  playgroup: /color|colour|shape|animal|nursery rhyme|toddler|preschool|alphabet|abc|count|number|बालगीत|रंग|आकार|जानवर|अक्षर|गिनती|बच्चों की कविता/iu,
-  nursery: /phonics|alphabet|letter|color|colour|shape|count|number|nursery|बालगीत|वर्णमाला|अक्षर|रंग|गिनती|संख्या/iu,
-  lkg: /phonics|letter sound|alphabet|vowel|number|count|hindi varnamala|एलकेजी|वर्णमाला|मात्रा|गिनती|संख्या|अक्षर/iu,
-  ukg: /reading|short word|phonics|addition|subtraction|count|sentence|हिंदी पढ़ना|शब्द|गिनती|जोड़|घटाव|वाक्य/iu,
-  'class-1': /class 1|grade 1|first grade|phonics|reading|counting|addition|subtraction|basic science|कक्षा 1|कक्षा एक|हिंदी|गणित|पर्यावरण अध्ययन/iu,
-  'class-2': /class 2|grade 2|second grade|reading|comprehension|addition|subtraction|multiplication|basic science|कक्षा 2|कक्षा दो|हिंदी|गणित|पर्यावरण अध्ययन/iu,
-  'class-3': /class 3|grade 3|third grade|reading|multiplication|division|fractions|science|environmental studies|कक्षा 3|कक्षा तीन|हिंदी|गणित|विज्ञान|पर्यावरण अध्ययन/iu
+  playgroup: /color|colour|shape|animal|nursery rhyme|toddler|preschool|alphabet|abc|count|number|song|rhymes|बालगीत|रंग|आकार|जानवर|अक्षर|गिनती|बच्चों की कविता|कविता/iu,
+  nursery: /phonics|alphabet|letter|color|colour|shape|count|number|nursery|rhymes|song|बालगीत|वर्णमाला|अक्षर|रंग|गिनती|संख्या|कविता/iu,
+  lkg: /phonics|letter sound|alphabet|vowel|number|count|hindi varnamala|एलकेजी|वर्णमाला|मात्रा|गिनती|संख्या|अक्षर|स्वर|व्यंजन/iu,
+  ukg: /reading|short word|phonics|addition|subtraction|count|sentence|alphabet|हिंदी पढ़ना|शब्द|गिनती|जोड़|घटाव|वाक्य|मात्रा/iu,
+  'class-1': /class 1|grade 1|first grade|phonics|reading|counting|addition|subtraction|basic science|कक्षा 1|कक्षा एक|हिंदी|गणित|पर्यावरण अध्ययन|मात्रा|वर्णमाला/iu,
+  'class-2': /class 2|grade 2|second grade|reading|comprehension|addition|subtraction|multiplication|basic science|कक्षा 2|कक्षा दो|हिंदी|गणित|पर्यावरण अध्ययन|मात्रा|वर्णमाला/iu,
+  'class-3': /class 3|grade 3|third grade|reading|multiplication|division|fractions|science|environmental studies|कक्षा 3|कक्षा तीन|हिंदी|गणित|विज्ञान|पर्यावरण अध्ययन|मात्रा|वर्णमाला/iu
 };
+
+function triageCandidate(candidate) {
+  const title = String(candidate.rawTitle || '');
+  const blocked = BLOCK_TERMS.test(title);
+  const matchingStages = [...new Set((candidate.queryMatches || []).map(match => match.stageId).filter(Boolean))];
+  const stageMatches = matchingStages.filter(stageId => STAGE_TERMS[stageId]?.test(title));
+  if (blocked) return { keep: false, reason: 'blocked-title-term' };
+  if (!stageMatches.length) return { keep: false, reason: matchingStages.length ? 'no-stage-title-match' : 'missing-stage-match' };
+  return {
+    keep: true,
+    automatedTriage: 'keyword-match-needs-human-review',
+    triageReasons: ['title-matched-stage-keywords'],
+    matchedStageIds: stageMatches
+  };
+}
 
 const plans = [
   { stageId: 'playgroup', language: 'en', query: 'preschool learning colors shapes animals songs for toddlers' },
@@ -128,7 +143,7 @@ async function main() {
     const durationSeconds = durationMatch
       ? (Number(durationMatch[1] || 0) * 3600 + Number(durationMatch[2] || 0) * 60 + Number(durationMatch[3] || 0))
       : null;
-    candidates.push({
+    const candidate = {
       ...base,
       rawTitle: snippet.title || base.rawTitle,
       rawDescription: snippet.description || base.rawDescription,
@@ -143,7 +158,23 @@ async function main() {
         status.madeForKids === false || status.selfDeclaredMadeForKids === false ? 'reported-not-made-for-kids' : 'unknown',
       reviewStatus: 'pending-review',
       reviewRequired: true
-    });
+    };
+    const triage = triageCandidate(candidate);
+    if (triage.keep) {
+      candidates.push({
+        ...candidate,
+        automatedTriage: triage.automatedTriage,
+        triageReasons: triage.triageReasons,
+        matchedStageIds: triage.matchedStageIds
+      });
+    } else {
+      filteredOut.push({
+        youtubeVideoId: candidate.youtubeVideoId,
+        rawTitle: candidate.rawTitle,
+        queryStageIds: [...new Set(candidate.queryMatches.map(match => match.stageId))],
+        reason: triage.reason
+      });
+    }
   }
 
   candidates.sort((a, b) => {
@@ -159,19 +190,31 @@ async function main() {
     queryCount: selectedPlans.length,
     searchApiCalls: searchCalls,
     maxPagesPerQuery: MAX_PAGES,
+    discoveredUniqueVideoCount: found.size,
+    detailLookupCount: details.size,
     candidateCount: candidates.length,
+    retainedCandidateCount: candidates.length,
+    filteredOutCount: filteredOut.length,
+    triageVersion: '1.0.0',
+    filteredOutSummary: filteredOut.reduce((summary, item) => {
+      summary[item.reason] = (summary[item.reason] || 0) + 1;
+      return summary;
+    }, {}),
+    filteredOutExamples: filteredOut.slice(0, 100),
     notes: [
       'Candidate discovery only; no record in this file is approved for children.',
-      'Automated keyword triage reduces obvious off-topic results but may produce false positives and false negatives.',
-      'Search ranking and SafeSearch are not substitutes for adult content review.',
+      'Automated title-keyword triage reduces obvious off-topic results; it is not a child-safety, quality, curriculum or approval decision.',
+      'Triage can produce false positives and false negatives; inspect retained items and filtered-out examples before changing rules.',
+      'Search ranking, SafeSearch, channel labels and Made for Kids metadata are not substitutes for adult content review.',
       'Review channel identity, exact video content, age suitability, curriculum fit, language, availability, embed behaviour and applicable YouTube policies.',
-      'Never copy this artifact directly into the published catalogue.'
+      'All retained records stay pending-review and reviewRequired=true. Never copy this artifact directly into the published catalogue.'
     ],
     candidates
   };
   fs.mkdirSync(path.dirname(OUT), { recursive: true });
   fs.writeFileSync(OUT, JSON.stringify(output, null, 2) + '\n', { mode: 0o600 });
-  console.log('Candidate discovery complete: ' + candidates.length + ' candidate(s), ' + searchCalls + ' search request(s). Output: ' + OUT);
+  console.log('Candidate discovery complete: ' + found.size + ' unique discovered video(s); ' + candidates.length + ' retained, ' + filteredOut.length + ' filtered out; ' + searchCalls + ' search request(s). Output: ' + OUT);
   console.log('All records remain pending review. No production catalogue was changed.');
 }
 main().catch(error => fail(error.message || 'Candidate discovery failed.'));
+module.exports = { triageCandidate };
