@@ -155,3 +155,19 @@ test('requires every allowlisted channel to have a valid ID and human approval r
   assert.ok(errors.some(x => x.includes('only human-approved channels may be allowlisted')));
   assert.ok(errors.some(x => x.includes('must identify a human reviewer role')));
 });
+
+test('runtime eligibility hides videos whose review verification is older than 90 days', () => {
+  const stale = video({
+    reviewStatus: 'approved',
+    reviewedAt: '2025-01-01T00:00:00Z',
+    reviewedByRole: 'educator',
+    ageSuitability: 'suitable',
+    curriculumFit: 'strong',
+    availabilityStatus: 'available',
+    madeForKidsStatus: 'verified',
+    lastVerifiedAt: '2025-01-01T00:00:00Z',
+    thumbnailUrl: 'https://i.ytimg.com/vi/abcdefghijk/hqdefault.jpg',
+    durationSeconds: 120
+  });
+  assert.equal(watchLearnModule.eligible([stale], 'class-1', 'en', allowlist).length, 0);
+});
