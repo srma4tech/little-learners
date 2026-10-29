@@ -24,7 +24,7 @@
     reasoning: { en: 'Thinking', hi: 'सोच-विचार' }
   };
   const esc = value => String(value == null ? '' : value).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
-  const language = () => ['en', 'hi', 'both'].includes(root.st?.lang) ? root.st.lang : 'both';
+  const language = () => { const lang = typeof st !== 'undefined' ? st.lang : 'both'; return ['en', 'hi', 'both'].includes(lang) ? lang : 'both'; };
   const text = (en, hi) => language() === 'hi' ? hi : language() === 'en' ? en : en + ' · ' + hi;
   const currentStage = () => {
     const raw = root.K?.().stageId || 'class-1';
