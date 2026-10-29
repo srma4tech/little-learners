@@ -116,7 +116,8 @@ async function main() {
     for (const item of data.items || []) details.set(item.id, item);
   }
 
-  const candidates = [];\n  const filteredOut = [];
+  const candidates = [];
+  const filteredOut = [];
   for (const [id, base] of found.entries()) {
     const detail = details.get(id);
     if (!detail) continue;
