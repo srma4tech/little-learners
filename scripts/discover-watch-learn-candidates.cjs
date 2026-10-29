@@ -82,7 +82,7 @@ async function api(resource, params) {
       const apiError = body?.error || {};
       const reasons = [...new Set((apiError.errors || []).map(item => item.reason).filter(Boolean))];
       const message = typeof apiError.message === 'string' ? apiError.message : '';
-      const safeMessage = message.replace(/https?:\\/\\/[^\\s]+/g, '[URL]').slice(0, 240);
+      const safeMessage = message.replace(/https?:\/\/[^\s]+/g, '[URL]').slice(0, 240);
       if (reasons.length) detail += ' reason=' + reasons.join(',');
       if (safeMessage) detail += ' message=' + safeMessage;
     } catch (_) {
