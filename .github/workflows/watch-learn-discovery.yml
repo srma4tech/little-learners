@@ -1,0 +1,66 @@
+name: Watch & Learn candidate discovery
+
+on:
+  workflow_dispatch:
+    inputs:
+      max_pages_per_query:
+        description: Maximum YouTube Search API pages per stage/language query (quota-aware)
+        type: choice
+        options: ['1', '2', '3']
+        default: '2'
+        required: true
+      max_search_queries:
+        description: Number of predefined stage/language queries to run
+        type: choice
+        options: ['7', '14']
+        default: '14'
+        required: true
+  schedule:
+    - cron: '23 4 * * 1'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: watch-learn-discovery
+  cancel-in-progress: false
+
+jobs:
+  discover:
+    name: Collect candidates for adult review only
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Check whether the API secret is configured
+        id: api-key
+        env:
+          YOUTUBE_DATA_API_KEY: ${{ secrets.YOUTUBE_DATA_API_KEY }}
+        run: |
+          if [ -z "$YOUTUBE_DATA_API_KEY" ]; then
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Candidate discovery skipped. Configure the YOUTUBE_DATA_API_KEY repository secret to enable it."
+          else
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Discover paginated candidate videos
+        if: steps.api-key.outputs.configured == 'true'
+        env:
+          YOUTUBE_DATA_API_KEY: ${{ secrets.YOUTUBE_DATA_API_KEY }}
+          MAX_PAGES_PER_QUERY: ${{ github.event.inputs.max_pages_per_query || '2' }}
+          MAX_SEARCH_QUERIES: ${{ github.event.inputs.max_search_queries || '14' }}
+          CANDIDATE_OUTPUT: artifacts/watch-learn-candidates.json
+        run: node scripts/discover-watch-learn-candidates.cjs
+      - name: Upload review-only candidate artifact
+        if: steps.api-key.outputs.configured == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: watch-learn-candidates-${{ github.run_number }}
+          path: artifacts/watch-learn-candidates.json
+          if-no-files-found: error
+          retention-days: 7
