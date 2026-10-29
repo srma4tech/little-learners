@@ -26,6 +26,15 @@
   const esc = value => String(value == null ? '' : value).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
   const language = () => { const lang = typeof st !== 'undefined' ? st.lang : 'both'; return ['en', 'hi', 'both'].includes(lang) ? lang : 'both'; };
   const text = (en, hi) => language() === 'hi' ? hi : language() === 'en' ? en : en + ' · ' + hi;
+  const localized = value => {
+    if (!value || typeof value !== 'object') return String(value || '');
+    if (language() === 'both') return [value.en, value.hi].filter(Boolean).join(' · ');
+    return value[language()] || value.en || value.hi || '';
+  };
+  const domainLabel = domain => {
+    const label = DOMAIN_LABELS[domain] || { en: domain, hi: domain };
+    return language() === 'both' ? label.en + ' · ' + label.hi : label[language()];
+  };
   const currentStage = () => {
     const raw = root.K?.().stageId || 'class-1';
     return root.LearningStages?.normalize(raw) || (STAGE_LABELS[raw] ? raw : 'class-1');
@@ -69,7 +78,7 @@
     const app = document.getElementById('app');
     if (!app) return;
     const label = STAGE_LABELS[stage] || STAGE_LABELS['class-1'];
-    const title = typeof video.title === 'object' ? (video.title[language()] || video.title.en || video.title.hi) : video.title;
+    const title = localized(video.title);
     const note = text(
       'Videos are hosted by YouTube. Its player controls and recommendations are provided by YouTube.',
       'वीडियो YouTube पर उपलब्ध हैं। उसके प्लेयर और सुझाव YouTube के नियंत्रण में हैं।'
@@ -138,15 +147,15 @@
     content.innerHTML = `
       <div class="watch-domain-filters" aria-label="${esc(text('Filter by topic', 'विषय चुनें'))}">
         <button class="btn ${selectedDomain === 'all' ? '' : 'o'}" type="button" onclick="window.filterWatchLearn('all')">${esc(text('All topics', 'सभी विषय'))}</button>
-        ${domains.map(domain => `<button class="btn ${selectedDomain === domain ? '' : 'o'}" type="button" onclick="window.filterWatchLearn('${esc(domain)}')">${esc((DOMAIN_LABELS[domain] || {en:domain,hi:domain})[lang === 'hi' ? 'hi' : 'en'])}</button>`).join('')}
+        ${domains.map(domain => `<button class="btn ${selectedDomain === domain ? '' : 'o'}" type="button" onclick="window.filterWatchLearn('${esc(domain)}')">${esc(domainLabel(domain))}</button>`).join('')}
       </div>
       <div class="watch-video-grid">
         ${filtered.map(video => {
-          const title = typeof video.title === 'object' ? (video.title[lang] || video.title.en || video.title.hi) : video.title;
+          const title = localized(video.title);
           const thumb = typeof video.thumbnailUrl === 'string' && /^https:\/\/(i\.ytimg\.com|img\.youtube\.com)\//.test(video.thumbnailUrl) ? video.thumbnailUrl : '';
           return `<article class="watch-video-card">
             ${thumb ? `<img src="${esc(thumb)}" loading="lazy" alt="">` : '<div class="watch-video-placeholder" aria-hidden="true">▶️</div>'}
-            <div class="watch-video-copy"><h3>${esc(title)}</h3><p>${esc(video.channelTitle || '')}</p><p>${esc((video.domains || []).map(d => (DOMAIN_LABELS[d] || {en:d,hi:d})[lang === 'hi' ? 'hi' : 'en']).join(' · '))}</p>
+            <div class="watch-video-copy"><h3>${esc(title)}</h3><p>${esc(video.channelTitle || '')}</p><p>${esc((video.domains || []).map(d => domainLabel(d)).join(' · '))}</p>
             <button class="btn" type="button" onclick="window.playWatchLearnVideo('${esc(video.id)}')">${esc(text('Watch video', 'वीडियो देखें'))}</button></div>
           </article>`;
         }).join('')}
@@ -171,9 +180,9 @@
     const grid = content.querySelector('.watch-video-grid');
     if (!grid) return openWatchLearn();
     grid.innerHTML = filtered.map(video => {
-      const title = typeof video.title === 'object' ? (video.title[language()] || video.title.en || video.title.hi) : video.title;
+      const title = localized(video.title);
       const thumb = typeof video.thumbnailUrl === 'string' && /^https:\/\/(i\.ytimg\.com|img\.youtube\.com)\//.test(video.thumbnailUrl) ? video.thumbnailUrl : '';
-      return `<article class="watch-video-card">${thumb ? `<img src="${esc(thumb)}" loading="lazy" alt="">` : '<div class="watch-video-placeholder" aria-hidden="true">▶️</div>'}<div class="watch-video-copy"><h3>${esc(title)}</h3><p>${esc(video.channelTitle || '')}</p><p>${esc((video.domains || []).map(d => (DOMAIN_LABELS[d] || {en:d,hi:d})[language() === 'hi' ? 'hi' : 'en']).join(' · '))}</p><button class="btn" type="button" onclick="window.playWatchLearnVideo('${esc(video.id)}')">${esc(text('Watch video', 'वीडियो देखें'))}</button></div></article>`;
+      return `<article class="watch-video-card">${thumb ? `<img src="${esc(thumb)}" loading="lazy" alt="">` : '<div class="watch-video-placeholder" aria-hidden="true">▶️</div>'}<div class="watch-video-copy"><h3>${esc(title)}</h3><p>${esc(video.channelTitle || '')}</p><p>${esc((video.domains || []).map(d => domainLabel(d)).join(' · '))}</p><button class="btn" type="button" onclick="window.playWatchLearnVideo('${esc(video.id)}')">${esc(text('Watch video', 'वीडियो देखें'))}</button></div></article>`;
     }).join('');
   }
 
