@@ -12,8 +12,14 @@
     if (app.querySelector('.learning-path-options')) return 'learning-activity:' + (app.querySelector('h2')?.textContent.trim() || '');
     if (app.querySelector('.learning-path-list')) return 'learning-path';
     if (app.querySelector('.reading-shell')) {
-      const heading = app.querySelector('.reading-shell h1, .reading-shell h2');
-      return 'reading:' + (heading?.textContent.trim() || 'library');
+      // Library and story detail share a toolbar heading, so identify them
+      // from their actual content regions rather than the common toolbar.
+      if (app.querySelector('.reading-story')) {
+        const title = app.querySelector('.reading-story')?.closest('.reading-panel')?.querySelector('h2');
+        return 'reading-story:' + (title?.textContent.trim() || 'detail');
+      }
+      if (app.querySelector('.reading-library')) return 'reading-library';
+      return 'reading-loading';
     }
     if (app.querySelector('.category-bar')) return 'category:' + (app.querySelector('.category-title')?.textContent.trim() || '');
     if (/Round\s+\d+\//.test(app.textContent)) return 'quiz:' + (app.querySelector('.bar h2')?.textContent.trim() || '');
