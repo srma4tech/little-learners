@@ -68,7 +68,7 @@ Each published video record should have stable IDs and fields equivalent to:
 - `availabilityStatus`: `available`, `unavailable`, or `restricted`
 - `madeForKidsStatus`: `verified`, `unknown`, or `not-applicable` (never infer it from appearance alone)
 
-Only `reviewStatus=approved`, valid records with a verified source and eligible playback should be eligible for display. Keep moderation and verification states separate from publication state.
+Only `reviewStatus=approved`, valid records with a verified source and eligible playback should be eligible for display. Keep moderation and verification states separate from publication state. The runtime hides records whose `lastVerifiedAt` timestamp is more than 90 days old; re-review and re-verify stale records before restoring them.
 
 ## 5. Safety, privacy and policy gates
 
