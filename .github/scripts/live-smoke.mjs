@@ -312,6 +312,12 @@ try {
     await page.getByRole("button", { name: /play/i }).click();
     await page.locator("#app .opt").first().waitFor({ state: "visible", timeout: 10000 });
     if (await page.locator("#app .opt").count() !== 3) throw new Error("Quiz did not render three answer choices");
+    if (width <= 600) {
+      await page.goBack();
+      await page.locator("#app .category-bar").waitFor({ state: "visible", timeout: 10000 });
+      await page.getByRole("button", { name: /play/i }).click();
+      await page.locator("#app .opt").first().waitFor({ state: "visible", timeout: 10000 });
+    }
     await checkOverflow(page, width, "quiz");
     await checkInteractiveControls(page, width, "quiz");
     await page.screenshot({ path: path.join(out, `ui-${width}-quiz.png`), fullPage: true });
