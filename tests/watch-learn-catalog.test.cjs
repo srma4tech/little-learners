@@ -107,8 +107,8 @@ test('runtime video eligibility requires explicit source allowlisting', () => {
     thumbnailUrl: 'https://i.ytimg.com/vi/abcdefghijk/hqdefault.jpg',
     durationSeconds: 120
   });
-  assert.equal(watchLearnModule.WatchLearn.eligible([approved], 'class-1', 'en', allowlist).length, 1);
-  assert.equal(watchLearnModule.WatchLearn.eligible([approved], 'class-1', 'en', new Set()).length, 0);
+  assert.equal(watchLearnModule.eligible([approved], 'class-1', 'en', allowlist).length, 1);
+  assert.equal(watchLearnModule.eligible([approved], 'class-1', 'en', new Set()).length, 0);
   delete global.st;
 });
 
@@ -126,7 +126,7 @@ test('runtime eligibility blocks pending, unsuitable, wrong-stage and wrong-lang
     durationSeconds: 120,
     languages: ['hi']
   });
-  assert.equal(watchLearnModule.WatchLearn.eligible([approved], 'class-1', 'en', allowlist).length, 0);
-  assert.equal(watchLearnModule.WatchLearn.eligible([approved], 'class-2', 'hi', allowlist).length, 0);
-  assert.equal(watchLearnModule.WatchLearn.eligible([video()], 'class-1', 'en', allowlist).length, 0);
+  assert.equal(watchLearnModule.eligible([approved], 'class-1', 'en', allowlist).length, 0);
+  assert.equal(watchLearnModule.eligible([approved], 'class-2', 'hi', allowlist).length, 0);
+  assert.equal(watchLearnModule.eligible([video()], 'class-1', 'en', allowlist).length, 0);
 });
