@@ -32,7 +32,9 @@
     try {
       await loadPack();
       renderList();
-    } catch (_) {
+    } catch (error) {
+      window.learningPathError = error && error.message ? error.message : String(error);
+      console.error('Learning path load failed:', error);
       root.replaceChildren(top('🧭 Learning path'),showMessage('Activities could not be loaded. Please check your connection and try again.'),button('Try again','',window.openLearningPath));
     }
   };
