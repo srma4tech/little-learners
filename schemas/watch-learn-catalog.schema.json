@@ -1,0 +1,313 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://srma4tech.github.io/little-learners/schemas/watch-learn-catalog.schema.json",
+  "title": "LittleLearners Watch & Learn catalogue",
+  "description": "Reviewed YouTube learning-video metadata. Only approved, eligible records may be shown to children.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "catalogId",
+    "releaseStatus",
+    "updatedAt",
+    "videos"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "catalogId": {
+      "const": "little-learners-watch-learn"
+    },
+    "releaseStatus": {
+      "enum": [
+        "draft",
+        "pilot",
+        "published"
+      ]
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "videos": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/video"
+      },
+      "uniqueItems": true
+    }
+  },
+  "$defs": {
+    "video": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "youtubeVideoId",
+        "title",
+        "stageIds",
+        "domains",
+        "topicIds",
+        "languages",
+        "channelId",
+        "channelTitle",
+        "reviewStatus",
+        "ageSuitability",
+        "curriculumFit",
+        "availabilityStatus",
+        "madeForKidsStatus",
+        "reviewedAt",
+        "lastVerifiedAt"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "youtubeVideoId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{11}$"
+        },
+        "title": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "en",
+            "hi"
+          ],
+          "properties": {
+            "en": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160
+            },
+            "hi": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160
+            }
+          }
+        },
+        "description": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "en": {
+              "type": "string",
+              "maxLength": 500
+            },
+            "hi": {
+              "type": "string",
+              "maxLength": 500
+            }
+          }
+        },
+        "stageIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "playgroup",
+              "nursery",
+              "lkg",
+              "ukg",
+              "class-1",
+              "class-2",
+              "class-3"
+            ]
+          }
+        },
+        "domains": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "phonics",
+              "hindi-varnamala",
+              "literacy",
+              "numeracy",
+              "science",
+              "environment",
+              "stories",
+              "art",
+              "music-movement",
+              "life-skills",
+              "reasoning"
+            ]
+          }
+        },
+        "topicIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          }
+        },
+        "languages": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "en",
+              "hi",
+              "both"
+            ]
+          }
+        },
+        "channelId": {
+          "type": "string",
+          "pattern": "^UC[A-Za-z0-9_-]{22}$"
+        },
+        "channelTitle": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "reviewStatus": {
+          "enum": [
+            "pending-review",
+            "approved",
+            "rejected",
+            "needs-recheck"
+          ]
+        },
+        "reviewedAt": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "reviewedByRole": {
+          "enum": [
+            "educator",
+            "parent-reviewer",
+            "content-editor",
+            "automated-candidate"
+          ]
+        },
+        "reviewNotes": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "ageSuitability": {
+          "enum": [
+            "suitable",
+            "needs-review",
+            "unsuitable"
+          ]
+        },
+        "curriculumFit": {
+          "enum": [
+            "strong",
+            "partial",
+            "none"
+          ]
+        },
+        "accessibilityNotes": {
+          "type": "string",
+          "maxLength": 500
+        },
+        "thumbnailUrl": {
+          "type": "string",
+          "format": "uri"
+        },
+        "durationSeconds": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 14400
+        },
+        "lastVerifiedAt": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "availabilityStatus": {
+          "enum": [
+            "available",
+            "unavailable",
+            "restricted",
+            "unknown"
+          ]
+        },
+        "madeForKidsStatus": {
+          "enum": [
+            "verified",
+            "unknown",
+            "not-applicable"
+          ]
+        },
+        "parentNote": {
+          "type": "string",
+          "maxLength": 500
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "reviewStatus": {
+                "const": "approved"
+              }
+            },
+            "required": [
+              "reviewStatus"
+            ]
+          },
+          "then": {
+            "required": [
+              "reviewedAt",
+              "reviewedByRole",
+              "thumbnailUrl",
+              "durationSeconds"
+            ],
+            "properties": {
+              "reviewedAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "reviewedByRole": {
+                "enum": [
+                  "educator",
+                  "parent-reviewer",
+                  "content-editor"
+                ]
+              },
+              "lastVerifiedAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "availabilityStatus": {
+                "const": "available"
+              },
+              "ageSuitability": {
+                "const": "suitable"
+              },
+              "curriculumFit": {
+                "enum": [
+                  "strong",
+                  "partial"
+                ]
+              },
+              "madeForKidsStatus": {
+                "enum": [
+                  "verified",
+                  "unknown",
+                  "not-applicable"
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
