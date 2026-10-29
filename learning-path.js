@@ -22,6 +22,7 @@
     const data=await response.json();
     if(!Array.isArray(data.activities))throw new Error('Activity pack has an invalid format.');
     pack=data;
+    window.learningActivityPack=data;
     return pack;
   }
   window.openLearningPath = async function() {
