@@ -82,6 +82,7 @@ test('learning path runner is wired to the home CTA and idempotent completion AP
   assert.match(html,/completeActivity\(activityId\)/);
   assert.match(guide,/Start activity/);
   assert.match(guide,/openLearningPath/);
+  assert.match(guide,/learningPathStart/);
   assert.match(runner,/activityCompletions/);
   assert.match(runner,/completeActivity\(activity\.id\)/);
   assert.ok(runner.includes('a.stageIds.includes(currentStage.id)'));
