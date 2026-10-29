@@ -64,9 +64,10 @@ test('guided home explains the selected stage in English and Hindi', () => {
 test('stage activity pack covers all seven stages with bilingual prompts and valid answers', () => {
   const pack=read('content/stage-learning-activities.json');
   const result=validateActivityPack(pack);
-  assert.equal(result.activities,7);
+  assert.equal(result.activities,14);
   assert.equal(result.stages,7);
   assert.ok(pack.activities.every(a=>a.languageVariants.en && a.languageVariants.hi));
+  for (const stage of read('content/learning-stages.json').stages) assert.equal(pack.activities.filter(a=>a.stageIds.includes(stage.id)).length,2,stage.id);
   const broken=structuredClone(pack);
   broken.activities[0].answerId='missing-option';
   assert.throws(()=>validateActivityPack(broken),/Answer ID not found/);
