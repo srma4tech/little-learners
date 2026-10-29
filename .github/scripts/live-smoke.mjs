@@ -249,6 +249,10 @@ try {
     await page.getByText(/you earned one star/i).waitFor({ state: "visible", timeout: 5000 });
     await page.getByRole("button", { name: /back to activities/i }).click();
     await page.getByText(/practised/i).first().waitFor({ state: "visible", timeout: 5000 });
+    await page.locator("#app .learning-path-choice").first().click();
+    await page.locator("#app .learning-path-options button").filter({ hasText: activityAnswer }).click();
+    await page.getByText(/already completed this activity/i).waitFor({ state: "visible", timeout: 5000 });
+    if (!(await page.locator("#stars").innerText()).includes("1")) throw new Error("Repeating a completed activity awarded an extra star");
     await page.locator("#app .bar button").first().click();
     await page.locator("#app .tile").first().waitFor({ state: "visible", timeout: 10000 });
     await checkOverflow(page, width, "home-after-learning-path");
