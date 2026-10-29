@@ -162,7 +162,8 @@ async function main() {
     candidateCount: candidates.length,
     notes: [
       'Candidate discovery only; no record in this file is approved for children.',
-      'Automated keyword triage reduces obvious off-topic results but may produce false positives and false negatives.',\n      'Search ranking and SafeSearch are not substitutes for adult content review.',
+      'Automated keyword triage reduces obvious off-topic results but may produce false positives and false negatives.',
+      'Search ranking and SafeSearch are not substitutes for adult content review.',
       'Review channel identity, exact video content, age suitability, curriculum fit, language, availability, embed behaviour and applicable YouTube policies.',
       'Never copy this artifact directly into the published catalogue.'
     ],
