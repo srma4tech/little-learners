@@ -44,7 +44,7 @@ test('runtime stage model matches the canonical catalog and is wired into parent
   assert.match(html,/parent-stage-grid/);
   assert.match(html,/setLearningStage\(this\.dataset\.stage\)/);
   assert.match(html,/K\(\)\.stageId=id/);
-  assert.match(sw,/little-learners-v50/);
+  assert.match(sw,/little-learners-v51/);
   assert.match(sw,/learning-stage-model\.js/);
   assert.match(sw,/content\/learning-stages\.json/);
 });
