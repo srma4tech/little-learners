@@ -282,6 +282,12 @@ try {
       throw new Error('Browser Back from a reading story did not restore the reading library');
     }
 
+    // Forward must restore the story, and another Back must return to the library.
+    await page.goForward({ waitUntil: "domcontentloaded", timeout: 10000 }).catch(() => {});
+    await page.getByRole('heading', { name: 'The Missing Pencil' }).waitFor({ state: 'visible', timeout: 10000 });
+    await page.goBack({ waitUntil: "domcontentloaded", timeout: 10000 }).catch(() => {});
+    await page.getByRole('heading', { name: /choose a story/i }).waitFor({ state: 'visible', timeout: 10000 });
+
     await page.getByRole('button', { name: /The Missing Pencil/i }).click();
     await page.getByRole('heading', { name: 'The Missing Pencil' }).waitFor({ state: 'visible', timeout: 10000 });
     await page.getByRole('button', { name: /all stories/i }).click();
