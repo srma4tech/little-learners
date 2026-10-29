@@ -45,22 +45,33 @@
 
   async function loadCatalogue() {
     if (!cataloguePromise) {
-      cataloguePromise = fetch('./content/watch-learn-catalog.json', { cache: 'no-cache' })
-        .then(response => {
+      cataloguePromise = Promise.all([
+        fetch('./content/watch-learn-catalog.json', { cache: 'no-cache' }).then(response => {
           if (!response.ok) throw new Error('catalogue unavailable');
           return response.json();
+        }),
+        fetch('./content/watch-learn-approved-channels.json', { cache: 'no-cache' }).then(response => {
+          if (!response.ok) throw new Error('approved channel list unavailable');
+          return response.json();
         })
-        .catch(() => ({ schemaVersion: '1.0.0', catalogId: 'little-learners-watch-learn', releaseStatus: 'draft', videos: [] }));
+      ]).then(([catalogue, allowlist]) => ({
+        catalogue,
+        approvedChannels: new Set(Array.isArray(allowlist.channels) ? allowlist.channels.map(channel => channel.channelId).filter(Boolean) : [])
+      })).catch(() => ({
+        catalogue: { schemaVersion: '1.0.0', catalogId: 'little-learners-watch-learn', releaseStatus: 'draft', videos: [] },
+        approvedChannels: new Set()
+      }));
     }
     return cataloguePromise;
   }
 
-  function eligible(videos, stage, lang) {
+  function eligible(videos, stage, lang, approvedChannels = new Set()) {
     return videos.filter(video =>
       video && video.reviewStatus === 'approved' &&
       video.availabilityStatus === 'available' &&
       video.ageSuitability === 'suitable' &&
       ['strong', 'partial'].includes(video.curriculumFit) &&
+      approvedChannels.has(video.channelId) &&
       Array.isArray(video.stageIds) && video.stageIds.includes(stage) &&
       Array.isArray(video.languages) &&
       (lang === 'both' || video.languages.includes(lang) || video.languages.includes('both')) &&
@@ -128,8 +139,9 @@
         </div>
         <div id="watch-learn-content"><p>${esc(text('Loading reviewed videos…', 'समीक्षित वीडियो लोड हो रहे हैं…'))}</p></div>
       </section>`;
-    const catalogue = await loadCatalogue();
-    const videos = eligible(Array.isArray(catalogue.videos) ? catalogue.videos : [], stage, lang);
+    const loaded = await loadCatalogue();
+    const catalogue = loaded.catalogue;
+    const videos = eligible(Array.isArray(catalogue.videos) ? catalogue.videos : [], stage, lang, loaded.approvedChannels);
     const content = document.getElementById('watch-learn-content');
     if (!content || activeVideoId) return;
     if (!videos.length) {
@@ -164,9 +176,10 @@
 
   async function filterWatchLearn(domain) {
     selectedDomain = domain;
-    const catalogue = await loadCatalogue();
+    const loaded = await loadCatalogue();
+    const catalogue = loaded.catalogue;
     const stage = currentStage();
-    const videos = eligible(Array.isArray(catalogue.videos) ? catalogue.videos : [], stage, language());
+    const videos = eligible(Array.isArray(catalogue.videos) ? catalogue.videos : [], stage, language(), loaded.approvedChannels);
     const content = document.getElementById('watch-learn-content');
     if (!content) return;
     const domains = [...new Set(videos.flatMap(video => video.domains || []))];
@@ -187,9 +200,10 @@
   }
 
   async function playWatchLearnVideo(id) {
-    const catalogue = await loadCatalogue();
+    const loaded = await loadCatalogue();
+    const catalogue = loaded.catalogue;
     const stage = currentStage();
-    const video = eligible(Array.isArray(catalogue.videos) ? catalogue.videos : [], stage, language()).find(item => item.id === id);
+    const video = eligible(Array.isArray(catalogue.videos) ? catalogue.videos : [], stage, language(), loaded.approvedChannels).find(item => item.id === id);
     if (!video) return openWatchLearn();
     renderPlayer(video, stage);
   }
