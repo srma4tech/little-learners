@@ -74,7 +74,22 @@ async function api(resource, params) {
   }
   if (!response.ok) {
     // Never log the request URL: the API key is a query parameter.
-    throw new Error(resource + ' returned HTTP ' + response.status + '. Check API enablement, quota and secret configuration.');
+    // Google returns a structured error body that helps distinguish exhausted
+    // daily quota from per-user/project rate limits and API/key configuration.
+    let detail = '';
+    try {
+      const body = await response.json();
+      const apiError = body?.error || {};
+      const reasons = [...new Set((apiError.errors || []).map(item => item.reason).filter(Boolean))];
+      const message = typeof apiError.message === 'string' ? apiError.message : '';
+      const safeMessage = message.replace(/https?:\\/\\/[^\\s]+/g, '[URL]').slice(0, 240);
+      if (reasons.length) detail += ' reason=' + reasons.join(',');
+      if (safeMessage) detail += ' message=' + safeMessage;
+    } catch (_) {
+      // The status code is still useful if the response body isn't JSON.
+    }
+    throw new Error(resource + ' returned HTTP ' + response.status + '.' + detail +
+      ' Check the YouTube Data API v3 quota page and API-key restrictions. Request URL and API key were not logged.');
   }
   return response.json();
 }
