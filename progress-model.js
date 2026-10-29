@@ -56,6 +56,7 @@
       for (const [key, value] of Object.entries(local.starCounters)) counters[key] = Math.max(number(counters[key]), number(value));
       const acknowledged = {
         ...remote,
+        ...mergeStage(local, remote),
         name: remote.name && remote.name !== 'Me' ? remote.name : local.name,
         resetGeneration: remote.resetGeneration,
         starCounters: counters,
@@ -80,6 +81,7 @@
     for (const [key, value] of Object.entries(local.starCounters)) counters[key] = Math.max(number(counters[key]), number(value));
     const merged = {
       ...remote,
+      ...mergeStage(local, remote),
       name: remote.name && remote.name !== 'Me' ? remote.name : local.name,
       resetGeneration: remote.resetGeneration,
       resetId: remote.resetId || local.resetId || null,
