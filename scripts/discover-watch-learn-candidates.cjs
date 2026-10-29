@@ -14,7 +14,7 @@ const MAX_QUERIES = Math.min(14, Math.max(1, Number.parseInt(process.env.MAX_SEA
 const OUT = process.env.CANDIDATE_OUTPUT || path.join('artifacts', 'watch-learn-candidates.json');
 
 // Conservative title-based triage reduces obvious noise; it is not an approval or safety decision.
-const BLOCK_TERMS = /\\b(job|jobs|vacancy|vacancies|recruitment|salary|sarkari naukri|government exam|competitive exam|neet|jee|upsc|ssc cgl|bank po|class 11|class 12|grade 11|grade 12|adult|dating|prank|horror|weapon|fight|violence)\\b|सरकारी नौकरी|भर्ती|वैकेंसी|प्रतियोगी परीक्षा|कक्षा 11|कक्षा 12/iu;
+const BLOCK_TERMS = /\b(job|jobs|vacancy|vacancies|recruitment|salary|sarkari naukri|government exam|competitive exam|neet|jee|upsc|ssc cgl|bank po|class 11|class 12|grade 11|grade 12|adult|dating|prank|horror|weapon|fight|violence)\b|सरकारी नौकरी|भर्ती|वैकेंसी|प्रतियोगी परीक्षा|कक्षा 11|कक्षा 12/iu;
 const STAGE_TERMS = {
   playgroup: /color|colour|shape|animal|nursery rhyme|toddler|preschool|alphabet|abc|count|number|बालगीत|रंग|आकार|जानवर|अक्षर|गिनती|बच्चों की कविता/iu,
   nursery: /phonics|alphabet|letter|color|colour|shape|count|number|nursery|बालगीत|वर्णमाला|अक्षर|रंग|गिनती|संख्या/iu,
