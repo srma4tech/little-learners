@@ -37,7 +37,12 @@
     change.type = 'button';
     change.textContent = lang === 'hi' ? 'बदलें' : 'Change stage';
     change.addEventListener('click', () => window.openParentSettings?.());
-    section.append(copy, change);
+    const start = document.createElement('button');
+    start.className = 'btn';
+    start.type = 'button';
+    start.textContent = lang === 'hi' ? 'अभ्यास शुरू करें' : 'Start activity';
+    start.addEventListener('click', () => window.openLearningPath?.());
+    section.append(copy, change, start);
     const grid = document.querySelector('#app .home-grid');
     const heading = document.querySelector('#app h1');
     if (grid && heading && !document.querySelector('#app .home-learning-guide')) grid.parentNode.insertBefore(section, grid);
