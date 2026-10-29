@@ -212,4 +212,5 @@
   root.filterWatchLearn = filterWatchLearn;
   root.playWatchLearnVideo = playWatchLearnVideo;
   root.WatchLearn = Object.freeze({ eligible, loadCatalogue });
+  if (typeof module !== 'undefined' && module.exports) module.exports = root.WatchLearn;
 })(typeof window !== 'undefined' ? window : globalThis);
