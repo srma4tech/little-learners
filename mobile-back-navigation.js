@@ -40,6 +40,15 @@
   function backControl() {
     const app = root();
     if (!app) return null;
+
+    // Reading story detail has a meaningful in-section Back target. Prefer
+    // returning to the library over the generic toolbar's Home button.
+    if (app.querySelector('.reading-story')) {
+      const storyLibrary = [...app.querySelectorAll('.reading-actions button:not(:disabled)')]
+        .find(button => /all stories|सभी कहानियाँ/i.test(button.textContent || ''));
+      if (storyLibrary) return storyLibrary;
+    }
+
     const buttons = [...app.querySelectorAll('button:not(:disabled)')];
     // Accessible labels are the most reliable signal across feature areas.
     const explicit = buttons.find(button => {
