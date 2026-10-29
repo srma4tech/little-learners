@@ -65,12 +65,19 @@
     return cataloguePromise;
   }
 
+  function isFreshlyVerified(video) {
+    const verifiedAt = Date.parse(video?.lastVerifiedAt || '');
+    const ageMs = Date.now() - verifiedAt;
+    return Number.isFinite(verifiedAt) && ageMs >= 0 && ageMs <= 90 * 24 * 60 * 60 * 1000;
+  }
+
   function eligible(videos, stage, lang, approvedChannels = new Set()) {
     return videos.filter(video =>
       video && video.reviewStatus === 'approved' &&
       video.availabilityStatus === 'available' &&
       video.ageSuitability === 'suitable' &&
       ['strong', 'partial'].includes(video.curriculumFit) &&
+      isFreshlyVerified(video) &&
       approvedChannels.has(video.channelId) &&
       Array.isArray(video.stageIds) && video.stageIds.includes(stage) &&
       Array.isArray(video.languages) &&
