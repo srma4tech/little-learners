@@ -90,3 +90,43 @@ test('rejects automated candidate identity as a human approval', () => {
   const errors = validateCatalog({ ...base(), videos: [approved] }, allowlist);
   assert.ok(errors.some(x => x.includes('approved items require a human reviewer role')));
 });
+
+const watchLearnModule = require('../watch-learn.js');
+
+test('runtime video eligibility requires explicit source allowlisting', () => {
+  global.st = { lang: 'en' };
+  const approved = video({
+    reviewStatus: 'approved',
+    reviewedAt: '2026-10-29T00:00:00Z',
+    reviewedByRole: 'educator',
+    ageSuitability: 'suitable',
+    curriculumFit: 'strong',
+    availabilityStatus: 'available',
+    madeForKidsStatus: 'verified',
+    lastVerifiedAt: '2026-10-29T00:00:00Z',
+    thumbnailUrl: 'https://i.ytimg.com/vi/abcdefghijk/hqdefault.jpg',
+    durationSeconds: 120
+  });
+  assert.equal(watchLearnModule.WatchLearn.eligible([approved], 'class-1', 'en', allowlist).length, 1);
+  assert.equal(watchLearnModule.WatchLearn.eligible([approved], 'class-1', 'en', new Set()).length, 0);
+  delete global.st;
+});
+
+test('runtime eligibility blocks pending, unsuitable, wrong-stage and wrong-language videos', () => {
+  const approved = video({
+    reviewStatus: 'approved',
+    reviewedAt: '2026-10-29T00:00:00Z',
+    reviewedByRole: 'educator',
+    ageSuitability: 'suitable',
+    curriculumFit: 'strong',
+    availabilityStatus: 'available',
+    madeForKidsStatus: 'verified',
+    lastVerifiedAt: '2026-10-29T00:00:00Z',
+    thumbnailUrl: 'https://i.ytimg.com/vi/abcdefghijk/hqdefault.jpg',
+    durationSeconds: 120,
+    languages: ['hi']
+  });
+  assert.equal(watchLearnModule.WatchLearn.eligible([approved], 'class-1', 'en', allowlist).length, 0);
+  assert.equal(watchLearnModule.WatchLearn.eligible([approved], 'class-2', 'hi', allowlist).length, 0);
+  assert.equal(watchLearnModule.WatchLearn.eligible([video()], 'class-1', 'en', allowlist).length, 0);
+});
