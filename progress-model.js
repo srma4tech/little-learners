@@ -31,7 +31,19 @@
     return result;
   }
 
-  function mergeStage(local, remote) {\n    if (local.stageId && remote.stageId) {\n      const localAt = number(local.stageUpdatedAt);\n      const remoteAt = number(remote.stageUpdatedAt);\n      if (remoteAt > localAt) return { stageId: remote.stageId, stageUpdatedAt: remoteAt };\n      return { stageId: local.stageId, stageUpdatedAt: localAt || remoteAt || 0 };\n    }\n    if (local.stageId) return { stageId: local.stageId, stageUpdatedAt: number(local.stageUpdatedAt) };\n    if (remote.stageId) return { stageId: remote.stageId, stageUpdatedAt: number(remote.stageUpdatedAt) };\n    return {};\n  }\n\n  function mergeKid(localKid, remoteKid, deviceId = 'device-local') {
+  function mergeStage(local, remote) {
+    if (local.stageId && remote.stageId) {
+      const localAt = number(local.stageUpdatedAt);
+      const remoteAt = number(remote.stageUpdatedAt);
+      if (remoteAt > localAt) return { stageId: remote.stageId, stageUpdatedAt: remoteAt };
+      return { stageId: local.stageId, stageUpdatedAt: localAt || remoteAt || 0 };
+    }
+    if (local.stageId) return { stageId: local.stageId, stageUpdatedAt: number(local.stageUpdatedAt) };
+    if (remote.stageId) return { stageId: remote.stageId, stageUpdatedAt: number(remote.stageUpdatedAt) };
+    return {};
+  }
+
+  function mergeKid(localKid, remoteKid, deviceId = 'device-local') {
     const local = localKid ? normalizeKid(localKid, deviceId) : null;
     const remote = remoteKid ? normalizeKid(remoteKid, deviceId) : null;
     if (!local && !remote) return null;
