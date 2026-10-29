@@ -52,6 +52,12 @@ jobs:
           done
       - name: Check live browser smoke script syntax
         run: node --check .github/scripts/live-smoke.mjs
+      - name: Check external JavaScript syntax
+        run: |
+          node --check progress-model.js
+          node --check learning-stage-model.js
+          node --check reading-practice.js
+          node --check home-guide.js
       - name: Validate learning content and stage catalog
         run: node .github/scripts/validate-content.cjs
       - name: Test progress, reading, and content contracts
