@@ -95,3 +95,13 @@ test('a newer cloud reset does not resurrect old activity completions', () => {
   );
   assert.deepEqual(merged.activityCompletions,{});
 });
+
+test('the same activity reward key merges once across devices', () => {
+  const merged=mergeKid(
+    {name:'Ari',stars:1,starCounters:{'activity:class-1-add-within-ten':1},resetGeneration:0},
+    {name:'Ari',stars:1,starCounters:{'activity:class-1-add-within-ten':1},resetGeneration:0},
+    'device-a'
+  );
+  assert.equal(merged.stars,1);
+  assert.equal(merged.starCounters['activity:class-1-add-within-ten'],1);
+});
