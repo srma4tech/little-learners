@@ -2,7 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const {validateStageCatalog,validateFoundationPack,validateReadingPack,validateActivity,STAGE_IDS} = require('../.github/scripts/validate-content.cjs');
+const {validateStageCatalog,validateFoundationPack,validateReadingPack,validateActivity,validateActivityPack,STAGE_IDS} = require('../.github/scripts/validate-content.cjs');
 const read = file => JSON.parse(fs.readFileSync(path.join(__dirname,'..',file),'utf8'));
 
 test('stage catalog has seven stable bilingual stages', () => {
@@ -44,7 +44,7 @@ test('runtime stage model matches the canonical catalog and is wired into parent
   assert.match(html,/parent-stage-grid/);
   assert.match(html,/setLearningStage\(this\.dataset\.stage\)/);
   assert.match(html,/K\(\)\.stageId=id/);
-  assert.match(sw,/little-learners-v51/);
+  assert.match(sw,/little-learners-v52/);
   assert.match(sw,/learning-stage-model\.js/);
   assert.match(sw,/content\/learning-stages\.json/);
 });
@@ -57,6 +57,33 @@ test('guided home explains the selected stage in English and Hindi', () => {
   assert.match(guide,/home-learning-guide/);
   assert.match(guide,/hiMessages/);
   assert.match(guide,/window\.openParentSettings/);
-  assert.match(sw,/little-learners-v51/);
+  assert.match(sw,/little-learners-v52/);
   assert.match(sw,/home-guide\.js/);
+});
+
+test('stage activity pack covers all seven stages with bilingual prompts and valid answers', () => {
+  const pack=read('content/stage-learning-activities.json');
+  const result=validateActivityPack(pack);
+  assert.equal(result.activities,7);
+  assert.equal(result.stages,7);
+  assert.ok(pack.activities.every(a=>a.languageVariants.en && a.languageVariants.hi));
+  const broken=structuredClone(pack);
+  broken.activities[0].answerId='missing-option';
+  assert.throws(()=>validateActivityPack(broken),/Answer ID not found/);
+});
+
+test('learning path runner is wired to the home CTA and idempotent completion API', () => {
+  const runner=fs.readFileSync(path.join(__dirname,'..','learning-path.js'),'utf8');
+  const guide=fs.readFileSync(path.join(__dirname,'..','home-guide.js'),'utf8');
+  const html=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');
+  const sw=fs.readFileSync(path.join(__dirname,'..','sw.js'),'utf8');
+  assert.match(html,/learning-path\.js/);
+  assert.match(html,/completeActivity\(activityId\)/);
+  assert.match(guide,/Start activity/);
+  assert.match(guide,/openLearningPath/);
+  assert.match(runner,/activityCompletions/);
+  assert.match(runner,/completeActivity\(activity\.id\)/);
+  assert.ok(runner.includes('a.stageIds.includes(currentStage.id)'));
+  assert.match(sw,/little-learners-v52/);
+  assert.match(sw,/stage-learning-activities\.json/);
 });

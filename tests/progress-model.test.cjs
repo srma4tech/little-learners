@@ -72,3 +72,26 @@ test('selected learning stage survives profile merges and progress reset', () =>
   assert.equal(reset.stageId,'nursery');
   assert.equal(reset.stars,0);
 });
+
+test('activity completions merge across devices within the same reset generation', () => {
+  const merged=mergeKid(
+    {name:'Ari',stars:1,starCounters:{'device-a':1},resetGeneration:0,activityCompletions:{'playgroup-shape':100}},
+    {name:'Ari',stars:1,starCounters:{'device-b':1},resetGeneration:0,activityCompletions:{'nursery-count':200}},
+    'device-a'
+  );
+  assert.deepEqual(merged.activityCompletions,{'nursery-count':200,'playgroup-shape':100});
+});
+test('reset clears activity completions without clearing the selected learning stage', () => {
+  const reset=resetKid({name:'Ari',stageId:'lkg',stars:2,starCounters:{d:2},activityCompletions:{'lkg-letter':100}});
+  assert.deepEqual(reset.activityCompletions,{});
+  assert.equal(reset.stageId,'lkg');
+  assert.equal(reset.stars,0);
+});
+test('a newer cloud reset does not resurrect old activity completions', () => {
+  const merged=mergeKid(
+    {name:'Ari',stars:3,starCounters:{d:3},resetGeneration:0,activityCompletions:{'class-1-add':100}},
+    {name:'Ari',stars:0,starCounters:{},resetGeneration:1,activityCompletions:{}},
+    'device-a'
+  );
+  assert.deepEqual(merged.activityCompletions,{});
+});
