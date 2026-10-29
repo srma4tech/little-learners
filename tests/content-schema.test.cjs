@@ -87,3 +87,12 @@ test('learning path runner is wired to the home CTA and idempotent completion AP
   assert.match(sw,/little-learners-v52/);
   assert.match(sw,/stage-learning-activities\.json/);
 });
+
+test('parent corner exposes stars, activity count and selected stage', () => {
+  const html=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');
+  assert.match(html,/parentProgressSummary\(\)/);
+  assert.match(html,/parent-progress-summary/);
+  assert.match(html,/activity:.*activityId/);
+  assert.match(html,/Activities completed/);
+  assert.match(html,/सितारे/);
+});
