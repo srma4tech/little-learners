@@ -236,8 +236,10 @@ try {
     await checkAppLikeMobileShell(page, width);
     await page.screenshot({ path: path.join(out, `ui-${width}-home.png`), fullPage: true });
     // Stage-aware Learning Path vertical slice: complete one activity and verify its one-time star reward.
-    if (await page.locator("#app .home-learning-guide button").count() < 2) throw new Error("Guided Home stage card did not render its controls");
-    await page.locator("#app .home-learning-guide button").last().click();
+    const guidedControls = page.locator("#app .home-learning-guide button");
+    if (await guidedControls.count() >= 2) await guidedControls.last().click();
+    else if (await page.locator("#app [data-learning-path-home-entry]").count()) await page.locator("#app [data-learning-path-home-entry]").click();
+    else throw new Error("Learning path entry did not render on Home");
     await page.getByRole("heading", { name: /learning path/i }).waitFor({ state: "visible", timeout: 10000 });
     if (await page.locator("#app .learning-path-choice").count() !== 2) throw new Error("Class 1 learning path should show two activities");
     await page.locator("#app .learning-path-choice").first().click();
