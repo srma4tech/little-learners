@@ -235,6 +235,23 @@ try {
     await checkCompactHomeAndNavigation(page, width);
     await checkAppLikeMobileShell(page, width);
     await page.screenshot({ path: path.join(out, `ui-${width}-home.png`), fullPage: true });
+    // Stage-aware Learning Path vertical slice: complete one activity and verify its one-time star reward.
+    await page.getByRole("button", { name: /start activity/i }).click();
+    await page.getByRole("heading", { name: /learning path/i }).waitFor({ state: "visible", timeout: 10000 });
+    if (await page.locator("#app .learning-path-choice").count() !== 2) throw new Error("Class 1 learning path should show two activities");
+    await page.locator("#app .learning-path-choice").first().click();
+    const activityAnswer = await page.evaluate(() => {
+      const activity = window.learningActivityPack?.activities?.find(item => item.id === "class-1-add-within-ten");
+      return activity?.options?.find(option => option.id === activity.answerId)?.label?.en;
+    });
+    if (!activityAnswer) throw new Error("Learning activity answer metadata was not available");
+    await page.locator("#app .learning-path-options button").filter({ hasText: activityAnswer }).click();
+    await page.getByText(/you earned one star/i).waitFor({ state: "visible", timeout: 5000 });
+    await page.getByRole("button", { name: /back to activities/i }).click();
+    await page.getByText(/practised/i).first().waitFor({ state: "visible", timeout: 5000 });
+    await page.locator("#app .bar button").first().click();
+    await page.locator("#app .tile").first().waitFor({ state: "visible", timeout: 10000 });
+    await checkOverflow(page, width, "home-after-learning-path");
     // Grade 1 reading vertical slice: verify the bilingual story, vocabulary, and gentle retry.
     await page.locator('[data-reading-tile]').click();
     await page.getByRole('heading', { name: /choose a story/i }).waitFor({ state: 'visible', timeout: 10000 });
@@ -294,11 +311,11 @@ try {
     await page.locator("#app .opt").nth(correctIndex).click();
     await page.getByText(/great job|new sticker/i).waitFor({ state: "visible", timeout: 5000 });
     await page.waitForTimeout(150);
-    if (!(await page.locator("#stars").innerText()).includes("1")) throw new Error("Correct quiz answer did not award a star");
+    if (!(await page.locator("#stars").innerText()).includes("2")) throw new Error("Correct quiz answer did not award a star after activity completion");
     await page.reload({ waitUntil: "domcontentloaded", timeout: 60000 });
     await page.locator("#app .tile").first().waitFor({ state: "visible", timeout: 15000 });
     if (!(await page.locator("#kid").innerText()).includes("QA Kid")) throw new Error("Guest profile did not persist after reload");
-    if (!(await page.locator("#stars").innerText()).includes("1")) throw new Error("Guest progress did not persist after reload");
+    if (!(await page.locator("#stars").innerText()).includes("2")) throw new Error("Guest progress did not persist after reload");
     await checkOverflow(page, width, "home-after-reload");
     await checkInteractiveControls(page, width, "home-after-reload");
 
