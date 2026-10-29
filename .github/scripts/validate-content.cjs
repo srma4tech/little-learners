@@ -103,7 +103,8 @@ function run() {
   validateStageCatalog(stageCatalog);
   const foundation = validateFoundationPack(read('content/grade-1-content.json'));
   const reading = validateReadingPack(read('content/grade-1-reading-practice.json'));
-  console.log('Content validation passed: ' + JSON.stringify({stages:STAGE_IDS.size,foundation,reading}));
+  const activities = validateActivityPack(read('content/stage-learning-activities.json'));
+  console.log('Content validation passed: ' + JSON.stringify({stages:STAGE_IDS.size,foundation,reading,activities}));
 }
 if (require.main === module) { try { run(); } catch (e) { console.error('Content validation failed: ' + e.message); process.exitCode = 1; } }
 module.exports = {validateStageCatalog,validateFoundationPack,validateReadingPack,validateActivity,validateActivityPack,STAGE_IDS};
