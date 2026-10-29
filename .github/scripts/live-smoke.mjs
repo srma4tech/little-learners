@@ -235,6 +235,16 @@ try {
     await checkCompactHomeAndNavigation(page, width);
     await checkAppLikeMobileShell(page, width);
     await page.screenshot({ path: path.join(out, `ui-${width}-home.png`), fullPage: true });
+    // Watch & Learn must render safely with the intentionally empty, review-gated catalogue.
+    const watchEntry = page.getByRole("button", { name: /Watch & Learn/i });
+    if (await watchEntry.count() !== 1) throw new Error("Watch & Learn entry point is missing or duplicated");
+    await watchEntry.click();
+    await page.getByRole("heading", { name: /Carefully chosen videos are coming soon/i }).waitFor({ state: "visible", timeout: 10000 });
+    if (await page.locator("#app iframe").count()) throw new Error("Empty Watch & Learn catalogue must not create a YouTube player");
+    if (await page.locator("#app .watch-video-card").count()) throw new Error("Unapproved videos must not appear in the child catalogue");
+    await checkOverflow(page, width, "watch-learn-empty");
+    await page.getByRole("button", { name: /Back to learning/i }).click();
+    await page.locator("#app .home-grid").waitFor({ state: "visible", timeout: 10000 });
     // Stage-aware Learning Path vertical slice: complete one activity and verify its one-time star reward.
     const guidedControls = page.locator("#app .home-learning-guide button");
     if (await guidedControls.count() >= 2) await guidedControls.last().click();
