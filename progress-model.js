@@ -43,6 +43,14 @@
     return {};
   }
 
+  function mergeCompletions(local, remote) {
+    const completions = { ...(remote.activityCompletions || {}) };
+    for (const [activityId, completedAt] of Object.entries(local.activityCompletions || {})) {
+      completions[activityId] = Math.max(number(completions[activityId]), number(completedAt));
+    }
+    return completions;
+  }
+
   function mergeKid(localKid, remoteKid, deviceId = 'device-local') {
     const local = localKid ? normalizeKid(localKid, deviceId) : null;
     const remote = remoteKid ? normalizeKid(remoteKid, deviceId) : null;
@@ -57,6 +65,7 @@
       const acknowledged = {
         ...remote,
         ...mergeStage(local, remote),
+        activityCompletions: mergeCompletions(local, remote),
         name: remote.name && remote.name !== 'Me' ? remote.name : local.name,
         resetGeneration: remote.resetGeneration,
         starCounters: counters,
@@ -82,6 +91,7 @@
     const merged = {
       ...remote,
       ...mergeStage(local, remote),
+      activityCompletions: mergeCompletions(local, remote),
       name: remote.name && remote.name !== 'Me' ? remote.name : local.name,
       resetGeneration: remote.resetGeneration,
       resetId: remote.resetId || local.resetId || null,
@@ -109,6 +119,7 @@
       ...normalized,
       stars: 0,
       starCounters: {},
+      activityCompletions: {},
       resetGeneration: normalized.resetGeneration + 1,
       pendingResetId: id(),
       progressResetAt: Date.now()
