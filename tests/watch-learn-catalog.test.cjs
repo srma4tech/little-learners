@@ -171,3 +171,17 @@ test('runtime eligibility hides videos whose review verification is older than 9
   });
   assert.equal(watchLearnModule.eligible([stale], 'class-1', 'en', allowlist).length, 0);
 });
+
+
+test('UI demo fixture is explicitly synthetic and cannot be mistaken for reviewed content', () => {
+  const fixture = require('../content/watch-learn-ui-demo.json');
+  assert.equal(fixture.demoOnly, true);
+  assert.match(fixture.notice, /not real recommendations/i);
+  assert.ok(fixture.videos.length >= 3);
+  for (const item of fixture.videos) {
+    assert.match(item.id, /^demo-/);
+    assert.equal(item.channelId, 'DEMO_CHANNEL');
+    assert.equal(item.channelTitle, 'LittleLearners UI Demo');
+    assert.match(item.youtubeVideoId, /^DEMO/);
+  }
+});

@@ -41,9 +41,15 @@
   };
   let cataloguePromise;
   let selectedDomain = 'all';
+  const demoMode = new URLSearchParams(root.location?.search || '').get('watch-learn-demo') === '1';
+  let demoVideos = null;
   let activeVideoId = null;
 
   async function loadCatalogue() {
+    if (demoMode) {
+      if (!cataloguePromise) cataloguePromise = fetch('./content/watch-learn-ui-demo.json', { cache: 'no-cache' }).then(response => { if (!response.ok) throw new Error('demo fixture unavailable'); return response.json(); }).then(data => ({ catalogue: { videos: data.demoOnly === true ? data.videos : [] }, approvedChannels: new Set(['DEMO_CHANNEL']) })).catch(() => ({ catalogue: { videos: [] }, approvedChannels: new Set() }));
+      return cataloguePromise;
+    }
     if (!cataloguePromise) {
       cataloguePromise = Promise.all([
         fetch('./content/watch-learn-catalog.json', { cache: 'no-cache' }).then(response => {
@@ -139,6 +145,7 @@
         <button class="btn o" type="button" onclick="home()">⬅ ${esc(text('Home', 'होम'))}</button>
         <h2>🎬 ${esc(text('Watch & Learn', 'देखें और सीखें'))}</h2>
       </div>
+      ${demoMode ? `<div class="watch-stage-note" role="status"><strong>UI DEMO ONLY — synthetic test data</strong><p>These are mock records for layout and interaction testing, not real videos or child recommendations.</p></div>` : ''}
       <section class="watch-learn-shell" aria-live="polite">
         <div class="watch-stage-note">
           <strong>${esc(text('Learning stage', 'सीखने का स्तर'))}: ${esc(stageLabel.en)} · ${esc(stageLabel.hi)}</strong>
@@ -212,6 +219,27 @@
     const stage = currentStage();
     const video = eligible(Array.isArray(catalogue.videos) ? catalogue.videos : [], stage, language(), loaded.approvedChannels).find(item => item.id === id);
     if (!video) return openWatchLearn();
+    if (demoMode) {
+      const app = document.getElementById('app');
+      if (app) {
+        const title = esc(localized(video.title));
+        const backLabel = esc(text('Watch & Learn', 'देखें और सीखें'));
+        const chooseLabel = esc(text('Choose another video', 'अन्य वीडियो चुनें'));
+        app.innerHTML = [
+          '<div class="bar"><button class="btn o" type="button" onclick="window.openWatchLearn()">⬅ ',
+          backLabel,
+          '</button><h2>UI demo player</h2></div>',
+          '<section class="reading-shell"><div class="reading-panel"><h2>',
+          title,
+          '</h2><p>Mock player — no YouTube request is made.</p>',
+          '<p>Demo data only. This is not an approved video.</p>',
+          '<button class="btn o" type="button" onclick="window.openWatchLearn()">',
+          chooseLabel,
+          '</button></div></section>'
+        ].join('');
+      }
+      return;
+    }
     renderPlayer(video, stage);
   }
 
