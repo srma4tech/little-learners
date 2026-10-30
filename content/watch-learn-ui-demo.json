@@ -1,0 +1,89 @@
+{
+  "demoOnly": true,
+  "source": "synthetic-ui-fixture",
+  "notice": "Synthetic UI test records only. Not real recommendations, not reviewed, not approved, and must never be copied into the production catalogue.",
+  "videos": [
+    {
+      "id": "demo-hindi-counting",
+      "youtubeVideoId": "DEMO0000001",
+      "title": {
+        "en": "Demo: Counting practice",
+        "hi": "डेमो: गिनती का अभ्यास"
+      },
+      "stageIds": [
+        "playgroup",
+        "nursery",
+        "class-1"
+      ],
+      "domains": [
+        "numeracy"
+      ],
+      "languages": [
+        "en",
+        "hi"
+      ],
+      "channelId": "DEMO_CHANNEL",
+      "channelTitle": "LittleLearners UI Demo",
+      "thumbnailUrl": "",
+      "reviewStatus": "approved",
+      "availabilityStatus": "available",
+      "ageSuitability": "suitable",
+      "curriculumFit": "strong",
+      "lastVerifiedAt": "2099-01-01T00:00:00Z"
+    },
+    {
+      "id": "demo-phonics",
+      "youtubeVideoId": "DEMO0000002",
+      "title": {
+        "en": "Demo: Letter sounds",
+        "hi": "डेमो: अक्षरों की ध्वनि"
+      },
+      "stageIds": [
+        "nursery",
+        "lkg",
+        "ukg"
+      ],
+      "domains": [
+        "phonics"
+      ],
+      "languages": [
+        "en"
+      ],
+      "channelId": "DEMO_CHANNEL",
+      "channelTitle": "LittleLearners UI Demo",
+      "thumbnailUrl": "",
+      "reviewStatus": "approved",
+      "availabilityStatus": "available",
+      "ageSuitability": "suitable",
+      "curriculumFit": "partial",
+      "lastVerifiedAt": "2099-01-01T00:00:00Z"
+    },
+    {
+      "id": "demo-hindi-letters",
+      "youtubeVideoId": "DEMO0000003",
+      "title": {
+        "en": "Demo: Hindi letters",
+        "hi": "डेमो: हिंदी वर्णमाला"
+      },
+      "stageIds": [
+        "lkg",
+        "ukg",
+        "class-1"
+      ],
+      "domains": [
+        "hindi-varnamala"
+      ],
+      "languages": [
+        "hi"
+      ],
+      "channelId": "DEMO_CHANNEL",
+      "channelTitle": "LittleLearners UI Demo",
+      "thumbnailUrl": "",
+      "reviewStatus": "approved",
+      "availabilityStatus": "available",
+      "ageSuitability": "suitable",
+      "curriculumFit": "strong",
+      "lastVerifiedAt": "2099-01-01T00:00:00Z"
+    }
+  ]
+}
