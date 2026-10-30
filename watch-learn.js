@@ -221,7 +221,22 @@
     if (!video) return openWatchLearn();
     if (demoMode) {
       const app = document.getElementById('app');
-      if (app) app.innerHTML = `<div class="bar"><button class="btn o" type="button" onclick="window.openWatchLearn()">⬅ ${esc(text('Watch & Learn', 'देखें और सीखें'))}</button><h2>UI demo player</h2></div><section class="reading-shell"><div class="reading-panel"><h2>${esc(localized(video.title))}</h2><p>Mock player — no YouTube request is made.</p><p>Demo data only. This is not an approved video.</p><button class="btn o" type="button" onclick="window.openWatchLearn()">${esc(text('Choose another video', 'अन्य वीडियो चुनें'))}</button></div></section>`;
+      if (app) {
+        const title = esc(localized(video.title));
+        const backLabel = esc(text('Watch & Learn', 'देखें और सीखें'));
+        const chooseLabel = esc(text('Choose another video', 'अन्य वीडियो चुनें'));
+        app.innerHTML = [
+          '<div class="bar"><button class="btn o" type="button" onclick="window.openWatchLearn()">⬅ ',
+          backLabel,
+          '</button><h2>UI demo player</h2></div>',
+          '<section class="reading-shell"><div class="reading-panel"><h2>',
+          title,
+          '</h2><p>Mock player — no YouTube request is made.</p>',
+          '<p>Demo data only. This is not an approved video.</p>',
+          '<button class="btn o" type="button" onclick="window.openWatchLearn()">',
+          chooseLabel,
+          '</button></div></section>'
+        ].join('');
       }
       return;
     }
